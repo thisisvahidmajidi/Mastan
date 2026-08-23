@@ -1,2 +1,2 @@
-# Mastan
+# Group-mentoring 
 Individual and professional development Platform 
