@@ -259,6 +259,26 @@ def picture_fill(slide, path, x, y, w, h, img_size):
     return pic
 
 
+def scrim(slide, x, y, w, h, color=None, alpha=0.55):
+    """پرده نیمه‌شفاف روی تصویر تا متن سفید خوانا شود."""
+    return rect(slide, x, y, w, h, fill=color or NAVY_DEEP, alpha=alpha)
+
+
+def scrim_gradient(slide, x, y, w, h, color=None, angle=0,
+                   a_from=0.95, a_to=0.05):
+    """پرده گرادیانتی؛ برای محو شدن تدریجی تصویر زیر ستون متن."""
+    c = color or NAVY_DEEP
+    return gradient(slide, x, y, w, h, c, c, angle=angle,
+                    alpha1=a_from, alpha2=a_to)
+
+
+def full_bleed(slide, path, img_size, x=0, y=0, w=None, h=None):
+    """تصویر تمام‌قاب (یا تمام‌قابِ یک ناحیه)."""
+    w = SW if w is None else w
+    h = SH if h is None else h
+    return picture_fill(slide, path, x, y, w, h, img_size)
+
+
 def donut_segment(slide, cx, cy, r_out, r_in, a0, a1, color, steps=48):
     """
     یک قطاع حلقه‌ای (بخشی از نمودار دونات) به‌صورت شکل آزاد (freeform).

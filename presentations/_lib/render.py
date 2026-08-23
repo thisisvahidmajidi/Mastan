@@ -320,7 +320,9 @@ def draw_text(sp, canvas, fonts, bx, by, bw, bh):
                     col = tuple(int(rgb[i:i + 2], 16) for i in (0, 2, 4))
             except Exception:
                 pass
-            parts = text.split(" ")
+            # خط جدید داخل یک run معتبر نیست؛ به فاصله تبدیلش می‌کنیم
+            # تا اندازه‌گیری PIL شکست نخورد و شکل حذف نشود.
+            parts = text.replace("\r", " ").replace("\n", " ").split(" ")
             for j, wd in enumerate(parts):
                 if wd:
                     words.append((wd, fnt, col, size))
