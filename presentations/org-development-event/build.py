@@ -2,10 +2,10 @@
 """
 ارائه جلسه توسعه سازمانی + منتورینگ گروهی
 
-بخش اول (اسلاید ۱ تا ۱۱): چرایی توسعه فردی و سازمانی، امواج تمدنی،
+بخش اول (اسلاید ۱ تا ۱۴): چرایی توسعه فردی و سازمانی، امواج تمدنی،
 مکاتب مدیریتی منطبق بر هر موج، جایگاه فعلی سازمان نفت و گاز و مسیر گذار.
 
-بخش دوم (اسلاید ۱۲ تا ۳۰): محتوای منتورینگ گروهی که از ارائه
+بخش دوم (اسلاید ۱۵ تا ۳۳): محتوای منتورینگ گروهی که از ارائه
 group-mentoring-event بازاستفاده می‌شود.
 
 اجرا:  python3 build.py
@@ -38,8 +38,8 @@ from theme import (
 
 IMG = os.path.join(HERE, "img")
 
-INTRO_N = 13          # تعداد اسلایدهای بخش مقدمه
-TOTAL = 32            # کل اسلایدهای ارائه ترکیبی
+INTRO_N = 14          # تعداد اسلایدهای بخش مقدمه
+TOTAL = 33            # کل اسلایدهای ارائه ترکیبی
 LABEL = "توسعه سازمانی"
 
 # ═══════════════════════ وصله‌کردن پاورقی برای شماره‌گذاری پیوسته ═══════
@@ -179,7 +179,8 @@ def i02(prs, cfg):
 
     parts = [
         ("بخش اول", "چرا باید تغییر کنیم؟", [
-            "سه موج تمدنی و مکاتب مدیریتی هر موج",
+            "پنج موج تمدنی و مکتب مدیریتی هر موج",
+            "جدول انطباق موج‌ها با سبک‌های مدیریت",
             "سازمان ما دقیقاً کجای این نقشه است",
             "مسیر گذار به موج بالاتر",
         ], NAVY, "۳۰ دقیقه"),
@@ -192,7 +193,7 @@ def i02(prs, cfg):
     gap = Inches(0.42)
     cw = (CONTENT_W - gap) / 2
     y = Inches(1.72)
-    ch = Inches(3.35)
+    ch = Inches(3.52)
     for i, (tag, title, items, color, dur) in enumerate(parts):
         x = SW - M - cw - i * (cw + gap)
         card(s, x, y, cw, ch, fill=WHITE, line=LINE)
@@ -204,15 +205,15 @@ def i02(prs, cfg):
         write(tb.text_frame,
               [(tag + "  ·  ", False, WHITE, 14), (title, True, WHITE, 21)],
               first=True, line=1.05)
-        yy = y + Inches(1.10)
+        yy = y + Inches(1.06)
         for it in items:
             bx = textbox(s, x + Inches(0.30), yy, cw - Inches(0.60),
                          Inches(0.62))
             write(bx.text_frame, [("◂  ", True, color, 13),
                                   (it, False, INK, 16.5)], first=True,
                   line=1.25)
-            yy += Inches(0.66)
-        db = rect(s, x + Inches(0.30), y + ch - Inches(0.72), Inches(1.5),
+            yy += Inches(0.60)
+        db = rect(s, x + Inches(0.30), y + ch - Inches(0.66), Inches(1.5),
                   Inches(0.44), fill=color,
                   shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.24)
         dtf = db.text_frame
@@ -478,8 +479,162 @@ def i06(prs, cfg):
     return s
 
 
-# ════════════════ ۷ — موج چهارم: صنعت دیجیتال و داده ════════════════════
+# ═══════════ ۷ — جدول انطباق موج‌ها، مکاتب مدیریت و جایگاه ما ═══════════
 def i07(prs, cfg):
+    s = base_slide(prs, WHITE)
+    head(s, "جدول انطباق: هر موج، کدام سبک مدیریت و کدام شیوه توسعه؟",
+         kicker="نقشه یک‌نگاهی — وضعیت فعلی و مسیر پیش رو")
+
+    # ستون‌ها از راست به چپ
+    cols = [
+        ("موج", Inches(1.30)),
+        ("دوره", Inches(1.15)),
+        ("مکتب و سبک مدیریت غالب", Inches(3.05)),
+        ("نگاه به انسان", Inches(1.85)),
+        ("شیوه توسعه افراد", Inches(2.55)),
+        ("جایگاه سازمان ما", Inches(2.14)),
+    ]
+    rows = [
+        (GREEN, "موج ۱", "کشاورزی", "تا ۱۷۵۰",
+         "مدیریت سنتی، نظام صنفی، استادـشاگردی",
+         "بازوی کار", "تقلید از استاد، سینه‌به‌سینه",
+         "گذشته", INK_SOFT, "outline", None),
+        (BLUE_MID, "موج ۲", "صنعتی", "۱۷۵۰ ـ ۱۹۵۰",
+         "تیلور، فایول، وبر — مدیریت علمی و بوروکراسی",
+         "جزئی از ماشین", "آموزش شغلی، دستورالعمل، کلاس",
+         "بدنه اصلی ما", ORANGE, "solid", ORANGE_PALE),
+        (PURPLE, "موج ۳", "دانش", "۱۹۵۰ ـ ۲۰۱۰",
+         "سازمان یادگیرنده، مدیریت دانش، چابک",
+         "صاحب دانش", "منتورینگ، یادگیری از هم",
+         "جزیره‌ای و پراکنده", AMBER, "solid", None),
+        (BLUE_LIGHT, "موج ۴", "دیجیتال", "۲۰۱۱ ـ امروز",
+         "سازمان داده‌محور، تیم‌های خودگردان",
+         "شریک ماشین", "یادگیری در جریان کار، بازخورد داده",
+         "چند پایلوت", BLUE_MID, "solid", None),
+        (T.RGBColor(0xE8, 0x59, 0x2B), "موج ۵", "انسان‌محور", "۲۰۲۱ به بعد",
+         "مدیریت انسان‌محور، رهبری تاب‌آور و پایدار",
+         "سرمایه اصلی", "مربی‌گری، رشد معنا‌محور",
+         "افق پیش رو", GREEN, "outline", GREEN_PALE),
+    ]
+
+    y0 = Inches(1.62)
+    hh = Inches(0.48)
+    rh = Inches(0.755)
+
+    # سطر عنوان
+    rect(s, M, y0, CONTENT_W, hh, fill=NAVY,
+         shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.14)
+    rect(s, M, y0 + Inches(0.24), CONTENT_W, Inches(0.26), fill=NAVY)
+    xc = SW - M
+    for name, cw in cols:
+        tb = textbox(s, xc - cw, y0, cw, hh, anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, name, size=13.5, bold=True, color=WHITE,
+              first=True, align=PP_ALIGN.CENTER, line=1.0)
+        xc -= cw
+
+    # سطرهای داده
+    y = y0 + hh + Inches(0.06)
+    for (wc, wnum, wname, era, school, human, dev,
+         status, scol, style, tint) in rows:
+        if tint is not None:
+            rect(s, M, y, CONTENT_W, rh - Inches(0.06), fill=tint,
+                 shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.12)
+        else:
+            rect(s, M, y, CONTENT_W, rh - Inches(0.06), fill=WHITE,
+                 line=LINE, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.12)
+        # نوار رنگی موج در لبه راست
+        rect(s, SW - M - Inches(0.10), y, Inches(0.10), rh - Inches(0.06),
+             fill=wc)
+
+        xc = SW - M
+        # ستون موج
+        cw = cols[0][1]
+        tb = textbox(s, xc - cw + Inches(0.14), y, cw - Inches(0.20),
+                     rh - Inches(0.06), anchor=MSO_ANCHOR.MIDDLE)
+        tf = tb.text_frame
+        write(tf, wname, size=14.5, bold=True, color=wc, first=True,
+              align=PP_ALIGN.CENTER, line=1.0)
+        write(tf, wnum, size=10.5, color=INK_SOFT, align=PP_ALIGN.CENTER,
+              line=1.05)
+        xc -= cw
+        # دوره
+        cw = cols[1][1]
+        tb = textbox(s, xc - cw, y, cw, rh - Inches(0.06),
+                     anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, fa(era), size=12.5, color=INK_SOFT, first=True,
+              align=PP_ALIGN.CENTER, line=1.05)
+        xc -= cw
+        # مکتب
+        cw = cols[2][1]
+        tb = textbox(s, xc - cw + Inches(0.12), y, cw - Inches(0.24),
+                     rh - Inches(0.06), anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, school, size=13, bold=True, color=INK,
+              first=True, align=PP_ALIGN.RIGHT, line=1.16)
+        xc -= cw
+        # نگاه به انسان
+        cw = cols[3][1]
+        tb = textbox(s, xc - cw + Inches(0.10), y, cw - Inches(0.20),
+                     rh - Inches(0.06), anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, human, size=13, color=INK, first=True,
+              align=PP_ALIGN.CENTER, line=1.12)
+        xc -= cw
+        # شیوه توسعه
+        cw = cols[4][1]
+        tb = textbox(s, xc - cw + Inches(0.12), y, cw - Inches(0.24),
+                     rh - Inches(0.06), anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, dev, size=12.5, color=INK_SOFT, first=True,
+              align=PP_ALIGN.RIGHT, line=1.14)
+        xc -= cw
+        # جایگاه ما — قرص وضعیت
+        cw = cols[5][1]
+        pw = cw - Inches(0.42)
+        ph = Inches(0.42)
+        px = xc - cw + Inches(0.21)
+        py = y + (rh - Inches(0.06) - ph) / 2
+        if style == "solid":
+            rect(s, px, py, pw, ph, fill=scol,
+                 shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.42)
+            tcol = WHITE
+        else:
+            rect(s, px, py, pw, ph, fill=WHITE, line=scol, line_w=Pt(1.5),
+                 shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.42)
+            tcol = scol
+        tb = textbox(s, px, py, pw, ph, anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, status, size=12.5, bold=True, color=tcol,
+              first=True, align=PP_ALIGN.CENTER, line=1.0)
+        y += rh
+
+    # جمع‌بندی
+    by = y + Inches(0.10)
+    bh = Inches(0.74)
+    rect(s, M, by, CONTENT_W, bh, fill=NAVY,
+         shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.12)
+    rect(s, SW - M - Inches(0.09), by, Inches(0.09), bh, fill=ORANGE)
+    tb = textbox(s, M + Inches(0.30), by, CONTENT_W - Inches(0.60),
+                 bh, anchor=MSO_ANCHOR.MIDDLE)
+    write(tb.text_frame,
+          [("پیام جدول:  ", True, ORANGE, 15),
+           ("ما با سبک مدیریت موج دوم، می‌خواهیم در محیط موج چهارم رقابت کنیم. "
+            "ستون «شیوه توسعه افراد» کوتاه‌ترین راه عبور است.",
+            False, WHITE, 16)],
+          first=True, line=1.22)
+
+    footer(s, 7, TOTAL, label=LABEL)
+    notes(s, """
+    این اسلاید، جمع‌بندی بصری کل بخش اول است؛ اگر وقت کم بود، همین یکی را کامل بگویید.
+    سه ستون سمت راست، «تاریخ» را می‌گوید و سه ستون سمت چپ، «تکلیف ما» را.
+    روی ستون «نگاه به انسان» مکث کنید: از بازوی کار تا سرمایه اصلی.
+    نکته کلیدی: سازمان نمی‌تواند از موج دوم مستقیم به موج پنجم بپرد،
+    ولی ستون «شیوه توسعه افراد» را می‌تواند از همین امروز جلو ببرد —
+    و این دقیقاً همان کاری است که در بخش دوم جلسه دنبال می‌کنیم.
+    اگر پرسیدند «چرا موج ۴ فقط پایلوت است؟» بگویید: ابزار دیجیتال خریده‌ایم،
+    ولی سبک تصمیم‌گیری هنوز موج دومی است.
+    """)
+    return s
+
+
+# ════════════════ ۸ — موج چهارم: صنعت دیجیتال و داده ════════════════════
+def i08(prs, cfg):
     s = blank(prs)
     p, sz = img("w4-digital.jpg")
     full_bleed(s, p, sz)
@@ -539,7 +694,7 @@ def i07(prs, cfg):
 
 
 # ═════════════ ۸ — موج پنجم: انسان‌محوری، تاب‌آوری، پایداری ═════════════
-def i08(prs, cfg):
+def i09(prs, cfg):
     s = base_slide(prs, PAPER)
     head(s, "موج پنجم: بازگشت انسان به مرکز",
          kicker="موج پنجم  ·  از ۲۰۲۱ — کمیسیون اروپا")
@@ -604,7 +759,7 @@ def i08(prs, cfg):
     write(tf, "یعنی می‌شود از همین امروز شروع کرد — بدون بودجه ارزی.",
           size=15, color=INK_SOFT, space_before=5, line=1.22)
 
-    footer(s, 8, TOTAL, label=LABEL)
+    footer(s, 9, TOTAL, label=LABEL)
     notes(s, """
     موج پنجم (Industry 5.0) را کمیسیون اروپا در ۲۰۲۱ رسمی کرد:
     صنعتِ انسان‌محور، تاب‌آور و پایدار.
@@ -615,7 +770,7 @@ def i08(prs, cfg):
 
 
 # ═══════════════════ ۹ — ما کجای این نقشه ایستاده‌ایم؟ ═══════════════════
-def i09(prs, cfg):
+def i10(prs, cfg):
     s = blank(prs)
     p, sz = img("w1-refinery.jpg")
     full_bleed(s, p, sz)
@@ -679,7 +834,7 @@ def i09(prs, cfg):
 
 
 # ═══════════════════════ ۸ — نشانه‌های ماندن در موج دوم ═════════════════
-def i10(prs, cfg):
+def i11(prs, cfg):
     s = base_slide(prs, PAPER)
     head(s, "نشانه‌های ماندن در موج دوم", kicker="این‌ها را می‌شناسید؟")
 
@@ -726,7 +881,7 @@ def i10(prs, cfg):
           size=18, bold=True, color=NAVY, first=True, align=PP_ALIGN.CENTER,
           line=1.25)
 
-    footer(s, 10, TOTAL, label=LABEL)
+    footer(s, 11, TOTAL, label=LABEL)
     notes(s, """
     از مخاطب بپرسید کدام مورد را بیشتر می‌بینند و رأی‌گیری دستی کنید.
     این مشارکت، مقاومت را کم می‌کند چون خودشان تشخیص را تأیید کرده‌اند.
@@ -735,7 +890,7 @@ def i10(prs, cfg):
 
 
 # ══════════════════════════ ۹ — مسیر گذار به موج سوم ════════════════════
-def i11(prs, cfg):
+def i12(prs, cfg):
     s = base_slide(prs, WHITE)
     head(s, "مسیر گذار به موج بالاتر",
          kicker="چهار گام، به ترتیب — از موج دوم به سوم، و آماده‌سازی برای چهارم و پنجم")
@@ -795,7 +950,7 @@ def i11(prs, cfg):
         write(tf, "ابزار: " + how, size=13, color=color, line=1.15)
         y += rh
 
-    footer(s, 11, TOTAL, label=LABEL)
+    footer(s, 12, TOTAL, label=LABEL)
     notes(s, """
     ترتیب گام‌ها مهم است. اگر مدیری پرسید چرا از ساختار شروع نمی‌کنیم،
     بگویید: ساختار جدید با رفتار قدیمی، همان سازمان قبلی است با نمودار نو.
@@ -804,7 +959,7 @@ def i11(prs, cfg):
 
 
 # ═════════════════════ ۱۰ — از توسعه فردی تا سازمانی ════════════════════
-def i12(prs, cfg):
+def i13(prs, cfg):
     s = base_slide(prs, PAPER)
     head(s, "چرا توسعه فردی، مقدمه توسعه سازمانی است",
          kicker="سه حلقه به‌هم‌پیوسته")
@@ -875,7 +1030,7 @@ def i12(prs, cfg):
                               (value, True, color, 16)], first=True,
               align=PP_ALIGN.CENTER, line=1.1)
 
-    footer(s, 12, TOTAL, label=LABEL)
+    footer(s, 13, TOTAL, label=LABEL)
     notes(s, """
     این اسلاید پل بخش اول به بخش دوم است.
     جمله انتقال: «حالا برویم سراغ ابزاری که این حلقه اول را می‌سازد.»
@@ -884,7 +1039,7 @@ def i12(prs, cfg):
 
 
 # ════════════════════ ۱۱ — پل به بخش دوم: منتورینگ گروهی ════════════════
-def i13(prs, cfg):
+def i14(prs, cfg):
     s = blank(prs)
     p, sz = img("01-hands-together.jpg")
     full_bleed(s, p, sz)
@@ -942,7 +1097,7 @@ def i13(prs, cfg):
 
 # ═════════════════════════════════════ ساخت و اجرا ══════════════════════
 INTRO_BUILDERS = [i01, i02, i03, i04, i05, i06, i07, i08, i09, i10,
-                  i11, i12, i13]
+                  i11, i12, i13, i14]
 
 
 def _load_mentoring():
