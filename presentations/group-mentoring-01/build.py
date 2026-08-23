@@ -13,6 +13,8 @@ from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
 from pptx.enum.shapes import MSO_SHAPE
 from PIL import Image
 
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "_lib"))
 import theme as T
 from theme import (
     NAVY, NAVY_DEEP, BLUE_MID, BLUE_LIGHT, BLUE_PALE, ORANGE, ORANGE_DEEP,
