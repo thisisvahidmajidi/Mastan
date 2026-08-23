@@ -38,8 +38,8 @@ from theme import (
 
 IMG = os.path.join(HERE, "img")
 
-INTRO_N = 11          # تعداد اسلایدهای بخش مقدمه
-TOTAL = 30            # کل اسلایدهای ارائه ترکیبی
+INTRO_N = 13          # تعداد اسلایدهای بخش مقدمه
+TOTAL = 32            # کل اسلایدهای ارائه ترکیبی
 LABEL = "توسعه سازمانی"
 
 # ═══════════════════════ وصله‌کردن پاورقی برای شماره‌گذاری پیوسته ═══════
@@ -315,63 +315,70 @@ def i04(prs, cfg):
 # ══════════════════════════════ ۵ — سه موج تمدنی ════════════════════════
 def i05(prs, cfg):
     s = base_slide(prs, PAPER)
-    head(s, "سه موجی که تمدن را ساخته‌اند", kicker="آلوین تافلر، ۱۹۸۰")
+    head(s, "پنج موجی که تمدن را ساخته‌اند", kicker="از تافلر تا امروز")
 
     waves = [
-        ("موج اول", "کشاورزی", "۸۰۰۰ ق.م تا ۱۷۵۰", "زمین",
-         ["نیروی کار: عضله انسان و دام", "واحد کار: خانواده و روستا",
-          "دانش: سینه‌به‌سینه"], GREEN, GREEN_PALE),
-        ("موج دوم", "صنعتی", "۱۷۵۰ تا ۱۹۵۰", "ماشین",
-         ["نیروی کار: کارگر متخصص", "واحد کار: کارخانه و سلسله‌مراتب",
-          "دانش: در دستورالعمل"], BLUE_MID, BLUE_PALE),
-        ("موج سوم", "دانش", "۱۹۵۰ تا امروز", "مغز",
-         ["نیروی کار: کارکن دانشی", "واحد کار: تیم و شبکه",
-          "دانش: سرمایه اصلی"], ORANGE, ORANGE_PALE),
+        ("۱", "کشاورزی", "۸۰۰۰ ق.م ـ ۱۷۵۰", "زمین",
+         ["عضله انسان و دام", "خانواده و روستا", "دانش سینه‌به‌سینه"],
+         GREEN, GREEN_PALE),
+        ("۲", "صنعتی", "۱۷۵۰ ـ ۱۹۵۰", "ماشین",
+         ["کارگر متخصص", "کارخانه و سلسله‌مراتب", "دانش در دستورالعمل"],
+         BLUE_MID, BLUE_PALE),
+        ("۳", "دانش", "۱۹۵۰ ـ ۲۰۱۰", "مغز",
+         ["کارکن دانشی", "تیم و شبکه", "دانش، سرمایه اصلی"],
+         PURPLE, T.RGBColor(0xF6, 0xEF, 0xFA)),
+        ("۴", "دیجیتال", "۲۰۱۱ ـ ۲۰۲۰", "داده",
+         ["هوش مصنوعی و اینترنت اشیا", "سیستم‌های خودتنظیم",
+          "تصمیم مبتنی بر داده"], BLUE_LIGHT, BLUE_PALE),
+        ("۵", "انسان‌محور", "۲۰۲۱ ـ آینده", "معنا",
+         ["همکاری انسان و ماشین", "تاب‌آوری و پایداری",
+          "خِرد جمعی"], ORANGE, ORANGE_PALE),
     ]
-    gap = Inches(0.30)
-    cw = (CONTENT_W - 2 * gap) / 3
-    y = Inches(1.66)
-    ch = Inches(3.42)
-    for i, (tag, name, era, driver, items, color, pale) in enumerate(waves):
+    gap = Inches(0.20)
+    cw = (CONTENT_W - 4 * gap) / 5
+    y = Inches(1.64)
+    ch = Inches(3.46)
+    for i, (num, name, era, driver, items, color, pale) in enumerate(waves):
         x = SW - M - cw - i * (cw + gap)
         card(s, x, y, cw, ch, fill=WHITE, line=LINE)
-        rect(s, x, y, cw, Inches(1.06), fill=color,
+        rect(s, x, y, cw, Inches(1.10), fill=color,
              shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.10)
-        rect(s, x, y + Inches(0.90), cw, Inches(0.16), fill=color)
-        tb = textbox(s, x + Inches(0.18), y + Inches(0.08), cw - Inches(0.36),
-                     Inches(0.92), anchor=MSO_ANCHOR.MIDDLE)
-        write(tb.text_frame, [(tag + "  ·  ", False, WHITE, 13.5),
-                              (name, True, WHITE, 22)], first=True,
-              align=PP_ALIGN.CENTER, line=1.05)
-        write(tb.text_frame, era, size=13, color=WHITE,
-              align=PP_ALIGN.CENTER, line=1.15)
+        rect(s, x, y + Inches(0.94), cw, Inches(0.16), fill=color)
+        tb = textbox(s, x + Inches(0.10), y + Inches(0.08), cw - Inches(0.20),
+                     Inches(0.96), anchor=MSO_ANCHOR.MIDDLE)
+        write(tb.text_frame, "موج " + num, size=13, color=WHITE, first=True,
+              align=PP_ALIGN.CENTER, line=1.0)
+        write(tb.text_frame, name, size=19, bold=True, color=WHITE,
+              align=PP_ALIGN.CENTER, line=1.1)
+        write(tb.text_frame, era, size=11.5, color=WHITE,
+              align=PP_ALIGN.CENTER, line=1.1)
 
-        db = rect(s, x + (cw - Inches(1.55)) / 2, y + Inches(1.24),
-                  Inches(1.55), Inches(0.50), fill=pale,
+        db = rect(s, x + Inches(0.16), y + Inches(1.28), cw - Inches(0.32),
+                  Inches(0.46), fill=pale,
                   shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.24)
         dtf = db.text_frame
         dtf.vertical_anchor = MSO_ANCHOR.MIDDLE
-        write(dtf, "موتور: " + driver, size=14, bold=True, color=color,
-              first=True, align=PP_ALIGN.CENTER, line=1.0)
+        write(dtf, driver, size=14, bold=True, color=color, first=True,
+              align=PP_ALIGN.CENTER, line=1.0)
 
         yy = y + Inches(1.92)
         for it in items:
-            bx = textbox(s, x + Inches(0.22), yy, cw - Inches(0.44),
-                         Inches(0.46))
-            write(bx.text_frame, it, size=14.5, color=INK, first=True,
-                  align=PP_ALIGN.CENTER, line=1.2)
-            yy += Inches(0.48)
+            bx = textbox(s, x + Inches(0.13), yy, cw - Inches(0.26),
+                         Inches(0.48))
+            write(bx.text_frame, it, size=13, color=INK, first=True,
+                  align=PP_ALIGN.CENTER, line=1.18)
+            yy += Inches(0.50)
 
-    band(s, Inches(5.32),
+    band(s, Inches(5.30),
          [("نکته کلیدی:  ", True, ORANGE, 17),
           ("در هر موج، ", False, WHITE, 19.5),
           ("شیوه مدیریت", True, ORANGE, 19.5),
           (" هم عوض شد — چون منبع اصلی ارزش عوض شده بود.", False, WHITE, 19.5)],
          h=Inches(0.84), size=19.5)
 
-    fb = textbox(s, M, Inches(6.32), CONTENT_W, Inches(0.46))
+    fb = textbox(s, M, Inches(6.30), CONTENT_W, Inches(0.46))
     write(fb.text_frame,
-          "امواج حذف نمی‌شوند؛ روی هم می‌افتند. امروز هر سه موج هم‌زمان در جریان‌اند.",
+          "امواج حذف نمی‌شوند؛ روی هم می‌افتند. سازمان ما هم‌زمان تکه‌هایی از چند موج را دارد.",
           size=15.5, color=INK_SOFT, first=True, align=PP_ALIGN.CENTER,
           line=1.2)
 
@@ -392,8 +399,9 @@ def i06(prs, cfg):
     # نوار زمانی بالا
     bar_y = Inches(1.62)
     bar_h = Inches(0.34)
-    segs = [(0.16, "موج اول", GREEN), (0.40, "موج دوم", BLUE_MID),
-            (0.44, "موج سوم", ORANGE)]
+    segs = [(0.15, "موج اول", GREEN), (0.34, "موج دوم", BLUE_MID),
+            (0.29, "موج سوم", PURPLE), (0.13, "چهارم", BLUE_LIGHT),
+            (0.09, "پنجم", ORANGE)]
     xcur = SW - M
     for frac, name, color in segs:
         w = CONTENT_W * frac
@@ -416,17 +424,23 @@ def i06(prs, cfg):
             ("نظریه X و Y — مک‌گرگور ۱۹۶۰", "دو نگاه به انگیزه کارکنان"),
             ("نگرش سیستمی و اقتضایی ۱۹۷۰", "یک نسخه برای همه وجود ندارد"),
         ]),
-        (ORANGE, ORANGE_PALE, "۱۹۸۰ تا امروز", [
+        (PURPLE, T.RGBColor(0xF6, 0xEF, 0xFA), "۱۹۸۰ تا ۲۰۱۰", [
             ("مدیریت کیفیت جامع ۱۹۸۰", "بهبود مستمر، مشارکت همه"),
             ("سازمان یادگیرنده — سنگه ۱۹۹۰", "یادگیری، مزیت رقابتی پایدار"),
-            ("مدیریت دانش — نوناکا ۱۹۹۵", "تبدیل تجربه ضمنی به دانش سازمانی"),
+            ("مدیریت دانش — نوناکا ۱۹۹۵", "تجربه ضمنی، دانش سازمانی می‌شود"),
             ("سازمان چابک ۲۰۰۱", "تیم‌های کوچک، چرخه کوتاه"),
-            ("رهبری مربی‌گرا ۲۰۱۰+", "مدیر به‌جای دستور، سؤال می‌پرسد"),
-            ("تیم‌های خودگردان", "تصمیم نزدیک به محل کار"),
+            ("رهبری مربی‌گرا", "مدیر به‌جای دستور، سؤال می‌پرسد"),
+        ]),
+        (ORANGE, ORANGE_PALE, "۲۰۱۱ تا امروز", [
+            ("سازمان داده‌محور ۲۰۱۱", "تصمیم بر پایه داده، نه حدس"),
+            ("هولاکراسی و تیم خودگردان", "اختیار توزیع‌شده"),
+            ("رهبری تاب‌آور ۲۰۲۰", "مدیریت در بحران و عدم‌قطعیت"),
+            ("مدیریت انسان‌محور ۲۰۲۱", "رفاه کارکنان، هم‌تراز با بهره‌وری"),
+            ("پایداری و مسئولیت", "سود، در کنار محیط زیست و جامعه"),
         ]),
     ]
-    gap = Inches(0.24)
-    widths = [Inches(2.55), Inches(4.75), Inches(4.75)]
+    gap = Inches(0.20)
+    widths = [Inches(1.95), Inches(3.55), Inches(3.30), Inches(3.30)]
     y = Inches(2.16)
     ch = Inches(4.06)
     xcur = SW - M
@@ -464,8 +478,144 @@ def i06(prs, cfg):
     return s
 
 
-# ═══════════════════ ۷ — ما کجای این نقشه ایستاده‌ایم؟ ═══════════════════
+# ════════════════ ۷ — موج چهارم: صنعت دیجیتال و داده ════════════════════
 def i07(prs, cfg):
+    s = blank(prs)
+    p, sz = img("w4-digital.jpg")
+    full_bleed(s, p, sz)
+    scrim_gradient(s, 0, 0, SW, SH, angle=0, a_from=0.18, a_to=0.94)
+    scrim(s, 0, 0, SW, SH, alpha=0.26)
+
+    kb = textbox(s, M, Inches(0.50), CONTENT_W, Inches(0.40))
+    write(kb.text_frame, "موج چهارم  ·  از ۲۰۱۱ تا امروز", size=15.5,
+          bold=True, color=ORANGE, first=True, line=1.0)
+    tb = textbox(s, M, Inches(0.90), CONTENT_W, Inches(0.66))
+    write(tb.text_frame, "صنعت دیجیتال: وقتی ماشین‌ها حرف می‌زنند", size=31,
+          bold=True, color=WHITE, first=True, line=1.05)
+    hline(s, SW - M - Inches(1.2), Inches(1.64), Inches(1.2), ORANGE, Pt(4.5))
+
+    tw = Inches(7.6)
+    tx = SW - M - tw
+    items = [
+        ("موتور محرک", "داده و اتصال — اینترنت اشیا، هوش مصنوعی"),
+        ("در نفت و گاز", "دوقلوی دیجیتال، نگهداشت پیش‌بین، پایش برخط چاه"),
+        ("منطق تصمیم", "از «تجربه می‌گوید» به «داده نشان می‌دهد»"),
+        ("نقش انسان", "کمتر اپراتور، بیشتر تحلیل‌گر"),
+    ]
+    y = Inches(2.02)
+    rh = Inches(0.86)
+    for i, (label, desc) in enumerate(items):
+        rect(s, tx, y, tw, rh - Inches(0.08), fill=WHITE, alpha=0.12,
+             shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.10)
+        rect(s, tx + tw - Inches(0.08), y, Inches(0.08), rh - Inches(0.08),
+             fill=BLUE_LIGHT)
+        lb = textbox(s, tx + tw - Inches(2.35), y, Inches(2.10),
+                     rh - Inches(0.08), anchor=MSO_ANCHOR.MIDDLE)
+        write(lb.text_frame, label, size=16.5, bold=True, color=BLUE_LIGHT,
+              first=True, align=PP_ALIGN.RIGHT, line=1.05)
+        db = textbox(s, tx + Inches(0.28), y, tw - Inches(2.75),
+                     rh - Inches(0.08), anchor=MSO_ANCHOR.MIDDLE)
+        write(db.text_frame, desc, size=17, color=WHITE, first=True, line=1.15)
+        y += rh
+
+    rect(s, tx, Inches(5.66), tw, Inches(1.10), fill=NAVY,
+         shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.10)
+    rect(s, tx + tw - Inches(0.09), Inches(5.66), Inches(0.09), Inches(1.10),
+         fill=ORANGE)
+    fb = textbox(s, tx + Inches(0.30), Inches(5.66), tw - Inches(0.60),
+                 Inches(1.10), anchor=MSO_ANCHOR.MIDDLE)
+    write(fb.text_frame,
+          [("هشدار مهم:  ", True, ORANGE, 16),
+           ("دیجیتالی‌کردن یک سازمانِ موج دومی، فقط کاغذبازی را سریع‌تر می‌کند — نه هوشمندتر.",
+            False, WHITE, 18)],
+          first=True, line=1.22)
+
+    notes(s, """
+    موج چهارم همان «انقلاب صنعتی چهارم» یا Industry 4.0 است (از ۲۰۱۱).
+    نکته کلیدی برای مدیران: خرید نرم‌افزار و سنسور، به‌تنهایی گذار نیست.
+    اگر تصمیم‌گیری همچنان متمرکز و سلسله‌مراتبی بماند، داده فقط انبار می‌شود.
+    """)
+    return s
+
+
+# ═════════════ ۸ — موج پنجم: انسان‌محوری، تاب‌آوری، پایداری ═════════════
+def i08(prs, cfg):
+    s = base_slide(prs, PAPER)
+    head(s, "موج پنجم: بازگشت انسان به مرکز",
+         kicker="موج پنجم  ·  از ۲۰۲۱ — کمیسیون اروپا")
+
+    pw = Inches(4.30)
+    photo_card(s, M, Inches(1.66), pw, Inches(2.72), "w5-human.jpg",
+               caption="انسان و ماشین، در کنار هم — نه به‌جای هم")
+
+    card(s, M, Inches(4.54), pw, Inches(2.24), fill=NAVY, line=None)
+    rect(s, M + pw - Inches(0.09), Inches(4.54), Inches(0.09), Inches(2.24),
+         fill=ORANGE)
+    tb = textbox(s, M + Inches(0.26), Inches(4.76), pw - Inches(0.55),
+                 Inches(1.85))
+    tf = tb.text_frame
+    write(tf, "تفاوت با موج چهارم", size=14.5, bold=True, color=ORANGE,
+          first=True, line=1.0)
+    write(tf, "موج چهارم می‌پرسد: چطور کارخانه را کارآمدتر کنیم؟",
+          size=15, color=BLUE_PALE, space_before=8, line=1.26)
+    write(tf, "موج پنجم می‌پرسد: چطور کار را انسانی‌تر، تاب‌آورتر و پایدارتر کنیم؟",
+          size=15.5, bold=True, color=WHITE, space_before=6, line=1.26)
+
+    tx = M + pw + Inches(0.42)
+    tw = SW - M - tx
+    pillars = [
+        ("۱", "انسان‌محوری", "فناوری در خدمت آدم‌ها، نه جایگزین آن‌ها",
+         ORANGE, ORANGE_PALE),
+        ("۲", "تاب‌آوری", "توان بازگشت سریع پس از بحران و تحریم",
+         BLUE_MID, BLUE_PALE),
+        ("۳", "پایداری", "مسئولیت زیست‌محیطی و کاهش انتشار", GREEN, GREEN_PALE),
+    ]
+    y = Inches(1.66)
+    rh = Inches(1.16)
+    for num, title, desc, color, pale in pillars:
+        rect(s, tx, y, tw, rh - Inches(0.10), fill=pale,
+             shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.11)
+        rect(s, tx + tw - Inches(0.09), y, Inches(0.09), rh - Inches(0.10),
+             fill=color)
+        nb = rect(s, tx + tw - Inches(0.88), y + Inches(0.29), Inches(0.46),
+                  Inches(0.46), fill=color, shape=MSO_SHAPE.OVAL)
+        ntf = nb.text_frame
+        ntf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        write(ntf, num, size=16, bold=True, color=WHITE, first=True,
+              align=PP_ALIGN.CENTER, line=1.0)
+        bx = textbox(s, tx + Inches(0.28), y, tw - Inches(1.26),
+                     rh - Inches(0.10), anchor=MSO_ANCHOR.MIDDLE)
+        write(bx.text_frame, title, size=20.5, bold=True, color=color,
+              first=True, line=1.05)
+        write(bx.text_frame, desc, size=15, color=INK_SOFT, line=1.18)
+        y += rh
+
+    ky = Inches(5.20)
+    rect(s, tx, ky, tw, Inches(1.58), fill=WHITE,
+         shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.11, line=ORANGE,
+         line_w=Pt(1.75))
+    kb = textbox(s, tx + Inches(0.28), ky + Inches(0.16), tw - Inches(0.56),
+                 Inches(1.26))
+    tf = kb.text_frame
+    write(tf, "خبر خوب برای ما", size=14.5, bold=True, color=ORANGE_DEEP,
+          first=True, line=1.0)
+    write(tf, "موج پنجم بیش از آنکه به فناوری گران نیاز داشته باشد، به فرهنگ یادگیری و اعتماد نیاز دارد.",
+          size=16.5, bold=True, color=NAVY, space_before=7, line=1.28)
+    write(tf, "یعنی می‌شود از همین امروز شروع کرد — بدون بودجه ارزی.",
+          size=15, color=INK_SOFT, space_before=5, line=1.22)
+
+    footer(s, 8, TOTAL, label=LABEL)
+    notes(s, """
+    موج پنجم (Industry 5.0) را کمیسیون اروپا در ۲۰۲۱ رسمی کرد:
+    صنعتِ انسان‌محور، تاب‌آور و پایدار.
+    پیام کلیدی: موج پنجم جایگزین چهارم نیست؛ لایه ارزشی روی آن است.
+    برای سازمان ما این خبر خوبی است — چون نقطه ورودش فرهنگ است، نه سرمایه.
+    """)
+    return s
+
+
+# ═══════════════════ ۹ — ما کجای این نقشه ایستاده‌ایم؟ ═══════════════════
+def i09(prs, cfg):
     s = blank(prs)
     p, sz = img("w1-refinery.jpg")
     full_bleed(s, p, sz)
@@ -516,8 +666,8 @@ def i07(prs, cfg):
                  Inches(1.06), anchor=MSO_ANCHOR.MIDDLE)
     write(fb.text_frame,
           [("جمع‌بندی صادقانه:  ", True, WHITE, 16),
-           ("یک پای ما در موج دوم است و یک پا در موج سوم — و این حالت، پرهزینه‌ترین وضعیت است.",
-            False, WHITE, 18)],
+           ("بدنه سازمان در موج دوم است، با جزیره‌هایی از موج سوم و چهارم — و این ناهم‌ترازی، پرهزینه‌ترین وضعیت است.",
+            False, WHITE, 17)],
           first=True, line=1.2)
 
     notes(s, """
@@ -529,7 +679,7 @@ def i07(prs, cfg):
 
 
 # ═══════════════════════ ۸ — نشانه‌های ماندن در موج دوم ═════════════════
-def i08(prs, cfg):
+def i10(prs, cfg):
     s = base_slide(prs, PAPER)
     head(s, "نشانه‌های ماندن در موج دوم", kicker="این‌ها را می‌شناسید؟")
 
@@ -576,7 +726,7 @@ def i08(prs, cfg):
           size=18, bold=True, color=NAVY, first=True, align=PP_ALIGN.CENTER,
           line=1.25)
 
-    footer(s, 8, TOTAL, label=LABEL)
+    footer(s, 10, TOTAL, label=LABEL)
     notes(s, """
     از مخاطب بپرسید کدام مورد را بیشتر می‌بینند و رأی‌گیری دستی کنید.
     این مشارکت، مقاومت را کم می‌کند چون خودشان تشخیص را تأیید کرده‌اند.
@@ -585,9 +735,10 @@ def i08(prs, cfg):
 
 
 # ══════════════════════════ ۹ — مسیر گذار به موج سوم ════════════════════
-def i09(prs, cfg):
+def i11(prs, cfg):
     s = base_slide(prs, WHITE)
-    head(s, "مسیر گذار به موج بالاتر", kicker="چهار گام، به ترتیب")
+    head(s, "مسیر گذار به موج بالاتر",
+         kicker="چهار گام، به ترتیب — از موج دوم به سوم، و آماده‌سازی برای چهارم و پنجم")
 
     pw = Inches(4.55)
     photo_card(s, M, Inches(1.66), pw, Inches(2.62), "w2-control.jpg",
@@ -644,7 +795,7 @@ def i09(prs, cfg):
         write(tf, "ابزار: " + how, size=13, color=color, line=1.15)
         y += rh
 
-    footer(s, 9, TOTAL, label=LABEL)
+    footer(s, 11, TOTAL, label=LABEL)
     notes(s, """
     ترتیب گام‌ها مهم است. اگر مدیری پرسید چرا از ساختار شروع نمی‌کنیم،
     بگویید: ساختار جدید با رفتار قدیمی، همان سازمان قبلی است با نمودار نو.
@@ -653,7 +804,7 @@ def i09(prs, cfg):
 
 
 # ═════════════════════ ۱۰ — از توسعه فردی تا سازمانی ════════════════════
-def i10(prs, cfg):
+def i12(prs, cfg):
     s = base_slide(prs, PAPER)
     head(s, "چرا توسعه فردی، مقدمه توسعه سازمانی است",
          kicker="سه حلقه به‌هم‌پیوسته")
@@ -724,7 +875,7 @@ def i10(prs, cfg):
                               (value, True, color, 16)], first=True,
               align=PP_ALIGN.CENTER, line=1.1)
 
-    footer(s, 10, TOTAL, label=LABEL)
+    footer(s, 12, TOTAL, label=LABEL)
     notes(s, """
     این اسلاید پل بخش اول به بخش دوم است.
     جمله انتقال: «حالا برویم سراغ ابزاری که این حلقه اول را می‌سازد.»
@@ -733,7 +884,7 @@ def i10(prs, cfg):
 
 
 # ════════════════════ ۱۱ — پل به بخش دوم: منتورینگ گروهی ════════════════
-def i11(prs, cfg):
+def i13(prs, cfg):
     s = blank(prs)
     p, sz = img("01-hands-together.jpg")
     full_bleed(s, p, sz)
@@ -790,7 +941,8 @@ def i11(prs, cfg):
 
 
 # ═════════════════════════════════════ ساخت و اجرا ══════════════════════
-INTRO_BUILDERS = [i01, i02, i03, i04, i05, i06, i07, i08, i09, i10, i11]
+INTRO_BUILDERS = [i01, i02, i03, i04, i05, i06, i07, i08, i09, i10,
+                  i11, i12, i13]
 
 
 def _load_mentoring():
