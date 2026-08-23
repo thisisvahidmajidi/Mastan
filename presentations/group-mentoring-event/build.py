@@ -471,13 +471,14 @@ def s06(prs, cfg):
          fill=BLUE_MID, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.30)
     lb = textbox(s, tx + Inches(0.28) + bar_w * 0.10, bar_y, bar_w * 0.90,
                  bar_h, anchor=MSO_ANCHOR.MIDDLE)
-    write(lb.text_frame, "۹۰٪ روی کلاس و دوره", size=14, bold=True, color=WHITE,
+    write(lb.text_frame, "عمدتاً روی کلاس و دوره", size=14, bold=True, color=WHITE,
           first=True, align=PP_ALIGN.CENTER, line=1.0)
 
     nb = textbox(s, tx + Inches(0.28), by + Inches(1.16), bar_w, Inches(0.42))
     write(nb.text_frame,
-          [("یعنی ", False, INK_SOFT, 15.5), ("۹۰٪", True, RED, 15.5),
-           (" بودجه، روی ", False, INK_SOFT, 15.5), ("۱۰٪", True, RED, 15.5),
+          [("یعنی ", False, INK_SOFT, 15.5),
+           ("بخش عمده بودجه", True, RED, 15.5),
+           ("، روی ", False, INK_SOFT, 15.5), ("۱۰٪", True, RED, 15.5),
            (" یادگیری. منتورینگ گروهی سراغ آن ", False, INK_SOFT, 15.5),
            ("۲۰٪ رهاشده", True, ORANGE_DEEP, 15.5), (" می‌رود.", False, INK_SOFT, 15.5)],
           first=True, line=1.15)
