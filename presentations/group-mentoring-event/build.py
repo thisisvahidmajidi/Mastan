@@ -176,15 +176,28 @@ def s01(prs, cfg):
     write(tf, "چرا این کار را می‌کنیم، چیست، چطور اجرا می‌شود",
           size=19, color=BLUE_PALE, space_before=20, line=1.3)
 
-    hline(s, tx + tw - Inches(3.2), Inches(5.78), Inches(3.2), BLUE_LIGHT,
+    hline(s, tx + tw - Inches(3.2), Inches(5.52), Inches(3.2), BLUE_LIGHT,
           Pt(1.25))
-    mb = textbox(s, tx, Inches(6.00), tw, Inches(0.9))
+    mb = textbox(s, tx, Inches(5.72), tw, Inches(0.62))
     write(mb.text_frame,
-          [("تاریخ:  ", False, BLUE_LIGHT, 15.5), (cfg.date, True, WHITE, 15.5),
-           ("        تسهیل‌گر:  ", False, BLUE_LIGHT, 15.5),
-           (cfg.presenter, True, WHITE, 15.5)], first=True, line=1.2)
-    write(mb.text_frame, cfg.org, size=13, color=BLUE_LIGHT, space_before=5,
-          line=1.2)
+          [("تهیه و تنظیم:  ", False, BLUE_LIGHT, 15.5),
+           (cfg.presenter, True, WHITE, 19)], first=True, line=1.15)
+
+    db = textbox(s, tx, Inches(6.30), tw, Inches(0.40))
+    write(db.text_frame,
+          [("تاریخ:  ", False, BLUE_LIGHT, 14), (cfg.date, True, WHITE, 14),
+           ("        ", False, BLUE_LIGHT, 14),
+           (cfg.org, False, BLUE_LIGHT, 14)], first=True, line=1.15)
+
+    # آدرس سایت، در نوار نارنجی گوشه پایین
+    site_w = Inches(2.62)
+    site_h = Inches(0.46)
+    rect(s, tx + tw - site_w, Inches(6.76), site_w, site_h, fill=ORANGE,
+         shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.22)
+    sb = textbox(s, tx + tw - site_w, Inches(6.76), site_w, site_h,
+                 anchor=MSO_ANCHOR.MIDDLE)
+    write(sb.text_frame, "www.coachroom.ir", size=15, bold=True, color=WHITE,
+          first=True, align=PP_ALIGN.CENTER, line=1.0)
 
     notes(s, """
     صندلی‌ها را دایره‌ای بچینید و خودتان هم روی یکی از آن‌ها بنشینید.
@@ -1176,6 +1189,13 @@ def s20(prs, cfg):
     write(tf, "بهترین زمان برای شروع، الان است.", size=20, color=ORANGE,
           align=PP_ALIGN.CENTER, line=1.25)
 
+    # امضای تهیه‌کننده و آدرس سایت
+    sig = textbox(s, M, Inches(6.86), CONTENT_W, Inches(0.40))
+    write(sig.text_frame,
+          [(cfg.presenter, True, WHITE, 14), ("     |     ", False, ORANGE, 14),
+           ("www.coachroom.ir", True, ORANGE, 14)],
+          first=True, align=PP_ALIGN.CENTER, line=1.0)
+
     notes(s, """
     نگویید «سؤالی نیست؟». بگویید «چه کسی می‌خواهد نفر اول باشد؟» و
     خودتان دستتان را بالا ببرید تا اولین داوطلب راحت‌تر بلند شود.
@@ -1206,7 +1226,7 @@ def main():
         HERE, "رویداد-منتورینگ-گروهی.pptx"))
     ap.add_argument("--font", default="IRANSans")
     ap.add_argument("--date", default="[تاریخ]")
-    ap.add_argument("--presenter", default="[نام تسهیل‌گر]")
+    ap.add_argument("--presenter", default="وحید مجیدی")
     ap.add_argument("--org", default="[نام واحد / سازمان]")
     ap.add_argument("--first-session", dest="first_session", default="[تاریخ]")
     ap.add_argument("--time", default="[ساعت]")
