@@ -238,6 +238,73 @@ class Coachroom_OD_Helpers {
 	}
 
 	/**
+	 * Expanded assessment question bank.
+	 *
+	 * Three targeted questions per dimension improves signal quality. Every question
+	 * maps to one of the ten dimensions; answers are aggregated so role/unit profiles
+	 * stay comparable while the detail is preserved for analysis.
+	 *
+	 * @return array
+	 */
+	public static function questions() {
+		return array(
+			array( 'key' => 'formalization_q1', 'dimension' => 'formalization', 'label' => 'آیا رویه‌های سازمان کوتاه، روشن و قابل اجرا هستند؟', 'weight' => 1.0 ),
+			array( 'key' => 'formalization_q2', 'dimension' => 'formalization', 'label' => 'آیا تغییر یک رویه به‌سرعت و بدون توقف طولانی انجام می‌شود؟', 'weight' => 1.0 ),
+			array( 'key' => 'formalization_q3', 'dimension' => 'formalization', 'label' => 'آیا قوانین به کارکنان فضای استقلال کافی در چارچوب اصول می‌دهند؟', 'weight' => 1.0 ),
+
+			array( 'key' => 'centralization_q1', 'dimension' => 'centralization', 'label' => 'تصمیم‌های عملیاتی عمدتاً در کدام سطح گرفته می‌شوند؟', 'weight' => 1.2 ),
+			array( 'key' => 'centralization_q2', 'dimension' => 'centralization', 'label' => 'سرپرستان چقدر اختیار تصمیم‌گیری بدون ارجاع به بالا دارند؟', 'weight' => 1.2 ),
+			array( 'key' => 'centralization_q3', 'dimension' => 'centralization', 'label' => 'میزان ارجاع کارهای روزمره به مدیران عالی چقدر است؟', 'weight' => 1.2 ),
+
+			array( 'key' => 'complexity_q1', 'dimension' => 'complexity', 'label' => 'برای انجام یک کار ساده چند لایه/واحد باید درگیر شود؟', 'weight' => 1.0 ),
+			array( 'key' => 'complexity_q2', 'dimension' => 'complexity', 'label' => 'هماهنگی بین‌واحدی چقدر روان و کم‌هزینه است؟', 'weight' => 1.0 ),
+			array( 'key' => 'complexity_q3', 'dimension' => 'complexity', 'label' => 'سیلوهای سازمانی چقدر مانع اشتراک اطلاعات می‌شوند؟', 'weight' => 1.0 ),
+
+			array( 'key' => 'active_listening_q1', 'dimension' => 'active_listening', 'label' => 'در جلسات تیمی، حرف اعضا قطع می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'active_listening_q2', 'dimension' => 'active_listening', 'label' => 'پیش از پاسخ دادن، پیام طرف مقابل خلاصه و تأیید می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'active_listening_q3', 'dimension' => 'active_listening', 'label' => 'کارکنان احساس می‌کنند مدیرشان واقعاً آن‌ها را می‌شنود؟', 'weight' => 1.4 ),
+
+			array( 'key' => 'questioning_q1', 'dimension' => 'questioning', 'label' => 'در تصمیم‌گیری‌ها به‌جای جواب آماده، سؤال باز مطرح می‌شود؟', 'weight' => 1.3 ),
+			array( 'key' => 'questioning_q2', 'dimension' => 'questioning', 'label' => 'ایده‌های جایگزین و راه‌های متفاوت به‌راحتی مطرح می‌شوند؟', 'weight' => 1.3 ),
+			array( 'key' => 'questioning_q3', 'dimension' => 'questioning', 'label' => '«چرا» و «چه می‌شد اگر» بخشی از فرهنگ سازمان است؟', 'weight' => 1.3 ),
+
+			array( 'key' => 'feedback_q1', 'dimension' => 'feedback', 'label' => 'بازخورد عملکرد به‌صورت منظم (نه فقط پایان سال) داده می‌شود؟', 'weight' => 1.5 ),
+			array( 'key' => 'feedback_q2', 'dimension' => 'feedback', 'label' => 'بازخورد مبتنی بر شواهد است و از قضاوت شخصی پرهیز می‌شود؟', 'weight' => 1.5 ),
+			array( 'key' => 'feedback_q3', 'dimension' => 'feedback', 'label' => 'کارکنان می‌توانند به مدیر بازخورد دوسویه و امن بدهند؟', 'weight' => 1.5 ),
+
+			array( 'key' => 'performance_eval_q1', 'dimension' => 'performance_eval', 'label' => 'ارزیابی عملکرد بر اساس داده، شاخص و شواهد است؟', 'weight' => 1.3 ),
+			array( 'key' => 'performance_eval_q2', 'dimension' => 'performance_eval', 'label' => 'معیارهای ارزیابی برای همه شفاف و از پیش اعلام‌شده است؟', 'weight' => 1.3 ),
+			array( 'key' => 'performance_eval_q3', 'dimension' => 'performance_eval', 'label' => 'نتیجه ارزیابی به توسعه فردی، جبران منصفانه و مربی‌گری وصل می‌شود؟', 'weight' => 1.3 ),
+
+			array( 'key' => 'psychological_safety_q1', 'dimension' => 'psychological_safety', 'label' => 'اعلام خطا بدون ترس از تنبیه یا تمسخر ممکن است؟', 'weight' => 1.4 ),
+			array( 'key' => 'psychological_safety_q2', 'dimension' => 'psychological_safety', 'label' => 'مخالفت محترمانه با نظر مدیر در جلسات پذیرفته می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'psychological_safety_q3', 'dimension' => 'psychological_safety', 'label' => 'کارکنان به‌جای سکوت، نگرانی‌های خود را مطرح می‌کنند؟', 'weight' => 1.4 ),
+
+			array( 'key' => 'learning_culture_q1', 'dimension' => 'learning_culture', 'label' => 'پس از پروژه‌ها، درس‌آموخته‌ها جمع‌آوری و مستند می‌شود؟', 'weight' => 1.2 ),
+			array( 'key' => 'learning_culture_q2', 'dimension' => 'learning_culture', 'label' => 'دانش و تجربه بین واحدها به‌راحتی جریان دارد؟', 'weight' => 1.2 ),
+			array( 'key' => 'learning_culture_q3', 'dimension' => 'learning_culture', 'label' => 'یادگیری بخشی از کار روزمره است، نه یک دوره اجباری؟', 'weight' => 1.2 ),
+
+			array( 'key' => 'coaching_culture_q1', 'dimension' => 'coaching_culture', 'label' => 'سرپرستان به‌جای دستور، سؤال مربیگری می‌پرسند؟', 'weight' => 1.4 ),
+			array( 'key' => 'coaching_culture_q2', 'dimension' => 'coaching_culture', 'label' => 'جلسه ۱:۱ منظم بین سرپرست و اعضا برگزار می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'coaching_culture_q3', 'dimension' => 'coaching_culture', 'label' => 'سرپرستان مهارت گوش فعال، پرسش‌گری و بازخورد مؤثر دارند؟', 'weight' => 1.4 ),
+		);
+	}
+
+	/**
+	 * Question level descriptor (same four-point scale for every question).
+	 *
+	 * @return array
+	 */
+	public static function question_options() {
+		return array(
+			1 => 'وضعیت ضعیف / بوروکراتیک',
+			2 => 'در حال بهبود',
+			3 => 'مناسب / هم‌آفرین',
+			4 => 'پیشرو / یادگیرنده',
+		);
+	}
+
+	/**
 	 * Wave / maturity model.
 	 *
 	 * @return array
@@ -491,10 +558,12 @@ class Coachroom_OD_Helpers {
 	public static function okr_data( $score_map ) {
 		$catalog  = self::okr_catalog();
 		$items    = array();
+		$target_wave = absint( get_option( 'cr_od_target_wave', 3 ) );
+		$threshold   = self::target_threshold( $target_wave );
 
 		foreach ( $catalog as $slug => $okr ) {
 			$score = isset( $score_map[ $slug ] ) ? (float) $score_map[ $slug ] : 1.0;
-			$gap   = max( 0, round( self::target_threshold( 3 ) - $score, 2 ) );
+			$gap   = max( 0, round( $threshold - $score, 2 ) );
 			if ( $gap <= 0.45 ) {
 				continue;
 			}
@@ -524,8 +593,17 @@ class Coachroom_OD_Helpers {
 	 * @param array $roles       Role groups.
 	 * @return array
 	 */
-	public static function okr_systemic( $score_map, $departments, $roles ) {
-		$okrs      = self::okr_data( $score_map );
+	public static function okr_systemic( $score_map, $departments, $roles, $strategy = array() ) {
+		$okrs = self::okr_data( $score_map );
+
+		// The coaching-oriented OKR is only included when the maturity data supports it.
+		// If the organization is not ready yet, coaching is deferred to a later cycle.
+		if ( ! empty( $strategy ) && empty( $strategy['coaching_recommended'] ) ) {
+			$okrs = array_values( array_filter( $okrs, function ( $item ) {
+				return 'coaching_culture' !== $item['slug'];
+			} ) );
+		}
+
 		$top_dept  = array();
 		$top_role  = array();
 
@@ -553,6 +631,205 @@ class Coachroom_OD_Helpers {
 			'focus_unit' => $top_dept,
 			'focus_role' => $top_role,
 			'cycle'    => '۹۰ روزه',
+		);
+	}
+
+	/**
+	 * Strategy catalog for contingency-based organizational development.
+	 *
+	 * The supervisor-to-coach strategy is intentionally NOT forced. It is selected
+	 * only when the assessed maturity profile (safety, listening and structure gates)
+	 * shows the organization is ready for coaching-led change.
+	 *
+	 * @return array
+	 */
+	public static function strategies() {
+		return array(
+			'safety_learning' => array(
+				'code'        => 'safety_learning',
+				'title'       => 'ایجاد امنیت روانی و یادگیری از خطا',
+				'phase'       => 'پیش‌نیاز',
+				'gate'        => 'safety',
+				'why'         => 'وقتی ترس از خطا و سرزنش زیاد است، هیچ برنامه مربی‌گری یا بازخوردی نمی‌تواند واقعاً اجرا شود.',
+				'actions'     => array(
+					'اعلام صریح مدیریت: «خطای گزارش‌شده تنبیه ندارد»',
+					'برگزاری جلسات بدون سرزنش و تشویق به مطرح‌کردن نگرانی',
+					'استقرار جلسه AAR و بانک درس‌آموخته در پروژه‌ها',
+				),
+				'kpi'     => 'افزایش نمره امنیت روانی و نرخ گزارش خطا',
+				'owner'   => 'مدیران ارشد + HR + واحد بهبود',
+			),
+			'structure_simplification' => array(
+				'code'        => 'structure_simplification',
+				'title'       => 'ساده‌سازی ساختار و واگذاری تصمیم',
+				'phase'       => 'درمان ساختاری',
+				'gate'        => 'structure',
+				'why'         => 'وقتی رسمیت، تمرکز یا پیچیدگی ضعیف است، ابتدا باید ساختار سبک‌تر شود تا تغییرات رفتاری ممکن شوند.',
+				'actions'     => array(
+					'بازنگری رویه‌ها به «حداقل قوانین قابل اعتماد»',
+					'منشور اختیار تصمیم برای سرپرستان و ماتریس RACI',
+					'شروع تیم‌های چندتخصصی برای شکستن سیلوها',
+				),
+				'kpi'     => 'کاهش زمان تصویب تغییرات و ارجاع‌ها',
+				'owner'   => 'معاونت توسعه سازمانی + مدیران واحدها',
+			),
+			'feedback_performance' => array(
+				'code'        => 'feedback_performance',
+				'title'       => 'استقرار بازخورد و ارزیابی داده‌محور',
+				'phase'       => 'سنجش و شفافیت',
+				'gate'        => 'performance',
+				'why'         => 'بدون بازخورد منظم و سنجش شفاف، نمی‌توان بهبود را اندازه گرفت یا به افراد کمک کرد.',
+				'actions'     => array(
+					'اجرای فرمت بازخورد SBI و جلسات ۱:۱ منظم',
+					'تعریف OKR/KPI و داشبورد عملکرد',
+					'ایجاد کمیته کالیبراسیون برای عدالت ارزیابی',
+				),
+				'kpi'     => 'نرخ اجرای جلسات بازخورد و شفافیت سنجه‌ها',
+				'owner'   => 'HR + مدیران میانی + واحد بهبود',
+			),
+			'network_innovation' => array(
+				'code'        => 'network_innovation',
+				'title'       => 'شبکه‌سازی و تیم‌های وابسته‌به‌هم',
+				'phase'       => 'ساختار هم‌آفرین',
+				'gate'        => 'network',
+				'why'         => 'وقتی پیچیدگی و سیلوها مانع همکاری است اما بازخورد و امنیت نسبی وجود دارد، شبکه‌سازی مؤثرترین اقدام است.',
+				'actions'     => array(
+					'تشکیل تیم‌های چندتخصصی پروژه‌محور',
+					'رابط‌های شبکه‌ای به‌جای ارجاع سلسله‌مراتبی',
+					'جلسات مشترک حل‌مسئله واحدهای عملیاتی و پشتیبانی',
+				),
+				'kpi'     => 'کاهش زمان هماهنگی بین‌واحدی',
+				'owner'   => 'مدیران پروژه + برنامه‌ریزی',
+			),
+			'coaching_supervisors' => array(
+				'code'        => 'coaching_supervisors',
+				'title'       => 'ارتقای نقش سرپرستان به مربیان عملکردی',
+				'phase'       => 'مربیگری (در صورت آمادگی)',
+				'gate'        => 'coaching',
+				'why'         => 'این راهبرد زمانی انتخاب می‌شود که امنیت روانی، شنیدن فعال و ساختار به اندازه کافی آماده باشند؛ در غیر این صورت صرفاً یک اقدام زودهنگام و پرریسک خواهد بود.',
+				'actions'     => array(
+					'برنامه ۹۰ روزه تربیت سرپرست به مربی',
+					'جلسه ۱:۱ هفتگی با پرسش‌های GROW و بازخورد SBI',
+					'سنجش ماهانه مهارت مربیگری و تعدیل برنامه',
+				),
+				'kpi'     => 'افزایش نمره مهارت مربیگری سرپرستان',
+				'owner'   => 'مدیر توسعه سازمانی + سرپرستان',
+			),
+			'learning_sustainability' => array(
+				'code'        => 'learning_sustainability',
+				'title'       => 'یادگیری مستمر و توسعه پایدار (ESG)',
+				'phase'       => 'تعالی بلندمدت',
+				'gate'        => 'sustainability',
+				'why'         => 'وقتی شاخص‌های پایه بهبود یابند، سازمان می‌تواند به یادگیری پیوسته، به‌زیستی و شاخص‌های پایداری بپردازد.',
+				'actions'     => array(
+					'جریان‌سازی دانش و AAR در همه پروژه‌ها',
+					'تعیین شاخص‌های ESG، تاب‌آوری و به‌زیستی',
+					'استقرار چرخه PDCA و جلسات یادگیری ربع‌سال',
+				),
+				'kpi'     => 'آمادگی برای موج چهارم/پنجم و شاخص‌های ESG',
+				'owner'   => 'هیئت توسعه سازمانی + واحد پایداری',
+			),
+		);
+	}
+
+	/**
+	 * Determine the appropriate strategy set based on the assessed maturity profile.
+	 *
+	 * @param array $score_map slug => score.
+	 * @param array $departments Department rows.
+	 * @param array $roles       Role rows.
+	 * @return array
+	 */
+	public static function strategy_data( $score_map, $departments, $roles ) {
+		$strategies = self::strategies();
+
+		$g = function ( $key ) use ( $score_map ) {
+			return isset( $score_map[ $key ] ) ? (float) $score_map[ $key ] : 1.0;
+		};
+		$avg = function ( $keys ) use ( $g ) {
+			$s = 0;
+			foreach ( $keys as $k ) {
+				$s += $g( $k );
+			}
+			return round( $s / count( $keys ), 2 );
+		};
+
+		$safety_gate   = $g( 'psychological_safety' ) >= 2.5;
+		$listening_gate = $avg( array( 'active_listening', 'questioning', 'feedback' ) ) >= 2.2;
+		$structure_gate = $avg( array( 'formalization', 'centralization', 'complexity' ) ) >= 2.0;
+		$performance_gate = $avg( array( 'feedback', 'performance_eval' ) ) >= 2.2;
+		$network_gate   = $avg( array( 'complexity', 'centralization' ) ) >= 2.0 && $safety_gate;
+		$coaching_gate  = $g( 'coaching_culture' ) <= 2.8 && $safety_gate && $listening_gate && $structure_gate;
+		$sustainability_gate = $safety_gate && $performance_gate && $avg( array( 'learning_culture', 'performance_eval' ) ) >= 2.4;
+
+		$selected = array();
+		$phases   = array();
+
+		if ( ! $safety_gate ) {
+			$selected[] = $strategies['safety_learning'];
+			$phases[]   = 'ph1';
+		}
+		if ( ! $structure_gate ) {
+			$selected[] = $strategies['structure_simplification'];
+			$phases[]   = 'ph2';
+		} elseif ( $g( 'complexity' ) < 2.8 && $network_gate ) {
+			$selected[] = $strategies['network_innovation'];
+			$phases[]   = 'ph2b';
+		}
+		if ( ! $performance_gate ) {
+			$selected[] = $strategies['feedback_performance'];
+			$phases[]   = 'ph3';
+		}
+		if ( $coaching_gate ) {
+			$selected[] = $strategies['coaching_supervisors'];
+			$phases[]   = 'ph4';
+		}
+		if ( $sustainability_gate && count( $selected ) <= 3 ) {
+			$selected[] = $strategies['learning_sustainability'];
+			$phases[]   = 'ph5';
+		}
+
+		$coaching_recommended = $coaching_gate;
+		$coaching_reason      = '';
+
+		if ( ! $coaching_gate ) {
+			if ( ! $safety_gate ) {
+				$coaching_reason = 'امنیت روانی هنوز زیر آستانه ۲.۵ است؛ ابتدا راهبرد «ایمنی و یادگیری» اجرا شود.';
+			} elseif ( ! $listening_gate ) {
+				$coaching_reason = 'میانگین گوش دادن فعال، پرسش‌گری و بازخورد زیر آستانه ۲.۲ است؛ ابتدا زیرساخت گفت‌وگو و بازخورد تقویت شود.';
+			} elseif ( ! $structure_gate ) {
+				$coaching_reason = 'ساختار هنوز بسیار متمرکز/رسمی است؛ پیش از مربیگری، ساختار ساده و تصمیم‌ها واگذار شوند.';
+			} else {
+				$coaching_reason = 'نمره فرهنگ مربیگری به محدوده هدف نزدیک است؛ تمرکز فعلی بر تثبیت سایر شاخص‌ها و سپس ارزیابی دوره بعد قرار گیرد.';
+			}
+		} else {
+			$coaching_reason = 'آمادگی سازمان برای مربی‌گری سرپرستان تأیید شد؛ این راهبرد در این شرایط مؤثرترین گام است.';
+		}
+
+		// Add readiness summary line.
+		$maturity_text = $coaching_gate
+			? 'سازمان در مرحله‌ای است که توسعه رفتاری (مربی‌گری) می‌تواند محور اصلی برنامه باشد.'
+			: 'سازمان هنوز در شرایط پیش‌نیاز است؛ ابتدا باید شاخص‌های «امنیت روانی / ساختار / بازخورد» بهبود یابند تا مربی‌گری مؤثر واقع شود.';
+
+		return array(
+			'maturity_profile' => array(
+				'safety_gate'      => $safety_gate,
+				'listening_gate'   => $listening_gate,
+				'structure_gate'   => $structure_gate,
+				'performance_gate' => $performance_gate,
+				'network_gate'     => $network_gate,
+				'coaching_gate'    => $coaching_gate,
+				'sustainability_gate' => $sustainability_gate,
+				'safety_gate_score'   => $g( 'psychological_safety' ),
+				'listening_gate_score'=> $avg( array( 'active_listening', 'questioning', 'feedback' ) ),
+				'structure_gate_score'=> $avg( array( 'formalization', 'centralization', 'complexity' ) ),
+				'performance_gate_score'=> $avg( array( 'feedback', 'performance_eval' ) ),
+			),
+			'selected' => array_slice( $selected, 0, 4 ),
+			'phases'   => $phases,
+			'maturity_text' => $maturity_text,
+			'coaching_recommended' => $coaching_recommended,
+			'coaching_reason'      => $coaching_reason,
 		);
 	}
 
@@ -651,7 +928,7 @@ class Coachroom_OD_Helpers {
 				$weaknesses[] = array(
 					'label'  => $dim['label'],
 					'score'  => $score,
-					'text'   => 'شاخص اثرگذار بر موج سازمانی است و با راهبرد مربی‌گری سرپرستان در اولویت قرار می‌گیرد.',
+					'text'   => 'شاخص اثرگذار بر موج سازمانی است؛ اولویت آن بر اساس بلوغ فعلی در نقشه راه تطبیقی تعیین شده است.',
 				);
 			}
 		}
@@ -664,8 +941,18 @@ class Coachroom_OD_Helpers {
 		$target_wave = $summary['target_wave'];
 		$gap_text    = $summary['target_gap'];
 
-		$summary_text = 'بر اساس ارزیابی ثبت‌شده، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
-			. 'ضعیف‌ترین شاخص‌ها عمدتاً به فرهنگ مربی‌گری، بازخورد، ارزیابی داده‌محور و پرسش‌گری مربوط است؛ بنابراین راهبرد «ارتقای سرپرستان به مربیان عملکردی» به‌همراه اصلاح ساختار رسمیت، تمرکز و پیچیدگی، منطبق با کرایتریای منابع انسانی و فرایندها در EFQM توصیه می‌شود.';
+		$strategy = self::strategy_data( $score_map, array(), array() );
+		$strategy_titles = array();
+		foreach ( (array) $strategy['selected'] as $st ) {
+			$strategy_titles[] = isset( $st['title'] ) ? $st['title'] : '';
+		}
+		$strategy_text = $strategy_titles ? implode( '؛ ', array_slice( $strategy_titles, 0, 3 ) ) : 'ارتقای مستمر شاخص‌ها';
+		$coach_line = $strategy['coaching_recommended']
+			? 'بر اساس آستانه‌های آمادگی (امنیت روانی، شنیدن فعال و ساختار)، راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» در این دوره مؤثر است.'
+			: ( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : '' );
+
+		$summary_text = 'بر اساس ارزیابی ۳۰ سؤالی ثبت‌شده، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
+			. 'راهبردهای متناسب با بلوغ فعلی: ' . $strategy_text . '. ' . $coach_line;
 
 		$efqm_roadmap = array(
 			array(
@@ -922,7 +1209,7 @@ class Coachroom_OD_Helpers {
 		$departments = array();
 		foreach ( $by_department as $name => $dept ) {
 			$group   = self::normalize_group( $dept );
-			$dept_avg = $group['overall'];
+			$dept_avg = $group['weighted'];
 			$departments[] = array(
 				'name'    => $dept['name'],
 				'overall' => $dept_avg,
@@ -939,7 +1226,7 @@ class Coachroom_OD_Helpers {
 		$roles = array();
 		foreach ( $by_role as $name => $role ) {
 			$group   = self::normalize_group( $role );
-			$role_avg = $group['overall'];
+			$role_avg = $group['weighted'];
 			$roles[] = array(
 				'name'    => $role['name'],
 				'overall' => $role_avg,
@@ -1037,8 +1324,16 @@ class Coachroom_OD_Helpers {
 		);
 
 		$efqm    = self::efqm_data( $score_map );
+		$strategy = self::strategy_data( $score_map, $departments, $roles );
 		$analysis = self::analysis_data( $score_map, $summary, $efqm );
-		$okr      = self::okr_systemic( $score_map, $departments, $roles );
+		$okr      = self::okr_systemic( $score_map, $departments, $roles, $strategy );
+
+		// A premature coaching recommendation must not appear while readiness gates are unmet.
+		if ( empty( $strategy['coaching_recommended'] ) ) {
+			$recommendations = array_values( array_filter( $recommendations, function ( $rec ) {
+				return 'coaching_culture' !== $rec['slug'];
+			} ) );
+		}
 
 		return array(
 			'config'         => self::config(),
@@ -1051,6 +1346,7 @@ class Coachroom_OD_Helpers {
 			'efqm'           => $efqm,
 			'analysis'       => $analysis,
 			'okr'            => $okr,
+			'strategy'       => $strategy,
 		);
 	}
 

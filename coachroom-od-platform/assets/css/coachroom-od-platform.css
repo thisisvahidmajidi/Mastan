@@ -111,6 +111,17 @@
 .cr-od-option.is-selected{border-color:var(--cr-primary-2);background:rgba(13,148,136,.08)}
 .cr-od-option.is-selected span{background:var(--cr-primary-2);color:#fff;border-color:var(--cr-primary-2)}
 
+.cr-od-q-count{font-size:11px;font-weight:700;color:var(--cr-primary);background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.25);padding:3px 9px;border-radius:99px}
+.cr-od-sub-question{border-top:1px dashed var(--cr-line);padding:14px 0 4px;margin-top:6px}
+.cr-od-sub-question:first-of-type{border-top:0;margin-top:0}
+.cr-od-question-text{font-size:13.5px;font-weight:700;color:var(--cr-dark);margin-bottom:10px;line-height:1.75}
+.cr-od-question-text .cr-od-qq{font-weight:700}
+.cr-od-sub-question .cr-od-levels{gap:8px}
+.cr-od-sub-question .cr-od-option{padding:9px 8px 10px;background:#fff}
+.cr-od-sub-question .cr-od-option small{min-height:0;font-size:10.5px;line-height:1.45}
+
+.cr-od-strategy-note{background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.28);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:13.5px;color:var(--cr-dark);line-height:1.85}
+
 .cr-od-form-submit{display:flex;align-items:center;gap:16px;margin-top:8px}
 .cr-od-form-status{font-size:14px;font-weight:700}
 .cr-od-form-status.ok{color:#0f766e}

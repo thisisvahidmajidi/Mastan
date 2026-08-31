@@ -60,10 +60,52 @@ class Coachroom_OD_Ajax {
 			$dept = 'نامشخص';
 		}
 
+		$questions  = array();
 		$dimensions = array();
+		$dim_sums   = array();
+		$dim_counts = array();
 
-		// New batch format: dimensions = [{ "slug": "...", "score": 3 }, ...].
-		if ( isset( $_POST['dimensions'] ) ) {
+		// New batch format: questions = [{ "dimension":"...", "question_key":"...",
+		// "question_label":"...", "score":3 }, ...].
+		if ( isset( $_POST['questions'] ) ) {
+			$raw          = wp_unslash( $_POST['questions'] );
+			$decoded      = json_decode( $raw, true );
+			if ( is_array( $decoded ) ) {
+				foreach ( $decoded as $item ) {
+					if ( ! is_array( $item ) ) {
+						continue;
+					}
+					$slug = isset( $item['slug'] ) && '' !== trim( (string) $item['slug'] )
+						? Coachroom_OD_Helpers::sanitize_slug( $item['slug'] )
+						: ( isset( $item['dimension'] ) ? Coachroom_OD_Helpers::sanitize_slug( $item['dimension'] ) : '' );
+					$qkey = isset( $item['question_key'] ) ? Coachroom_OD_Helpers::sanitize_slug( $item['question_key'] ) : '';
+					$qlabel = isset( $item['question_label'] ) ? sanitize_text_field( $item['question_label'] ) : '';
+					$score = isset( $item['score'] ) ? max( 1, min( 4, (float) $item['score'] ) ) : 0;
+					if ( in_array( $slug, $allowed, true ) && $score >= 1 && ! empty( $qkey ) ) {
+						$questions[] = array(
+							'dimension'      => $slug,
+							'question_key'   => $qkey,
+							'question_label' => $qlabel ? $qlabel : $slug,
+							'score'          => $score,
+						);
+						if ( ! isset( $dim_sums[ $slug ] ) ) {
+							$dim_sums[ $slug ]   = 0;
+							$dim_counts[ $slug ] = 0;
+						}
+						$dim_sums[ $slug ]   += $score;
+						$dim_counts[ $slug ] += 1;
+					}
+				}
+			}
+		}
+
+		// Dimension scores are a clean arithmetic mean of their question scores.
+		foreach ( $dim_sums as $slug => $sum ) {
+			$dimensions[ $slug ] = round( $sum / max( 1, $dim_counts[ $slug ] ), 2 );
+		}
+
+		// Backward-compatible dimensions-only format.
+		if ( empty( $questions ) && isset( $_POST['dimensions'] ) ) {
 			$raw          = wp_unslash( $_POST['dimensions'] );
 			$decoded      = json_decode( $raw, true );
 			if ( is_array( $decoded ) ) {
@@ -102,35 +144,81 @@ class Coachroom_OD_Ajax {
 
 			$responses = Coachroom_OD_DB::table( 'responses' );
 			$weights   = Coachroom_OD_Helpers::weights();
+			$wpdb      = $GLOBALS['wpdb'];
 
-			foreach ( $dimensions as $dimension => $score ) {
-				// Replace only the previous answer of the SAME role + department + dimension.
-				// Different roles/units are preserved so every role's result stays in the analysis.
-				$wpdb = $GLOBALS['wpdb'];
-				$wpdb->delete(
-					$responses,
-					array(
-						'cycle_id'     => $cycle_id,
-						'dimension'    => $dimension,
-						'department'   => $dept,
-						'assessor_role'=> $role,
-					),
-					array( '%d', '%s', '%s', '%s' )
-				);
+			// Group questions by dimension so we can safely refresh the whole role/unit profile.
+			$by_dimension = array();
+			foreach ( $questions as $question ) {
+				$dim = $question['dimension'];
+				if ( ! isset( $by_dimension[ $dim ] ) ) {
+					$by_dimension[ $dim ] = array();
+				}
+				$by_dimension[ $dim ][] = $question;
+			}
 
-				Coachroom_OD_DB::insert_response(
-					array(
-						'cycle_id'      => $cycle_id,
-						'user_id'       => get_current_user_id(),
-						'organization'  => $organization,
-						'department'    => $dept,
-						'assessor_role' => $role,
-						'dimension'     => $dimension,
-						'score'         => $score,
-						'weight'        => isset( $weights[ $dimension ] ) ? $weights[ $dimension ] : 1,
-						'notes'         => $notes,
-					)
-				);
+			if ( $by_dimension ) {
+				foreach ( $by_dimension as $dimension => $items ) {
+					// Replace only the previous answer of the SAME role + department + dimension.
+					// Different roles/units are preserved so every role's result stays in the analysis.
+					$wpdb->delete(
+						$responses,
+						array(
+							'cycle_id'      => $cycle_id,
+							'dimension'     => $dimension,
+							'department'    => $dept,
+							'assessor_role' => $role,
+						),
+						array( '%d', '%s', '%s', '%s' )
+					);
+
+					foreach ( $items as $question ) {
+						Coachroom_OD_DB::insert_response(
+							array(
+								'cycle_id'      => $cycle_id,
+								'user_id'       => get_current_user_id(),
+								'organization'  => $organization,
+								'department'    => $dept,
+								'assessor_role' => $role,
+								'dimension'     => $dimension,
+								'question_key'  => $question['question_key'],
+								'question_label'=> $question['question_label'],
+								'score'         => $question['score'],
+								'weight'        => isset( $weights[ $dimension ] ) ? $weights[ $dimension ] : 1,
+								'notes'         => $notes,
+							)
+						);
+					}
+				}
+			} else {
+				// Backward-compatible path when only dimension scores are submitted.
+				foreach ( $dimensions as $dimension => $score ) {
+					$wpdb->delete(
+						$responses,
+						array(
+							'cycle_id'      => $cycle_id,
+							'dimension'     => $dimension,
+							'department'    => $dept,
+							'assessor_role' => $role,
+						),
+						array( '%d', '%s', '%s', '%s' )
+					);
+
+					Coachroom_OD_DB::insert_response(
+						array(
+							'cycle_id'      => $cycle_id,
+							'user_id'       => get_current_user_id(),
+							'organization'  => $organization,
+							'department'    => $dept,
+							'assessor_role' => $role,
+							'dimension'     => $dimension,
+							'question_key'  => 'dimension_' . $dimension,
+							'question_label'=> 'ارزیابی کلی ' . $dimension,
+							'score'         => $score,
+							'weight'        => isset( $weights[ $dimension ] ) ? $weights[ $dimension ] : 1,
+							'notes'         => $notes,
+						)
+					);
+				}
 			}
 
 			wp_send_json_success(

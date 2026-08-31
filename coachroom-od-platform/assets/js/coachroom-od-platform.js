@@ -8,6 +8,7 @@
     config: window.crODData.config || {},
     waves: window.crODData.waves || {},
     dimensions: window.crODData.dimensions || {},
+    questions: window.crODData.questions || [],
     data: window.crODData.data || { summary: {}, dimensions: [], departments: [], trend: [], recommendations: [] }
   };
 
@@ -17,6 +18,8 @@
   function getData() { return state.data || {}; }
   function getSummary() { return getData().summary || {}; }
   function getDims() { return getData().dimensions || []; }
+  function getQuestions() { return state.questions || []; }
+  function getStrategy() { return getData().strategy || {}; }
   function getDepts() { return getData().departments || []; }
   function getRoles() { return getData().roles || []; }
   function getTrendData() { return getData().trend || []; }
@@ -647,6 +650,49 @@
     }
   }
 
+  function refreshStrategy() {
+    var strategy = getStrategy() || {};
+    var selected = strategy.selected || [];
+    var buckets = { 30: [], 60: [], 90: [] };
+    selected.forEach(function (st) {
+      var gate = st.gate || '';
+      if (gate === 'safety' || gate === 'structure') { buckets['30'].push(st); }
+      else if (gate === 'performance' || gate === 'network') { buckets['60'].push(st); }
+      else { buckets['90'].push(st); }
+    });
+
+    var fallback = {
+      '30': '<li>نقشه راه مرحله ۳۰ بر اساس داده‌های پایه از همین فرم محاسبه می‌شود.</li>',
+      '60': '<li>راهبردهای شواهدمحور در این بازه بر اساس نتایج ارزیابی انتخاب می‌شوند.</li>',
+      '90': '<li>بازارزیابی شاخص‌ها، کمیته کالیبراسیون و بانک درس‌آموخته‌ها.</li>'
+    };
+
+    ['30', '60', '90'].forEach(function (phase) {
+      var el = document.getElementById('cr-roadmap-phase-' + phase);
+      if (!el) { return; }
+      var list = buckets[phase] || [];
+      if (!list.length) {
+        el.innerHTML = fallback[phase];
+        return;
+      }
+      el.innerHTML = list.map(function (st) {
+        var title = st.title || '';
+        var actions = (st.actions || []).slice(0, 2).join('، ');
+        return '<li>' + esc(title) + ': ' + esc(actions) + '</li>';
+      }).join('');
+    });
+
+    var note = document.getElementById('cr-strategy-note');
+    if (note) {
+      if (strategy.coaching_recommended) {
+        note.innerHTML = '<strong>سازمان در شرایط آمادگی برای مربی‌گری است؛ راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» فعال شده است.</strong>';
+      } else {
+        note.innerHTML = '<strong>راهبرد مربی‌گری فعال نشده است. ' + esc(strategy.coaching_reason || 'بر اساس بلوغ فعلی سازمان، ابتدا راهبردهای پیش‌نیاز اجرا شوند.') + '</strong>';
+      }
+    }
+    convertDigitsInside(note || document.getElementById('cr-od-root'));
+  }
+
   function updateAll() {
     refreshKpis();
     refreshLastSave();
@@ -660,6 +706,7 @@
     refreshEfqm();
     refreshAnalysis();
     refreshOkr();
+    refreshStrategy();
     drawAll();
     convertDigitsInside();
     enhanceGlossary(document.getElementById('cr-od-root'));
@@ -673,7 +720,8 @@
       'crRadarChart', 'crWaveChart', 'crSkillsChart', 'crDeptChart', 'crRoleChart', 'crTrendChart',
       'cr-od-assessment-form', 'cr-dept-tbody', 'cr-role-tbody', 'cr-role-dim-tbody',
       'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm',
-      'cr-okr-grid', 'cr-okr-roadmap', 'cr-report-okr', 'cr-report-okr-tbody'
+      'cr-okr-grid', 'cr-okr-roadmap', 'cr-report-okr', 'cr-report-okr-tbody',
+      'cr-strategy-note', 'cr-roadmap-phase-30', 'cr-roadmap-phase-60', 'cr-roadmap-phase-90'
     ];
     requiredIds.forEach(function (id) {
       if (!document.getElementById(id)) { issues.push('missing:' + id); }
@@ -682,6 +730,7 @@
     var s = getSummary();
     if (!s || typeof s !== 'object') { issues.push('summary'); }
     if (!Array.isArray(getDims()) || getDims().length < 10) { issues.push('dimensions'); }
+    if (!Array.isArray(getQuestions()) || getQuestions().length < 30) { issues.push('questions'); }
     if (!Array.isArray(getRoles())) { issues.push('roles'); }
     if (!Array.isArray(getDepts())) { issues.push('departments'); }
     if (!Array.isArray(getRecs())) { issues.push('recommendations'); }
@@ -754,7 +803,8 @@
     var body = new URLSearchParams();
     body.append('action', 'cr_od_save_response');
     body.append('nonce', nonce || '');
-    body.append('dimensions', JSON.stringify(payload));
+    body.append('questions', JSON.stringify(payload));
+    body.append('dimensions', JSON.stringify(payload.map(function (p) { return { slug: p.dimension, score: p.score }; })));
     body.append('department', department || 'نامشخص');
     body.append('assessor_role', role || 'کارمند');
     body.append('organization', state.config.org || '');
@@ -780,13 +830,40 @@
       var status = q('.cr-od-form-status', form);
       var missing = [];
       var payload = [];
+      var questions = getQuestions();
+      var dimensionFromSlug = {};
       Object.keys(state.dimensions || {}).forEach(function (slug) {
-        var checked = q('input[name="' + slug + '"]:checked', form);
-        if (!checked) { missing.push(state.dimensions[slug].label); }
-        else { payload.push({ slug: slug, score: Number(checked.value) }); }
+        dimensionFromSlug[slug] = slug;
       });
+
+      questions.forEach(function (q) {
+        var slug = q.dimension || '';
+        var key = q.key || '';
+        var name = key || slug;
+        var checked = form.querySelector('input[name="' + name + '"]:checked');
+        if (!checked) { missing.push(q.label || key); }
+        else {
+          payload.push({
+            dimension: slug,
+            question_key: key,
+            question_label: q.label || '',
+            score: Number(checked.value)
+          });
+        }
+      });
+
+      // Fallback: if for any reason question metadata is unavailable, still collect dimension-level radios.
+      if (!questions.length) {
+        Object.keys(state.dimensions || {}).forEach(function (slug) {
+          var checked = q('input[name="' + slug + '"]:checked', form);
+          if (!checked) { missing.push(state.dimensions[slug].label); }
+          else { payload.push({ dimension: slug, question_key: 'dimension_' + slug, question_label: 'ارزیابی کلی ' + state.dimensions[slug].label, score: Number(checked.value) }); }
+        });
+      }
+
       if (missing.length) {
-        if (status) { status.textContent = 'لطفاً ابتدا به همه شاخص‌ها پاسخ دهید: ' + esc(missing.join('، ')); status.className = 'cr-od-form-status err'; }
+        var missingText = missing.slice(0, 2).join('، ') + (missing.length > 2 ? (' و ' + (missing.length - 2) + ' مورد دیگر') : '');
+        if (status) { status.textContent = 'لطفاً ابتدا به همه سؤال‌ها پاسخ دهید: ' + esc(missingText); status.className = 'cr-od-form-status err'; }
         return;
       }
       var btn = q('button[type=submit]', form);
@@ -884,6 +961,7 @@
     refreshEfqm();
     refreshAnalysis();
     refreshOkr();
+    refreshStrategy();
     drawAll();
     enhanceGlossary(document.getElementById('cr-od-root'));
     convertDigitsInside();

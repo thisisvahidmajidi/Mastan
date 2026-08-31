@@ -57,6 +57,8 @@ class Coachroom_OD_DB {
 			department VARCHAR(190) NOT NULL DEFAULT '',
 			assessor_role VARCHAR(60) NOT NULL DEFAULT '',
 			dimension VARCHAR(60) NOT NULL,
+			question_key VARCHAR(120) NOT NULL DEFAULT '',
+			question_label VARCHAR(255) NOT NULL DEFAULT '',
 			score DECIMAL(5,2) NOT NULL DEFAULT 1.00,
 			weight DECIMAL(5,2) NOT NULL DEFAULT 1.00,
 			notes TEXT NULL,
@@ -64,6 +66,7 @@ class Coachroom_OD_DB {
 			PRIMARY KEY  (id),
 			KEY cycle_id (cycle_id),
 			KEY dimension (dimension),
+			KEY question_key (question_key),
 			KEY department (department)
 		) {$charset_collate};";
 
@@ -75,6 +78,40 @@ class Coachroom_OD_DB {
 			self::seed_demo_data();
 			update_option( 'cr_od_seeded_v1', 1 );
 		}
+
+		self::maybe_upgrade();
+	}
+
+	/**
+	 * Upgrade existing tables when the plugin is updated (adds question columns).
+	 */
+	public static function maybe_upgrade() {
+		global $wpdb;
+		$responses = self::table( 'responses' );
+		$cols      = array();
+		$found     = $wpdb->get_results( "SHOW COLUMNS FROM {$responses}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( $found ) {
+			foreach ( $found as $col ) {
+				$cols[ $col->Field ] = true;
+			}
+		}
+
+		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
+			update_option( 'cr_od_db_version', '1.5.0' );
+			return;
+		}
+
+		if ( ! isset( $cols['question_key'] ) ) {
+			$wpdb->query( "ALTER TABLE {$responses} ADD COLUMN question_key VARCHAR(120) NOT NULL DEFAULT '' AFTER dimension" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+		if ( ! isset( $cols['question_label'] ) ) {
+			$wpdb->query( "ALTER TABLE {$responses} ADD COLUMN question_label VARCHAR(255) NOT NULL DEFAULT '' AFTER question_key" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+		if ( ! isset( $cols['question_key'] ) || ! isset( $cols['question_label'] ) ) {
+			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+
+		update_option( 'cr_od_db_version', '1.5.0' );
 	}
 
 	/**
@@ -131,12 +168,14 @@ class Coachroom_OD_DB {
 				'department'    => isset( $data['department'] ) ? sanitize_text_field( $data['department'] ) : '',
 				'assessor_role' => isset( $data['assessor_role'] ) ? sanitize_text_field( $data['assessor_role'] ) : '',
 				'dimension'     => Coachroom_OD_Helpers::sanitize_slug( $data['dimension'] ),
+				'question_key'  => isset( $data['question_key'] ) ? Coachroom_OD_Helpers::sanitize_slug( $data['question_key'] ) : '',
+				'question_label'=> isset( $data['question_label'] ) ? sanitize_text_field( $data['question_label'] ) : '',
 				'score'         => isset( $data['score'] ) ? max( 1, min( 4, (float) $data['score'] ) ) : 1,
 				'weight'        => isset( $data['weight'] ) ? (float) $data['weight'] : 1,
 				'notes'         => isset( $data['notes'] ) ? sanitize_textarea_field( $data['notes'] ) : '',
 				'created_at'    => current_time( 'mysql' ),
 			),
-			array( '%d', '%d', '%s', '%s', '%s', '%s', '%f', '%f', '%s', '%s' )
+			array( '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%s', '%s' )
 		);
 		return (int) $wpdb->insert_id;
 	}
@@ -154,6 +193,7 @@ class Coachroom_OD_DB {
 
 		$dimensions = Coachroom_OD_Helpers::dimensions();
 		$weights    = Coachroom_OD_Helpers::weights();
+		$questions  = Coachroom_OD_Helpers::questions();
 
 		$cycle1 = self::create_cycle( 'دوره پایه — پاییز ۱۴۰۴', 'ارزیابی اولیه ساختار سازمانی' );
 		$cycle2 = self::create_cycle( 'دوره میانی — زمستان ۱۴۰۴', 'ارزیابی پس از شروع برنامه مربی‌گری سرپرستان' );
@@ -227,8 +267,13 @@ class Coachroom_OD_DB {
 				continue;
 			}
 			foreach ( $departments as $dept_name => $dept_adj ) {
-				foreach ( $dimensions as $slug => $dim ) {
-					$score = $base[ $slug ] + $dept_adj['base'] + ( isset( $dept_adj[ $slug ] ) ? $dept_adj[ $slug ] : 0 ) + $adjust;
+				foreach ( $questions as $q_index => $question ) {
+					$slug  = $question['dimension'];
+					$score = $base[ $slug ]
+						+ $dept_adj['base']
+						+ ( isset( $dept_adj[ $slug ] ) ? $dept_adj[ $slug ] : 0 )
+						+ $adjust
+						+ ( ( $q_index % 3 ) - 1 ) * 0.15;
 					$score = max( 1, min( 4, round( $score * 2 ) / 2 ) );
 					if ( 0 === $index % 3 ) {
 						$notes = 'شاخص‌های مشاهده‌ای از جلسات تیمی و نتایج ارزیابی عملکرد.';
@@ -243,8 +288,10 @@ class Coachroom_OD_DB {
 							'department'    => $dept_name,
 							'assessor_role' => $roles[ $index % count( $roles ) ],
 							'dimension'     => $slug,
+							'question_key'  => $question['key'],
+							'question_label'=> $question['label'],
 							'score'         => $score,
-							'weight'        => $weights[ $slug ],
+							'weight'        => isset( $weights[ $slug ] ) ? $weights[ $slug ] : 1,
 							'notes'         => $notes,
 						)
 					);
@@ -276,14 +323,21 @@ class Coachroom_OD_DB {
 			$c_count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$cycles}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
+		$question_columns = false;
+		if ( $responses_exist ) {
+			$columns = $wpdb->get_col( "SHOW COLUMNS FROM {$responses}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$question_columns = in_array( 'question_key', $columns, true ) && in_array( 'question_label', $columns, true );
+		}
+
 		$data = array(
-			'cycles_table'    => $cycles_exist,
-			'responses_table' => $responses_exist,
-			'rows'            => $rows,
-			'cycles'          => $c_count,
+			'cycles_table'       => $cycles_exist,
+			'responses_table'    => $responses_exist,
+			'question_columns'   => $question_columns,
+			'rows'               => $rows,
+			'cycles'             => $c_count,
 		);
 
-		if ( $cycles_exist && $responses_exist ) {
+		if ( $cycles_exist && $responses_exist && $question_columns ) {
 			$data['dashboard'] = Coachroom_OD_Helpers::dashboard_data();
 			$data['ok']        = true;
 		} else {

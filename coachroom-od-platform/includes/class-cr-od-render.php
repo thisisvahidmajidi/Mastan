@@ -42,10 +42,48 @@ class Coachroom_OD_Render {
 		wp_enqueue_style( 'cr-od-platform' );
 		wp_enqueue_script( 'cr-od-platform' );
 
-		$data   = Coachroom_OD_Helpers::dashboard_data();
-		$config = Coachroom_OD_Helpers::config();
-		$waves  = Coachroom_OD_Helpers::waves();
-		$dims   = Coachroom_OD_Helpers::dimensions();
+		$data      = Coachroom_OD_Helpers::dashboard_data();
+		$config     = Coachroom_OD_Helpers::config();
+		$waves      = Coachroom_OD_Helpers::waves();
+		$dims       = Coachroom_OD_Helpers::dimensions();
+		$questions  = Coachroom_OD_Helpers::questions();
+		$qopts      = Coachroom_OD_Helpers::question_options();
+		$strategy   = isset( $data['strategy'] ) ? $data['strategy'] : array();
+
+		$strategy_titles = array();
+		foreach ( (array) $strategy['selected'] as $st ) {
+			$strategy_titles[] = isset( $st['title'] ) ? $st['title'] : '';
+		}
+		$strategy_titles = array_slice( $strategy_titles, 0, 3 );
+		$coaching_rec = ! empty( $strategy['coaching_recommended'] );
+
+		// Weak dimensions (lowest scores) from the measured data, used for evidence-based reporting.
+		$weak_labels = array();
+		if ( ! empty( $data['analysis']['weaknesses'] ) ) {
+			foreach ( $data['analysis']['weaknesses'] as $weak ) {
+				$weak_labels[] = isset( $weak['label'] ) ? $weak['label'] : '';
+			}
+			$weak_labels = array_slice( $weak_labels, 0, 4 );
+		}
+
+		// Distribute selected strategies into the 30/60/90 day roadmap by their gate.
+		$road_phase1 = array();
+		$road_phase2 = array();
+		$road_phase3 = array();
+		if ( ! empty( $strategy['selected'] ) ) {
+			foreach ( $strategy['selected'] as $st ) {
+				$gate = isset( $st['gate'] ) ? $st['gate'] : '';
+				if ( 'safety' === $gate || 'structure' === $gate ) {
+					$road_phase1[] = $st;
+				} elseif ( 'performance' === $gate || 'network' === $gate ) {
+					$road_phase2[] = $st;
+				} elseif ( 'coaching' === $gate || 'sustainability' === $gate ) {
+					$road_phase3[] = $st;
+				} else {
+					$road_phase2[] = $st;
+				}
+			}
+		}
 
 		wp_localize_script(
 			'cr-od-platform',
@@ -56,6 +94,7 @@ class Coachroom_OD_Render {
 				'config'     => $config,
 				'waves'      => $waves,
 				'dimensions' => $dims,
+				'questions'  => $questions,
 				'data'       => $data,
 			)
 		);
@@ -74,7 +113,7 @@ class Coachroom_OD_Render {
 						<div class="cr-od-hero-text">
 							<div class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?></div>
 							<h1 class="cr-od-title">پلتفرم توسعه سازمانی <span><?php echo esc_html( $brand ); ?></span></h1>
-							<p class="cr-od-subtitle">از موج دوم بوروکراتیک به سازمان هم‌آفرین و یادگیرنده؛ ارزیابی داده‌محور ساختار، بازخورد، پرسش‌گری و نقشه راه مربی‌گری سرپرستان.</p>
+							<p class="cr-od-subtitle">از موج دوم بوروکراتیک به سازمان هم‌آفرین و یادگیرنده؛ ارزیابی داده‌محور ساختار، بازخورد، پرسش‌گری و انتخاب تطبیقی راهبردها (مربی‌گری سرپرستان در صورت آمادگی).</p>
 							<div class="cr-od-hero-meta">
 								<span><strong data-fa-num><?php echo esc_html( $data['summary']['responses'] ); ?></strong> ارزیابی ثبت‌شده</span>
 								<span><strong id="cr-cycle-title"><?php echo esc_html( $data['summary']['cycle_title'] ); ?></strong></span>
@@ -193,8 +232,8 @@ class Coachroom_OD_Render {
 						<div class="cr-od-assessment-intro">
 							<div class="cr-od-intro-text">
 								<h2>ارزیابی وضعیت موجود سازمان</h2>
-								<p>این فرم مبتنی بر ابعاد علمی ساختار سازمانی (رسمیت، پیچیدگی، تمرکز تصمیم‌گیری) و شاخص‌های فرهنگ مربی‌گری، بازخورد و امنیت روانی طراحی شده است. هر شاخص را بر اساس شواهد و داده‌های واقعی در مقیاس ۱ تا ۴ ارزیابی کنید.</p>
-								<div class="cr-od-scale-info">
+						<p>این فرم شامل <strong data-fa-num><?php echo esc_html( count( $questions ) ); ?></strong> سؤال دقیق در ۱۰ بُعد ساختاری و فرهنگی (رسمیت، پیچیدگی، تمرکز تصمیم، گوش دادن فعال، پرسش‌گری، بازخورد، ارزیابی داده‌محور، امنیت روانی، یادگیری و فرهنگ مربیگری) است. پاسخ‌ها مبناي تشخیص بلوغ و انتخاب راهبرد مناسب می‌شوند؛ هیچ راهبردی از قبل به سازمان تحمیل نمی‌شود.</p>
+							<div class="cr-od-scale-info">
 									<span><b>۱</b> وضعیت ضعیف / بوروکراتیک</span>
 									<span><b>۲</b> در حال بهبود</span>
 									<span><b>۳</b> مناسب / هم‌آفرین</span>
@@ -221,21 +260,41 @@ class Coachroom_OD_Render {
 							</div>
 
 							<?php foreach ( $dims as $slug => $dim ) : ?>
+								<?php
+								$dim_questions = array();
+								foreach ( $questions as $q ) {
+									if ( $q['dimension'] === $slug ) {
+										$dim_questions[] = $q;
+									}
+								}
+								if ( empty( $dim_questions ) ) {
+									continue;
+								}
+								?>
 								<fieldset class="cr-od-question" data-dimension="<?php echo esc_attr( $slug ); ?>">
 									<legend>
 										<span class="cr-od-q-icon"><?php echo esc_html( $dim['icon'] ); ?></span>
 										<span class="cr-od-q-label"><?php echo esc_html( $dim['label'] ); ?></span>
 										<span class="cr-od-q-indicator"><?php echo esc_html( $dim['indicator'] ); ?></span>
+										<span class="cr-od-q-count"><?php echo esc_html( count( $dim_questions ) ); ?> سؤال</span>
 									</legend>
-									<div class="cr-od-levels">
-										<?php for ( $i = 1; $i <= 4; $i++ ) : ?>
-											<label class="cr-od-option">
-												<input type="radio" name="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $i ); ?>" />
-												<span><?php echo esc_html( $i ); ?></span>
-												<small><?php echo esc_html( $dim['levels'][ $i ] ); ?></small>
-											</label>
-										<?php endfor; ?>
-									</div>
+
+									<?php foreach ( $dim_questions as $q ) : ?>
+										<div class="cr-od-sub-question" data-question-key="<?php echo esc_attr( $q['key'] ); ?>">
+											<div class="cr-od-question-text">
+												<span class="cr-od-qq"><?php echo esc_html( $q['label'] ); ?></span>
+											</div>
+											<div class="cr-od-levels">
+												<?php for ( $i = 1; $i <= 4; $i++ ) : ?>
+													<label class="cr-od-option">
+														<input type="radio" name="<?php echo esc_attr( $q['key'] ); ?>" value="<?php echo esc_attr( $i ); ?>" />
+														<span><?php echo esc_html( $i ); ?></span>
+														<small><?php echo esc_html( $qopts[ $i ] ); ?></small>
+													</label>
+												<?php endfor; ?>
+											</div>
+										</div>
+									<?php endforeach; ?>
 								</fieldset>
 							<?php endforeach; ?>
 
@@ -250,8 +309,17 @@ class Coachroom_OD_Render {
 					<section class="cr-od-panel" id="cr-roadmap" role="tabpanel" hidden>
 						<div class="cr-od-roadmap-intro">
 							<div class="cr-od-intro-text">
-								<h2>نقشه راه: ارتقای سرپرستان به مربیان عملکردی</h2>
-								<p>راهبرد اصلی این پلتفرم تغییر رفتار سرپرستان از «ناظر دستورده» به «مربی عملکرد» است. با تقویت گوش دادن فعال، پرسش‌گری واگرا، بازخورد ساختارمند و ارزیابی داده‌محور، مولفه‌های رسمیت، تمرکز و پیچیدگی به‌تدریج به سمت ساختار هم‌آفرین تغییر می‌کنند.</p>
+								<h2>نقشه راه تطبیقی توسعه سازمانی</h2>
+								<p>راهبردها اکنون بر اساس بلوغ واقعی سازمان از داده‌های ارزیابی انتخاب می‌شوند. اگر شاخص‌های پیش‌نیاز (امنیت روانی، ساختار، بازخورد) آماده نباشند، ابتدا همان‌ها تقویت می‌شوند و راهبرد «ارتقای سرپرستان به مربیان عملکردی» فقط زمانی اضافه می‌شود که شواهد آن را تأیید کند.</p>
+								<div class="cr-od-strategy-note" id="cr-strategy-note">
+									<?php
+									$coaching_rec = isset( $strategy['coaching_recommended'] ) && $strategy['coaching_recommended'];
+									$strategy_text = $coaching_rec
+										? 'سازمان در شرایط آماده‌گی برای مربی‌گری است؛ راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» فعال شده است.'
+										: ( isset( $strategy['coaching_reason'] ) ? 'راهبرد مربی‌گری فعال نشده است. ' . esc_html( $strategy['coaching_reason'] ) : '' );
+									?>
+									<strong><?php echo esc_html( $strategy_text ); ?></strong>
+								</div>
 							</div>
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'online-review.jpg' ); ?>" alt="بازبینی عملکرد آنلاین در صنعت انرژی" loading="lazy" />
 						</div>
@@ -259,32 +327,41 @@ class Coachroom_OD_Render {
 						<div class="cr-od-roadmap-grid">
 							<article class="cr-od-phase">
 								<div class="cr-od-phase-num">۳۰</div>
-								<h3>روز ۱ تا ۳۰ — آگاهی و زیرساخت</h3>
-								<ul>
-									<li>کارگاه تربیت سرپرستان به مربی + ارزیابی پایه مهارت‌ها</li>
-									<li>راه‌اندازی جلسه بازخورد ۱:۱ هفتگی</li>
-									<li>اشتراک‌گذاری امنیت روانی و «خطا بدون تنبیه»</li>
-									<li>ماتریس اختیار تصمیم سرپرست (واگذاری ۸۵٪ تصمیم روتین)</li>
+								<h3>روز ۱ تا ۳۰ — پایه و امنیت</h3>
+								<ul id="cr-roadmap-phase-30">
+									<?php if ( ! empty( $road_phase1 ) ) : ?>
+										<?php foreach ( $road_phase1 as $st ) : ?>
+											<li><?php echo esc_html( $st['title'] ); ?>: <?php echo esc_html( implode( '، ', array_slice( $st['actions'], 0, 2 ) ) ); ?></li>
+										<?php endforeach; ?>
+									<?php else : ?>
+										<li>نقشه راه مرحله ۳۰ بر اساس داده‌های پایه از همین فرم محاسبه می‌شود.</li>
+									<?php endif; ?>
 								</ul>
 							</article>
 							<article class="cr-od-phase">
 								<div class="cr-od-phase-num">۶۰</div>
 								<h3>روز ۳۱ تا ۶۰ — عمل و شواهد</h3>
-								<ul>
-									<li>تمرین گوش دادن فعال و پرسش‌های GROW در تیم‌ها</li>
-									<li>اجرای فرمت بازخورد SBI در جلسات عملیاتی</li>
-									<li>تیم‌های چندتخصصی حل‌مسئله (کاهش سیلو)</li>
-									<li>داشبورد OKR واحدها و شروع ارزیابی داده‌محور</li>
+								<ul id="cr-roadmap-phase-60">
+									<?php if ( ! empty( $road_phase2 ) ) : ?>
+										<?php foreach ( $road_phase2 as $st ) : ?>
+											<li><?php echo esc_html( $st['title'] ); ?>: <?php echo esc_html( implode( '، ', array_slice( $st['actions'], 0, 2 ) ) ); ?></li>
+										<?php endforeach; ?>
+									<?php else : ?>
+										<li>راهبردهای شواهدمحور در این بازه بر اساس نتایج ارزیابی انتخاب می‌شوند.</li>
+									<?php endif; ?>
 								</ul>
 							</article>
 							<article class="cr-od-phase">
 								<div class="cr-od-phase-num">۹۰</div>
 								<h3>روز ۶۱ تا ۹۰ — تثبیت و ارتقا</h3>
-								<ul>
-									<li>بازارزیابی مهارت مربی‌گری و شاخص‌ها</li>
-									<li>کمیته کالیبراسیون ارزیابی عملکرد</li>
-									<li>بانک درس‌آموخته‌ها و بازنگری پس از پروژه (AAR)</li>
-									<li>تعیین موج بعدی و نقشه ۱۲ ماهه توسعه سازمانی</li>
+								<ul id="cr-roadmap-phase-90">
+									<?php if ( ! empty( $road_phase3 ) ) : ?>
+										<?php foreach ( $road_phase3 as $st ) : ?>
+											<li><?php echo esc_html( $st['title'] ); ?>: <?php echo esc_html( implode( '، ', array_slice( $st['actions'], 0, 2 ) ) ); ?></li>
+										<?php endforeach; ?>
+									<?php else : ?>
+										<li>بازارزیابی شاخص‌ها، کمیته کالیبراسیون و بانک درس‌آموخته‌ها.</li>
+									<?php endif; ?>
 								</ul>
 							</article>
 						</div>
@@ -484,8 +561,8 @@ class Coachroom_OD_Render {
 								<p>سازمان‌ها برای بقا باید با فشارهای محیطی، فناوری و انتظارات نوین نیروی کار سازگار شوند. نظریه‌های کلاسیک (تیلور و وبر) بر کارایی و کنترل، و نظریه‌های نوین (برنز و استالکر، مینتزبرگ، سنژ، ادموندسون و لالو) بر <strong>انعطاف، یادگیری، امنیت روانی و هم‌آفرینی</strong> تأکید می‌کنند. توسعه سازمانی یعنی حرکت عمدی از ساختارهای سخت و متمرکز به سمت ساختارهایی که هم عملکرد فردی و هم یادگیری جمعی را بالا می‌برند.</p>
 							</article>
 							<article class="cr-od-card cr-od-blog-card">
-								<h3 class="cr-od-card-title">چرا منابع انسانی و مربی‌گری سرپرستان؟</h3>
-								<p>تغییر ساختار بدون تغییر رفتار ممکن نیست. سرپرستان حلقه اتصال مدیریت و کارکنان‌اند؛ اگر آن‌ها به‌جای دستوردهی، <strong>گوش دادن فعال، پرسش‌گری واگرا و بازخورد ساختارمند</strong> را تمرین کنند، به‌تدریج رسمیت کم، تمرکز تصمیم واگذار و سیلوهای ساختاری کاهش می‌یابد. به همین دلیل راهبرد «سرپرست → مربی عملکردی» در این پلتفرم انتخاب شده است.</p>
+								<h3 class="cr-od-card-title">نقش سرپرستان و مربی‌گری (مشروط به آمادگی)</h3>
+								<p>تغییر ساختار بدون تغییر رفتار ممکن نیست. سرپرستان حلقه اتصال مدیریت و کارکنان‌اند؛ اگر آن‌ها به‌جای دستوردهی، <strong>گوش دادن فعال، پرسش‌گری واگرا و بازخورد ساختارمند</strong> را تمرین کنند، رسمیت کم، تمرکز تصمیم واگذار و سیلوهای ساختاری کاهش می‌یابد. اما این پلتفرم «سرپرست → مربی عملکردی» را پیش‌فرض نمی‌کند؛ این راهبرد فقط وقتی از داده‌های بلوغ استخراج می‌شود که امنیت روانی، شنیدن فعال و ساختار به آستانه آمادگی رسیده باشند.</p>
 							</article>
 						</div>
 
@@ -564,7 +641,7 @@ class Coachroom_OD_Render {
 						<div class="cr-od-blog-okr">
 							<div class="cr-od-intro-text">
 								<h3>OKR: هدف‌گذاری و مدیریت عملکرد</h3>
-								<p><strong>OKR</strong> (Objectives &amp; Key Results) یک روش ساده هدف‌گذاری است: هر هدف (O) کیفی و الهام‌بخش است و با ۳ تا ۵ نتیجه کلیدی (KR) قابل سنجش تعریف می‌شود. مثلاً هدف «سرپرستان به مربی تبدیل شوند» با KRهایی چون «۹۰٪ جلسات ۱:۱ بر اساس SBI» اندازه‌گیری می‌شود.</p>
+								<p><strong>OKR</strong> (Objectives &amp; Key Results) یک روش ساده هدف‌گذاری است: هر هدف (O) کیفی و الهام‌بخش است و با ۳ تا ۵ نتیجه کلیدی (KR) قابل سنجش تعریف می‌شود. مثلاً در صورت آمادگی سازمان، هدف «سرپرستان به مربی تبدیل شوند» با KRهایی چون «۹۰٪ جلسات ۱:۱ بر اساس SBI» اندازه‌گیری می‌شود.</p>
 								<p>در پلتفرم CoachRoom، OKR از داده ارزیابی ساخته می‌شود: هر بُعدی که نمره کمتری دارد، به یک <strong>Objective</strong> مشخص و <strong>Key Results</strong> قابل اندازه تبدیل می‌شود. تا زمانی که نمره به آستانه هدف (حدود ۳٫۳۵) نرسد، همان OKR باز می‌ماند و مدیران می‌دانند کدام واحد/نقش اولویت دارد.</p>
 							</div>
 							<div class="cr-od-okr-learn-grid">
@@ -600,7 +677,7 @@ class Coachroom_OD_Render {
 								</div>
 							</div>
 							<div class="cr-od-efqm-learn-note">
-								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. برای شروع، تمرکز روی معیار <strong>منابع انسانی و فرهنگ</strong> از طریق راهبرد «سرپرستان به مربیان عملکردی» منطقی‌ترین مسیر است.
+								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (از ۳۰ سؤال) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
 							</div>
 						</div>
 
@@ -608,7 +685,7 @@ class Coachroom_OD_Render {
 							<h3 class="cr-od-card-title">اهمیت داده‌محوری و نقشه راه منابع انسانی</h3>
 							<p>برای این‌که حرکت از موج دوم به موج‌های بالاتر «ادعا» نباشد بلکه «شواهد» باشد، ارزیابی‌های ساختاری و رفتار فردی باید به داده تبدیل و به‌صورت دوره‌ای مقایسه شوند. پلتفرم حاضر همین کار را انجام می‌دهد: ورودی ارزیابی → محاسبه وزن‌دار → تشخیص موج → اولویت‌بندی اقدامات → خروجی گزارش برای مدیران.</p>
 							<blockquote>
-								<strong>راهبرد پیشنهادی توسعه منابع انسانی:</strong> ۱) آموزش سرپرستان به مربی. ۲) جلسات بازخورد ۱:۱ با SBI. ۳) OKR و ارزیابی کالیبره. ۴) تیم‌های چندتخصصی. ۵) بازنگری پس از پروژه. ۶) شاخص‌های ESG، تاب‌آوری و رضایت/به‌زیستی.
+								<strong>راهبردها به‌صورت تطبیقی از بلوغ سازمان انتخاب می‌شوند:</strong> ۱) در صورت ضعف امنیت روانی، ابتدا ایمنی و یادگیری از خطا. ۲) در صورت پیچیدگی/تمرکز، ساده‌سازی ساختار و منشور اختیار تصمیم. ۳) در صورت ضعف بازخورد/ارزیابی، استقرار SBI و داشبورد داده‌محور. ۴) در صورت آمادگی، مربی‌گری و تربیت سرپرستان به مربی عملکردی. ۵) تیم‌های چندتخصصی و بازنگری پس از پروژه. ۶) شاخص‌های ESG، تاب‌آوری و رضایت/به‌زیستی.
 							</blockquote>
 							<div class="cr-od-refs">
 								<h4>منابع علمی کلیدی</h4>
@@ -772,15 +849,15 @@ class Coachroom_OD_Render {
 
 							<h3>نتیجه‌گیری مدیریتی</h3>
 							<div class="cr-od-report-body">
-								<p>سازمان در حال حاضر در <strong><?php echo esc_html( $data['summary']['wave_label'] ); ?></strong> قرار دارد. داده‌ها نشان می‌دهد پایین‌ترین نمرات مربوط به <strong>فرهنگ مربی‌گری سرپرستان</strong>، <strong>سیستم بازخورد</strong>، <strong>ارزیابی عملکرد داده‌محور</strong> و <strong>پرسش‌گری / ذهنیت واگرا</strong> است. این شاخص‌ها دقیقاً همان نشانه‌های موج دوم (عدم گوش دادن فعال، ذهنیت همگرا، عدم بازخورد مؤثر و ارزیابی ذهنی) هستند.</p>
-								<p>راهبرد اصلی پیشنهادی، <strong>ارتقای نقش سرپرستان به مربیان عملکردی</strong> است. اجرای ساختارمند آن به‌صورت همزمان رسمیت را ساده، تمرکز را واگذار و پیچیدگی سیلوها را کاهش می‌دهد و بستر رسیدن به سازمان هم‌آفرین (موج سوم) و سپس سازمان یادگیرنده (موج چهارم) را فراهم می‌کند.</p>
+							<p>سازمان در حال حاضر در <strong><?php echo esc_html( $data['summary']['wave_label'] ); ?></strong> قرار دارد. داده‌های ثبت‌شده نشان می‌دهد پایین‌ترین نمرات مربوط به <strong><?php echo esc_html( implode( '، ', $weak_labels ) ?: 'شاخص‌های اندازه‌گیری‌شده' ); ?></strong> است. همین شاخص‌ها مبناي انتخاب راهبرد قرار می‌گیرند.</p>
+							<p>راهبردها در این گزارش به‌صورت <strong>تطبیقی و بر اساس بلوغ سازمان</strong> انتخاب شده‌اند: <?php echo esc_html( implode( '؛ ', $strategy_titles ) ?: 'برای این دوره هنوز ارزیابی کافی ثبت نشده است.' ); ?>. <?php if ( $coaching_rec ) : ?>داده‌ها نشان می‌دهد سازمان برای راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» آماده است؛ بنابراین این راهبرد در برنامه فعال شده است.<?php else : ?><?php echo esc_html( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : 'راهبرد مربی‌گری در صورت تأیید آستانه‌های آمادگی در دوره‌های بعد اضافه می‌شود.' ); ?><?php endif; ?></p>
 							</div>
 
-							<h3>دستورالعمل اجرایی ۹۰ روزه</h3>
+							<h3>دستورالعمل اجرایی ۹۰ روزه (ساخته‌شده از راهبرد منتخب)</h3>
 							<div class="cr-od-report-phases">
-								<div><strong>روز ۱-۳۰:</strong> کارگاه‌های مربی‌گری، شروع جلسات ۱:۱، توافق امنیت روانی، ماتریس اختیار تصمیم.</div>
-								<div><strong>روز ۳۱-۶۰:</strong> تمرین گوش فعال و پرسش‌گری، بازخورد SBI، تیم‌های چندتخصصی، OKR واحدها.</div>
-								<div><strong>روز ۶۱-۹۰:</strong> بازارزیابی، کالیبراسیون عملکرد، بانک درس‌آموخته و تدوین نقشه ۱۲ ماهه.</div>
+								<div><strong>روز ۱-۳۰:</strong> <?php if ( $road_phase1 ) : ?><?php foreach ( $road_phase1 as $st ) : ?>«<?php echo esc_html( $st['title'] ); ?>» — <?php echo esc_html( implode( '، ', array_slice( $st['actions'], 0, 2 ) ) ); ?>. <?php endforeach; ?><?php else : ?>تکمیل ارزیابی پایه و توافق حکمرانی توسعه سازمانی.<?php endif; ?></div>
+								<div><strong>روز ۳۱-۶۰:</strong> <?php if ( $road_phase2 ) : ?><?php foreach ( $road_phase2 as $st ) : ?>«<?php echo esc_html( $st['title'] ); ?>» — <?php echo esc_html( implode( '، ', array_slice( $st['actions'], 0, 2 ) ) ); ?>. <?php endforeach; ?><?php else : ?>بازخورد SBI، تیم‌های چندتخصصی و داشبورد OKR واحدها.<?php endif; ?></div>
+								<div><strong>روز ۶۱-۹۰:</strong> <?php if ( $road_phase3 ) : ?><?php foreach ( $road_phase3 as $st ) : ?>«<?php echo esc_html( $st['title'] ); ?>» — <?php echo esc_html( implode( '، ', array_slice( $st['actions'], 0, 2 ) ) ); ?>. <?php endforeach; ?><?php else : ?>بازارزیابی، کالیبراسیون عملکرد، بانک درس‌آموخته و نقشه ۱۲ ماهه.<?php endif; ?></div>
 							</div>
 
 							<h3>اقدامات اولویت‌دار (محاسبه‌شده از داده‌های ارزیابی)</h3>

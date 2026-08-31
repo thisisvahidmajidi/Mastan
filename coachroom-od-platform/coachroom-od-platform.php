@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       CoachRoom - Organizational Development Platform
  * Plugin URI:        https://coachroom.ir
- * Description:       سامانه توسعه سازمانی CoachRoom؛ ارزیابی وضعیت سازمان بر پایه "موج‌های سازمانی"، سنجش رسمیت، پیچیدگی و تمرکز تصمیم‌گیری، و تدوین نقشه راه ارتقای سرپرستان به مربیان عملکردی. مخصوص سازمان‌های حوزه انرژی، نفت و گاز.
- * Version:           1.4.0
+ * Description:       سامانه توسعه سازمانی CoachRoom؛ ارزیابی ۳۰ سؤالی وضعیت سازمان بر پایه "موج‌های سازمانی"، سنجش رسمیت، پیچیدگی، تمرکز تصمیم، گوش دادن، پرسش‌گری، بازخورد، ارزیابی، امنیت روانی، یادگیری و فرهنگ مربی‌گری، و انتخاب تطبیقی راهبرد توسعه بر اساس بلوغ واقعی. مخصوص سازمان‌های حوزه انرژی، نفت و گاز.
+ * Version:           1.5.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            CoachRoom
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CR_OD_VERSION', '1.4.0' );
+define( 'CR_OD_VERSION', '1.5.0' );
 define( 'CR_OD_PLUGIN_FILE', __FILE__ );
 define( 'CR_OD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CR_OD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -143,9 +143,9 @@ final class Coachroom_OD_Platform {
 				<p>ویژگی‌های پلتفرم:</p>
 				<ul style="list-style:disc;padding-inline-start:20px;">
 					<li>داشبورد شاخص‌های سازمانی با نمودارهای رادار، میله‌ای و روند</li>
-					<li>ارزیابی ابعاد ساختاری (رسمیت، پیچیدگی، تمرکز) و مهارت‌های مربیگری</li>
-					<li>تشخیص موج سازمانی (موج یکم تا چهارم)</li>
-					<li>نقشه راه ۳۰/۶۰/۹۰ روزه برای ارتقای سرپرستان به مربیان عملکردی</li>
+					<li>ارزیابی ۳۰ سؤالی در ۱۰ بُعد ساختاری و فرهنگی با ذخیره سؤال‌به‌سؤال</li>
+					<li>تشخیص موج سازمانی (موج یکم تا پنجم) و انتخاب تطبیقی راهبرد توسعه</li>
+					<li>نقشه راه ۳۰/۶۰/۹۰ روزه مبتنی بر بلوغ واقعی؛ مربی‌گری سرپرستان فقط در صورت آمادگی</li>
 					<li>خروجی CSV و قابلیت چاپ گزارش مدیران</li>
 				</ul>
 				<hr/>
@@ -244,12 +244,14 @@ final class Coachroom_OD_Platform {
 					<tbody>
 						<tr><th>جدول دوره‌ها</th><td><?php echo $health['cycles_table'] ? 'ایجاد شده ✓' : 'ایجاد نشده ✗'; ?></td></tr>
 						<tr><th>جدول پاسخ‌ها</th><td><?php echo $health['responses_table'] ? 'ایجاد شده ✓' : 'ایجاد نشده ✗'; ?></td></tr>
+						<tr><th>ستون‌های سؤال‌محور</th><td><?php echo ! empty( $health['question_columns'] ) ? 'ایجاد شده ✓' : 'ایجاد نشده ✗'; ?></td></tr>
 						<tr><th>تعداد دوره‌ها</th><td><?php echo esc_html( $health['cycles'] ); ?></td></tr>
 						<tr><th>تعداد سطرهای ارزیابی</th><td><?php echo esc_html( $health['rows'] ); ?></td></tr>
 						<?php if ( $ok && isset( $health['dashboard']['summary'] ) ) : ?>
 							<tr><th>امتیاز کلی</th><td><?php echo esc_html( $health['dashboard']['summary']['overall'] ); ?> / ۴</td></tr>
 							<tr><th>موج فعلی</th><td><?php echo esc_html( $health['dashboard']['summary']['wave_label'] ); ?></td></tr>
 							<tr><th>اقدامات اولویت‌دار</th><td><?php echo esc_html( count( $health['dashboard']['recommendations'] ) ); ?> مورد</td></tr>
+							<tr><th>راهبرد منتخب</th><td><?php echo esc_html( count( $health['dashboard']['strategy']['selected'] ?? array() ) ); ?> راهبرد؛ مربی‌گری سرپرستان: <?php echo ! empty( $health['dashboard']['strategy']['coaching_recommended'] ) ? 'فعال ✓' : 'غیرفعال (با دلیل)'; ?></td></tr>
 						<?php endif; ?>
 					</tbody>
 				</table>
