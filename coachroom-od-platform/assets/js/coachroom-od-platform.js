@@ -23,6 +23,7 @@
   function getRecs() { return getData().recommendations || []; }
   function getEfqm() { return getData().efqm || {}; }
   function getAnalysis() { return getData().analysis || {}; }
+  function getOkr() { return getData().okr || {}; }
   function getRecordOrDefault(record) { return record || {}; }
 
   function esc(v) {
@@ -605,6 +606,47 @@
     setText('cr-analysis-summary', a.summary || '');
   }
 
+  function refreshOkr() {
+    var okr = getOkr() || {};
+    var items = okr.items || [];
+    setText('cr-report-okr-unit', (okr.focus_unit && okr.focus_unit.name) || '—');
+    setText('cr-report-okr-unit-score', okr.focus_unit && okr.focus_unit.overall != null ? faNum(fmtNum(okr.focus_unit.overall)) : '—');
+    setText('cr-report-okr-role', (okr.focus_role && okr.focus_role.name) || '—');
+    setText('cr-report-okr-role-score', okr.focus_role && okr.focus_role.overall != null ? faNum(fmtNum(okr.focus_role.overall)) : '—');
+    setText('cr-report-okr-cycle', okr.cycle || '۹۰ روزه');
+
+    var grid = document.getElementById('cr-okr-grid');
+    var tbody = document.getElementById('cr-report-okr-tbody');
+    if (!items.length) {
+      var empty = '<div class="cr-od-empty">شاخص‌ها در محدوده هدف هستند؛ OKR تثبیت و بهبود مستمر تعریف شود.</div>';
+      if (grid) { grid.innerHTML = empty; }
+      if (tbody) { tbody.innerHTML = '<tr><td colspan="4">OKR تثبیت و بهبود مستمر در محدوده هدف تعریف شود.</td></tr>'; }
+      return;
+    }
+    var cards = items.map(function (item) {
+      var krs = (item.krs || []).map(function (kr) {
+        return '<div><span class="cr-od-kr-badge">KR</span> ' + esc(kr) + '</div>';
+      }).join('');
+      return '<div class="cr-od-okr-card"><div class="cr-od-okr-head">' +
+        '<span class="cr-od-action-priority">' + esc(item.priority || '') + '</span>' +
+        '<span class="cr-od-action-score"><span data-fa-num>' + esc(fmtNum(num(item.score))) + '</span>/۴</span></div>' +
+        '<h4>' + esc(item.objective || '') + '</h4><div class="cr-od-okr-krs">' + krs + '</div>' +
+        '<span class="cr-od-okr-owner">مسئول اجرا: ' + esc(item.owner || '') + '</span></div>';
+    }).join('');
+    if (grid) { grid.innerHTML = cards; convertDigitsInside(grid); }
+
+    if (tbody) {
+      var rows = items.map(function (item) {
+        return '<tr><td class="cr-od-table-long">' + esc(item.objective || '') + '</td>' +
+          '<td class="cr-od-table-long">' + esc((item.krs || []).join(' | ')) + '</td>' +
+          '<td>' + esc(item.priority || '') + '</td>' +
+          '<td data-fa-num>' + esc(fmtNum(num(item.score))) + '</td></tr>';
+      }).join('');
+      tbody.innerHTML = rows;
+      convertDigitsInside(tbody);
+    }
+  }
+
   function updateAll() {
     refreshKpis();
     refreshLastSave();
@@ -617,6 +659,7 @@
     refreshReportActions();
     refreshEfqm();
     refreshAnalysis();
+    refreshOkr();
     drawAll();
     convertDigitsInside();
     enhanceGlossary(document.getElementById('cr-od-root'));
@@ -629,7 +672,8 @@
       'cr-dashboard', 'cr-assessment', 'cr-roadmap', 'cr-departments', 'cr-blog', 'cr-reports',
       'crRadarChart', 'crWaveChart', 'crSkillsChart', 'crDeptChart', 'crRoleChart', 'crTrendChart',
       'cr-od-assessment-form', 'cr-dept-tbody', 'cr-role-tbody', 'cr-role-dim-tbody',
-      'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm'
+      'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm',
+      'cr-okr-grid', 'cr-okr-roadmap', 'cr-report-okr', 'cr-report-okr-tbody'
     ];
     requiredIds.forEach(function (id) {
       if (!document.getElementById(id)) { issues.push('missing:' + id); }
@@ -644,6 +688,10 @@
 
     var efqm = getEfqm() || {};
     if (!efqm.criteria || efqm.criteria.length !== 9) { issues.push('efqm-criteria'); }
+
+    var okr = getOkr() || {};
+    if (!okr || typeof okr !== 'object') { issues.push('okr'); }
+    if (!Array.isArray(okr.items || [])) { issues.push('okr-items'); }
 
     getRoles().forEach(function (r) {
       var sc = r.scores || {};
@@ -835,6 +883,7 @@
     refreshReportActions();
     refreshEfqm();
     refreshAnalysis();
+    refreshOkr();
     drawAll();
     enhanceGlossary(document.getElementById('cr-od-root'));
     convertDigitsInside();

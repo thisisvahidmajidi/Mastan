@@ -391,6 +391,172 @@ class Coachroom_OD_Helpers {
 	}
 
 	/**
+	 * OKR definitions connected to organizational dimensions.
+	 *
+	 * Lower-scored dimensions cascade into OKRs so the roadmap is evidence-based.
+	 *
+	 * @return array
+	 */
+	public static function okr_catalog() {
+		return array(
+			'active_listening' => array(
+				'slug'     => 'active_listening',
+				'objective' => 'تقویت شنیدن فعال در جلسات تیمی و واحدها',
+				'krs'      => array(
+					'حداقل ۸۰٪ سرپرستان در جلسات از تکنیک خلاصه‌سازی و پرسش بدون قضاوت استفاده کنند.',
+					'نمره «مورد شنیده شدن» در نظرسنجی ماهانه به ۳.۵ از ۴ برسد.',
+				),
+			),
+			'questioning' => array(
+				'slug'     => 'questioning',
+				'objective' => 'توسعه ذهنیت پرسش‌گری و حل‌مسئله در تیم‌ها',
+				'krs'      => array(
+					'راه‌اندازی «میز ۵ چرا» و «جلسه هیئت مخالف» در حداقل ۲ جلسه تصمیم هر ماه.',
+					'افزایش ۳۰٪ تعداد راهکارهای پیشنهادی در تیم‌های چندتخصصی.',
+				),
+			),
+			'feedback' => array(
+				'slug'     => 'feedback',
+				'objective' => 'ایجاد چرخه بازخورد منظم و سازنده',
+				'krs'      => array(
+					'اجرای ۹۰٪ جلسات بازخورد ۱:۱ هفتگی بر اساس فرمت SBI.',
+					'کاهش ۵۰٪ موارد تأخیر در پاسخ به بازخورد ثبت‌شده.',
+				),
+			),
+			'performance_eval' => array(
+				'slug'     => 'performance_eval',
+				'objective' => 'استقرار ارزیابی عملکرد عادلانه و داده‌محور',
+				'krs'      => array(
+					'تعریف ۱۰۰٪ شاخص‌های OKR/KPI واحدها در داشبورد داده‌محور.',
+					'برگزاری کمیته کالیبراسیون برای همه نمرات سه‌ماهه.',
+				),
+			),
+			'coaching_culture' => array(
+				'slug'     => 'coaching_culture',
+				'objective' => 'ارتقای نقش سرپرستان به مربیان عملکردی',
+				'krs'      => array(
+					'افزایش نمره مهارت مربیگری سرپرستان به ۳.۵ از ۴.',
+					'برگزاری ۶ جلسه مربیگری/کارگاه در سه‌ماهه اول.',
+				),
+			),
+			'centralization' => array(
+				'slug'     => 'centralization',
+				'objective' => 'واگذاری تصمیم‌گیری عملیاتی به واحدها و سرپرستان',
+				'krs'      => array(
+					'شفاف‌سازی منشور اختیار تصمیم برای ۸۵٪ تصمیمات روتین.',
+					'کاهش ۴۰٪ ارجاع به مدیران عالی.',
+				),
+			),
+			'formalization' => array(
+				'slug'     => 'formalization',
+				'objective' => 'ساده‌سازی قوانین به «حداقل قوانین قابل اعتماد»',
+				'krs'      => array(
+					'بازنگری ۵ رویه کلیدی و کاهش مستندات دستوری.',
+					'کاهش ۳۰٪ زمان تصویب تغییرات.',
+				),
+			),
+			'complexity' => array(
+				'slug'     => 'complexity',
+				'objective' => 'کاهش سیلوها و پیچیدگی هماهنگی بین‌واحدی',
+				'krs'      => array(
+					'تشکیل ۳ تیم چندتخصصی عملیاتی.',
+					'کاهش ۲۵٪ زمان هماهنگی بین‌واحدی.',
+				),
+			),
+			'psychological_safety' => array(
+				'slug'     => 'psychological_safety',
+				'objective' => 'ایجاد محیط کار امن و حمایت‌کننده',
+				'krs'      => array(
+					'نمره امنیت روانی به ۳.۵ از ۴ برسد.',
+					'کاهش ۵۰٪ ترس از اعلام خطا در گزارش‌های داخلی.',
+				),
+			),
+			'learning_culture' => array(
+				'slug'     => 'learning_culture',
+				'objective' => 'ایجاد فرهنگ یادگیری و بهبود مستمر',
+				'krs'      => array(
+					'اجرای جلسه AAR در ۱۰۰٪ پروژه‌های اصلی.',
+					'استفاده از حداقل ۲ درس‌آموخته در هر پروژه.',
+				),
+			),
+		);
+	}
+
+	/**
+	 * Build OKR data from actual dimension scores.
+	 *
+	 * @param array $score_map slug => 1-4 score.
+	 * @return array
+	 */
+	public static function okr_data( $score_map ) {
+		$catalog  = self::okr_catalog();
+		$items    = array();
+
+		foreach ( $catalog as $slug => $okr ) {
+			$score = isset( $score_map[ $slug ] ) ? (float) $score_map[ $slug ] : 1.0;
+			$gap   = max( 0, round( self::target_threshold( 3 ) - $score, 2 ) );
+			if ( $gap <= 0.45 ) {
+				continue;
+			}
+			$items[] = array(
+				'slug'      => $slug,
+				'objective' => $okr['objective'],
+				'krs'       => $okr['krs'],
+				'score'     => $score,
+				'gap'       => $gap,
+				'priority'  => $score < 2.2 ? 'O1 — اولویت فوری' : ( $score < 2.75 ? 'O2 — اولویت مهم' : 'O3 — تثبیت' ),
+				'owner'     => 'سرپرستان/مدیران مرتبط',
+			);
+		}
+
+		usort( $items, function ( $a, $b ) {
+			return $a['score'] <=> $b['score'];
+		} );
+
+		return array_slice( $items, 0, 5 );
+	}
+
+	/**
+	 * Align OKR recommendations with unit and role scores for systemic planning.
+	 *
+	 * @param array $score_map slug => score.
+	 * @param array $departments Department groups.
+	 * @param array $roles       Role groups.
+	 * @return array
+	 */
+	public static function okr_systemic( $score_map, $departments, $roles ) {
+		$okrs      = self::okr_data( $score_map );
+		$top_dept  = array();
+		$top_role  = array();
+
+		if ( $departments ) {
+			usort( $departments, function ( $a, $b ) {
+				return $a['overall'] <=> $b['overall'];
+			} );
+			$top_dept = array(
+				'name'    => $departments[0]['name'],
+				'overall' => $departments[0]['overall'],
+			);
+		}
+		if ( $roles ) {
+			usort( $roles, function ( $a, $b ) {
+				return $a['overall'] <=> $b['overall'];
+			} );
+			$top_role = array(
+				'name'    => $roles[0]['name'],
+				'overall' => $roles[0]['overall'],
+			);
+		}
+
+		return array(
+			'items'    => $okrs,
+			'focus_unit' => $top_dept,
+			'focus_role' => $top_role,
+			'cycle'    => '۹۰ روزه',
+		);
+	}
+
+	/**
 	 * EFQM level label.
 	 *
 	 * @param float $score Overall 1-4 score.
@@ -872,6 +1038,7 @@ class Coachroom_OD_Helpers {
 
 		$efqm    = self::efqm_data( $score_map );
 		$analysis = self::analysis_data( $score_map, $summary, $efqm );
+		$okr      = self::okr_systemic( $score_map, $departments, $roles );
 
 		return array(
 			'config'         => self::config(),
@@ -883,6 +1050,7 @@ class Coachroom_OD_Helpers {
 			'recommendations' => $recommendations,
 			'efqm'           => $efqm,
 			'analysis'       => $analysis,
+			'okr'            => $okr,
 		);
 	}
 

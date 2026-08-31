@@ -3,7 +3,7 @@
  * Plugin Name:       CoachRoom - Organizational Development Platform
  * Plugin URI:        https://coachroom.ir
  * Description:       سامانه توسعه سازمانی CoachRoom؛ ارزیابی وضعیت سازمان بر پایه "موج‌های سازمانی"، سنجش رسمیت، پیچیدگی و تمرکز تصمیم‌گیری، و تدوین نقشه راه ارتقای سرپرستان به مربیان عملکردی. مخصوص سازمان‌های حوزه انرژی، نفت و گاز.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            CoachRoom
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CR_OD_VERSION', '1.3.0' );
+define( 'CR_OD_VERSION', '1.4.0' );
 define( 'CR_OD_PLUGIN_FILE', __FILE__ );
 define( 'CR_OD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CR_OD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

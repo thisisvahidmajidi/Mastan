@@ -4,7 +4,7 @@ Tags: organizational development, coaching, performance, energy, oil, gas
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,14 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 از منوی CoachRoom OD → تنظیمات.
 
 == Changelog ==
+
+= 1.4.0 =
+* افزودن نقشه راه OKR (مدیریت عملکرد و هدف‌گذاری) به نقشه راه پلتفرم.
+* افزودن محتوای توضیحی ساده OKR در تب بلاگ (Objective / Key Results / روتین بازبینی).
+* استخراج هوشمند OKR از داده‌های ارزیابی: هر شاخص ضعیف به هدف و نتایج کلیدی قابل سنجش تبدیل می‌شود.
+* نمایش واحد و نقش تمرکز سیستمی در نقشه راه و گزارش مدیران (سیستم‌محور و اولویت‌بندی‌شده).
+* افزودن جدول OKR و تمرکز تصمیم‌گیری به گزارش مدیران و به‌روزرسانی زنده پس از هر ارزیابی.
+* به‌روزرسانی تست خودکار و گزارش تست نهایی.
 
 = 1.3.0 =
 * یکپارچه‌سازی کامل امتیاز نقش‌های مختلف (کارمند، سرپرست، مدیر میانی، مربی سازمانی) در تحلیل و خروجی مدیران.

@@ -317,9 +317,43 @@ class Coachroom_OD_Render {
 							</div>
 						</div>
 
+						<div class="cr-od-roadmap-actions" id="cr-okr-roadmap">
+							<h3>نقشه راه مدیریت عملکرد و هدف‌گذاری OKR</h3>
+							<p class="cr-od-efqm-intro">OKR از داده‌های ارزیابی استخراج می‌شود: هر نقطه ضعف، به یک هدف (O) و نتایج کلیدی (KR) قابل سنجش تبدیل می‌شود تا مدیران تصمیم‌گیری شواهدمحور داشته باشند.</p>
+							<div class="cr-od-okr-summary">
+								<div class="cr-od-okr-focus">
+									<strong>تمرکز سیستمی</strong>
+									<span>واحد اولویت‌دار: <?php echo esc_html( ! empty( $data['okr']['focus_unit']['name'] ) ? $data['okr']['focus_unit']['name'] : '—' ); ?> <b data-fa-num><?php echo esc_html( ! empty( $data['okr']['focus_unit']['overall'] ) ? $data['okr']['focus_unit']['overall'] : '—' ); ?></b></span>
+									<span>نقش اولویت‌دار: <?php echo esc_html( ! empty( $data['okr']['focus_role']['name'] ) ? $data['okr']['focus_role']['name'] : '—' ); ?> <b data-fa-num><?php echo esc_html( ! empty( $data['okr']['focus_role']['overall'] ) ? $data['okr']['focus_role']['overall'] : '—' ); ?></b></span>
+									<span>دوره: <?php echo esc_html( $data['okr']['cycle'] ); ?></span>
+								</div>
+							</div>
+							<div class="cr-od-okr-grid" id="cr-okr-grid">
+								<?php if ( ! empty( $data['okr']['items'] ) ) : ?>
+									<?php foreach ( $data['okr']['items'] as $okr ) : ?>
+										<div class="cr-od-okr-card">
+											<div class="cr-od-okr-head">
+												<span class="cr-od-action-priority"><?php echo esc_html( $okr['priority'] ); ?></span>
+												<span class="cr-od-action-score"><span data-fa-num><?php echo esc_html( $okr['score'] ); ?></span>/۴</span>
+											</div>
+											<h4><?php echo esc_html( $okr['objective'] ); ?></h4>
+											<div class="cr-od-okr-krs">
+												<?php foreach ( $okr['krs'] as $kr ) : ?>
+													<div><span class="cr-od-kr-badge">KR</span> <?php echo esc_html( $kr ); ?></div>
+												<?php endforeach; ?>
+											</div>
+											<span class="cr-od-okr-owner">مسئول اجرا: <?php echo esc_html( $okr['owner'] ); ?></span>
+										</div>
+									<?php endforeach; ?>
+								<?php else : ?>
+									<div class="cr-od-empty">شاخص‌ها در محدوده هدف هستند؛ OKR تثبیت و بهبود مستمر تعریف شود.</div>
+								<?php endif; ?>
+							</div>
+						</div>
+
 						<div class="cr-od-roadmap-actions" id="cr-efqm-roadmap">
 							<h3>نقشه راه هماهنگ با مدل EFQM (فرم RADAR)</h3>
-							<p class="cr-od-efqm-intro">ترتیب استاندارد EFQM برای بهبود پایدار: ابتدا نتایج هدف، سپس رویکرد، استقرار، ارزیابی و در نهایت اصلاح و یادگیری.</p>
+							<p class="cr-od-efqm-intro">ترتیب استاندارد EFQM برای بهبود پایدار: ابتدا نتایج هدف، سپس رویکرد، استقرار، ارزیابی و در نهایت اصلاح و یادگیری. OKR داخل همین چرخه قرار می‌گیرد تا نتایج عملکرد فردی و سازمانی قابل سنجش باشند.</p>
 							<div class="cr-od-radar-grid" id="cr-radar-grid">
 								<?php foreach ( $data['analysis']['efqm_roadmap'] as $step ) : ?>
 									<div class="cr-od-radar-step">
@@ -527,6 +561,22 @@ class Coachroom_OD_Render {
 							</div>
 						</div>
 
+						<div class="cr-od-blog-okr">
+							<div class="cr-od-intro-text">
+								<h3>OKR: هدف‌گذاری و مدیریت عملکرد</h3>
+								<p><strong>OKR</strong> (Objectives &amp; Key Results) یک روش ساده هدف‌گذاری است: هر هدف (O) کیفی و الهام‌بخش است و با ۳ تا ۵ نتیجه کلیدی (KR) قابل سنجش تعریف می‌شود. مثلاً هدف «سرپرستان به مربی تبدیل شوند» با KRهایی چون «۹۰٪ جلسات ۱:۱ بر اساس SBI» اندازه‌گیری می‌شود.</p>
+								<p>در پلتفرم CoachRoom، OKR از داده ارزیابی ساخته می‌شود: هر بُعدی که نمره کمتری دارد، به یک <strong>Objective</strong> مشخص و <strong>Key Results</strong> قابل اندازه تبدیل می‌شود. تا زمانی که نمره به آستانه هدف (حدود ۳٫۳۵) نرسد، همان OKR باز می‌ماند و مدیران می‌دانند کدام واحد/نقش اولویت دارد.</p>
+							</div>
+							<div class="cr-od-okr-learn-grid">
+								<div class="cr-od-efqm-learn-card"><h4>Objective</h4><p>هدف کیفی و کوتاه (معمولاً یک جمله) که به واحد یا تیم جهت می‌دهد و باید قابل فهم و انگیزشی باشد.</p><span>«به کجا می‌رویم؟»</span></div>
+								<div class="cr-od-efqm-learn-card"><h4>Key Results</h4><p>نتایج کمی و مشخص که موفقیت هدف را نشان می‌دهند و باید عدد، سنجه و بازه زمانی داشته باشند.</p><span>«از کجا بفهمیم موفق شدیم؟»</span></div>
+								<div class="cr-od-efqm-learn-card"><h4>Cadence / روتین</h4><p>بازبینی هفتگی (Check-in)، ارزیابی سه‌ماهه (Review) و هم‌ترازسازی سالانه؛ این چرخه OKR را زنده نگه می‌دارد.</p><span>«چه زمانی بازبینی کنیم؟»</span></div>
+							</div>
+							<div class="cr-od-efqm-learn-note">
+								<strong>نحوه اتصال به EFQM و موج‌ها:</strong> OKR معیار EFQM «راهبرد و برنامه‌ریزی» را با «نتایج کارکنان و نتایج کلیدی» پیوند می‌زند. اگر OKRها به شاخص‌های ارزیابی گره بخورند، هر بهبود قابل اندازه است و سازمان به‌جای اراده‌محوری، به‌صورت سیستماتیک به سمت موج سوم/چهارم حرکت می‌کند.
+							</div>
+						</div>
+
 						<div class="cr-od-blog-efqm">
 							<div class="cr-od-intro-text">
 								<h3>مدل تعالی EFQM به زبان ساده</h3>
@@ -658,6 +708,32 @@ class Coachroom_OD_Render {
 												<td class="cr-od-table-long"><?php echo esc_html( $crt['action'] ); ?></td>
 											</tr>
 										<?php endforeach; ?>
+									</tbody>
+								</table>
+							</div>
+
+							<div class="cr-od-report-efqm" id="cr-report-okr">
+								<h4>نقشه راه OKR برای تصمیم‌گیری مدیران</h4>
+								<div class="cr-od-report-proof">
+									<div><span>واحد تمرکز سیستمی</span><strong id="cr-report-okr-unit"><?php echo esc_html( $data['okr']['focus_unit']['name'] ?? '—' ); ?></strong><small id="cr-report-okr-unit-score" data-fa-num><?php echo esc_html( $data['okr']['focus_unit']['overall'] ?? '—' ); ?></small></div>
+									<div><span>نقش تمرکز سیستمی</span><strong id="cr-report-okr-role"><?php echo esc_html( $data['okr']['focus_role']['name'] ?? '—' ); ?></strong><small id="cr-report-okr-role-score" data-fa-num><?php echo esc_html( $data['okr']['focus_role']['overall'] ?? '—' ); ?></small></div>
+									<div><span>چرخه هدف‌گذاری</span><strong id="cr-report-okr-cycle"><?php echo esc_html( $data['okr']['cycle'] ); ?></strong><small>بازبینی ۳ ماهه</small></div>
+								</div>
+								<table class="cr-od-table">
+									<thead><tr><th>هدف (Objective)</th><th>نتایج کلیدی (Key Results)</th><th>اولویت</th><th>امتیاز فعلی</th></tr></thead>
+									<tbody id="cr-report-okr-tbody">
+										<?php if ( ! empty( $data['okr']['items'] ) ) : ?>
+											<?php foreach ( $data['okr']['items'] as $okr ) : ?>
+												<tr>
+													<td class="cr-od-table-long"><?php echo esc_html( $okr['objective'] ); ?></td>
+													<td class="cr-od-table-long"><?php echo esc_html( implode( ' | ', $okr['krs'] ) ); ?></td>
+													<td><?php echo esc_html( $okr['priority'] ); ?></td>
+													<td data-fa-num><?php echo esc_html( $okr['score'] ); ?></td>
+												</tr>
+											<?php endforeach; ?>
+										<?php else : ?>
+											<tr><td colspan="4">OKR تثبیت و بهبود مستمر در محدوده هدف تعریف شود.</td></tr>
+										<?php endif; ?>
 									</tbody>
 								</table>
 							</div>
