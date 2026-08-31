@@ -731,6 +731,7 @@
     if (!s || typeof s !== 'object') { issues.push('summary'); }
     if (!Array.isArray(getDims()) || getDims().length < 10) { issues.push('dimensions'); }
     if (!Array.isArray(getQuestions()) || getQuestions().length < 30) { issues.push('questions'); }
+    if (qa('.cr-od-sub-question').length < 30) { issues.push('question-fields'); }
     if (!Array.isArray(getRoles())) { issues.push('roles'); }
     if (!Array.isArray(getDepts())) { issues.push('departments'); }
     if (!Array.isArray(getRecs())) { issues.push('recommendations'); }
