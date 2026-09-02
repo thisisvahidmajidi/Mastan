@@ -46,9 +46,15 @@ class Coachroom_OD_Render {
 		$config     = Coachroom_OD_Helpers::config();
 		$waves      = Coachroom_OD_Helpers::waves();
 		$dims       = Coachroom_OD_Helpers::dimensions();
+		$validity   = Coachroom_OD_Helpers::validity_sources();
 		$questions  = Coachroom_OD_Helpers::questions();
 		$qopts      = Coachroom_OD_Helpers::question_options();
+		$weisbord_boxes     = Coachroom_OD_Helpers::weisbord_boxes();
+		$weisbord_questions = Coachroom_OD_Helpers::weisbord_questions();
 		$strategy   = isset( $data['strategy'] ) ? $data['strategy'] : array();
+		$weisbord   = isset( $data['weisbord'] ) ? $data['weisbord'] : array();
+		$model_matrix = isset( $data['model_matrix'] ) ? $data['model_matrix'] : array();
+		$reliability  = isset( $data['reliability'] ) ? $data['reliability'] : array();
 
 		$strategy_titles = array();
 		foreach ( (array) $strategy['selected'] as $st ) {
@@ -93,9 +99,11 @@ class Coachroom_OD_Render {
 				'nonce'      => wp_create_nonce( 'cr_od_nonce' ),
 				'config'     => $config,
 				'waves'      => $waves,
-				'dimensions' => $dims,
-				'questions'  => $questions,
-				'data'       => $data,
+				'dimensions'       => $dims,
+				'questions'        => $questions,
+				'weisbordBoxes'    => $weisbord_boxes,
+				'weisbordQuestions'=> $weisbord_questions,
+				'data'             => $data,
 			)
 		);
 
@@ -192,6 +200,78 @@ class Coachroom_OD_Render {
 							</div>
 						</article>
 
+						<article class="cr-od-card cr-od-card-wide" id="cr-weisbord-diagnosis">
+							<h3 class="cr-od-card-title">تشخیص سازمان با مدل شش‌جعبه‌ای وایزبورد <span class="cr-od-card-sub">Weisbord, 1976</span></h3>
+							<div class="cr-od-weisbord-summary">
+								<div><span class="cr-od-kpi-label">امتیاز کل شش جعبه</span><strong id="cr-weisbord-overall" data-fa-num><?php echo esc_html( isset( $weisbord['overall'] ) ? $weisbord['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+								<div><span class="cr-od-kpi-label">سطح تشخیص</span><strong id="cr-weisbord-level"><?php echo esc_html( isset( $weisbord['level'] ) ? $weisbord['level'] : '—' ); ?></strong><small>مدل تشخیصی وایزبورد</small></div>
+								<div><span class="cr-od-kpi-label">جعبه‌های بحرانی</span><strong id="cr-weisbord-low-count" data-fa-num><?php echo esc_html( isset( $weisbord['low'] ) ? count( $weisbord['low'] ) : 0 ); ?></strong><small>زیر ۲٫۷۵</small></div>
+							</div>
+							<p class="cr-od-analysis-text" id="cr-weisbord-diagnosis-text"><?php echo esc_html( isset( $weisbord['diagnosis'] ) ? $weisbord['diagnosis'] : 'پس از تکمیل ۱۸ سؤال وایزبورد، نتیجه تشخیصی نمایش داده می‌شود.' ); ?></p>
+							<div class="cr-od-weisbord-grid">
+								<?php if ( ! empty( $weisbord['boxes'] ) ) : ?>
+									<?php foreach ( $weisbord['boxes'] as $box ) : ?>
+										<div class="cr-od-weisbord-box" style="--box-color:<?php echo esc_attr( $box['color'] ); ?>">
+											<div class="cr-od-weisbord-box-head">
+												<span class="cr-od-q-icon"><?php echo esc_html( $box['icon'] ); ?></span>
+												<div><strong><?php echo esc_html( $box['label'] ); ?></strong><small><?php echo esc_html( $box['key_question'] ); ?></small></div>
+												<b class="cr-od-weisbord-score" data-fa-num><?php echo esc_html( $box['score'] ); ?></b>
+											</div>
+											<p class="cr-od-weisbord-likely"><?php echo esc_html( $box['likely'] ); ?></p>
+											<span class="cr-od-weisbord-status" style="color:<?php echo esc_attr( $box['color'] ); ?>"><?php echo esc_html( $box['status'] ); ?></span>
+											<small class="cr-od-weisbord-efqm">اتصال به EFQM: <?php echo esc_html( $box['efqm'] ); ?></small>
+										</div>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</div>
+						</article>
+
+						<article class="cr-od-card cr-od-card-wide" id="cr-model-matrix">
+							<h3 class="cr-od-card-title">ماتریس چندمدلی تشخیص و راهبرد <span class="cr-od-card-sub">موج / EFQM / وایزبورد</span></h3>
+							<div class="cr-od-model-matrix">
+								<?php if ( ! empty( $model_matrix['matrix'] ) ) : ?>
+									<?php foreach ( $model_matrix['matrix'] as $row ) : ?>
+										<div class="cr-od-model-row">
+											<div class="cr-od-model-head"><strong style="color:<?php echo esc_attr( $row['color'] ); ?>"><?php echo esc_html( $row['title'] ); ?></strong></div>
+											<div class="cr-od-model-body">
+												<p><?php echo esc_html( $row['diagnosis'] ); ?></p>
+												<?php if ( ! empty( $row['strategies'] ) ) : ?>
+													<div class="cr-od-model-strategies">
+														<?php foreach ( $row['strategies'] as $s_title ) : ?>
+															<span><?php echo esc_html( $s_title ); ?></span>
+														<?php endforeach; ?>
+													</div>
+												<?php else : ?>
+													<small>راهبرد پس از تکمیل ارزیابی انتخاب می‌شود.</small>
+												<?php endif; ?>
+												<small class="cr-od-model-note"><?php echo esc_html( $row['note'] ); ?></small>
+											</div>
+										</div>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</div>
+						</article>
+
+						<article class="cr-od-card cr-od-card-wide" id="cr-reliability">
+							<h3 class="cr-od-card-title">روایی و پایایی ارزیابی <span class="cr-od-card-sub">ضریب آلفای کرونباخ</span></h3>
+							<div class="cr-od-reliability-grid">
+								<?php foreach ( array( 'overall' => 'کل ارزیابی', 'maturity' => 'ابعاد بلوغ', 'weisbord' => 'شش جعبه وایزبورد' ) as $scope => $title ) : ?>
+									<?php $s = isset( $reliability['scales'][ $scope ] ) ? $reliability['scales'][ $scope ] : array(); ?>
+									<div class="cr-od-reliability-card">
+										<strong><?php echo esc_html( $title ); ?></strong>
+										<span class="cr-od-reliability-alpha"><b data-fa-num><?php echo esc_html( null !== ( $s['alpha'] ?? null ) ? $s['alpha'] : '—' ); ?></b> α</span>
+										<small><?php echo esc_html( ( $s['n'] ?? 0 ) . ' پاسخ‌دهنده کامل — ' . ( $s['note'] ?? 'در انتظار داده کافی' ) ); ?></small>
+									</div>
+								<?php endforeach; ?>
+							</div>
+							<p class="cr-od-analysis-text">برای روایی محتوا، هر بُعد به یک مدل و منبع معتبر نگاشت شده است (مینتزبرگ، برنز و استالکر، راجرز، سنژ، ادموندسون، کرنل، دوئر، وایزبورد و وایتمور). پایایی با آلفای کرونباخ در صورت وجود ۳ یا بیشتر پاسخ‌دهنده کامل محاسبه و در گزارش مدیران شفاف نمایش داده می‌شود.</p>
+							<div class="cr-od-validity-sources">
+								<?php foreach ( $validity as $slug => $src ) : ?>
+									<span><?php echo esc_html( $src['model'] ); ?> — <?php echo esc_html( $src['source'] ); ?></span>
+								<?php endforeach; ?>
+							</div>
+						</article>
+
 						<div class="cr-od-grid cr-od-grid-2">
 							<article class="cr-od-card">
 								<h3 class="cr-od-card-title">رادار بلوغ سازمانی <span class="cr-od-card-sub">مقایسه وضعیت فعلی با هدف</span></h3>
@@ -232,7 +312,7 @@ class Coachroom_OD_Render {
 						<div class="cr-od-assessment-intro">
 							<div class="cr-od-intro-text">
 								<h2>ارزیابی وضعیت موجود سازمان</h2>
-						<p>این فرم شامل <strong data-fa-num><?php echo esc_html( count( $questions ) ); ?></strong> سؤال دقیق در ۱۰ بُعد ساختاری و فرهنگی (رسمیت، پیچیدگی، تمرکز تصمیم، گوش دادن فعال، پرسش‌گری، بازخورد، ارزیابی داده‌محور، امنیت روانی، یادگیری و فرهنگ مربیگری) است. پاسخ‌ها مبناي تشخیص بلوغ و انتخاب راهبرد مناسب می‌شوند؛ هیچ راهبردی از قبل به سازمان تحمیل نمی‌شود.</p>
+						<p>این فرم شامل <strong data-fa-num><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) ); ?></strong> سؤال دقیق است: <strong data-fa-num><?php echo esc_html( count( $questions ) ); ?></strong> سؤال در ۱۰ بُعد ساختاری و فرهنگی برای سنجش موج سازمانی، به‌همراه <strong data-fa-num><?php echo esc_html( count( $weisbord_questions ) ); ?></strong> سؤال تشخیصی بر اساس مدل شش‌جعبه‌ای وایزبورد برای دیدن ساختار رسمی و غیررسمی هم‌زمان. پاسخ‌ها مبنای تشخیص بلوغ، انتخاب راهبرد و سنجش روایی/پایایی می‌شوند؛ هیچ راهبردی از قبل به سازمان تحمیل نمی‌شود.</p>
 							<div class="cr-od-scale-info">
 									<span><b>۱</b> وضعیت ضعیف / بوروکراتیک</span>
 									<span><b>۲</b> در حال بهبود</span>
@@ -297,6 +377,36 @@ class Coachroom_OD_Render {
 									<?php endforeach; ?>
 								</fieldset>
 							<?php endforeach; ?>
+
+							<fieldset class="cr-od-question cr-od-weisbord-section">
+								<legend>
+									<span class="cr-od-q-icon">◫</span>
+									<span class="cr-od-q-label">تشخیص شش‌جعبه‌ای وایزبورد (Weisbord's Six-Box)</span>
+									<span class="cr-od-q-indicator">برای سازمان‌های سلسله‌مراتبی؛ ساختار رسمی و غیررسمی را هم‌زمان می‌بیند.</span>
+									<span class="cr-od-q-count"><?php echo esc_html( count( $weisbord_questions ) ); ?> سؤال</span>
+								</legend>
+
+								<?php foreach ( $weisbord_boxes as $box_slug => $box ) : ?>
+									<fieldset class="cr-od-sub-box" data-box="<?php echo esc_attr( $box_slug ); ?>">
+										<legend><strong><?php echo esc_html( $box['label'] ); ?></strong> <small><?php echo esc_html( $box['key_question'] ); ?></small></legend>
+										<?php foreach ( $weisbord_questions as $wq ) : ?>
+											<?php if ( $wq['dimension'] !== $box_slug ) { continue; } ?>
+											<div class="cr-od-sub-question" data-question-key="<?php echo esc_attr( $wq['key'] ); ?>">
+												<div class="cr-od-question-text"><span class="cr-od-qq"><?php echo esc_html( $wq['label'] ); ?></span></div>
+												<div class="cr-od-levels">
+													<?php for ( $i = 1; $i <= 4; $i++ ) : ?>
+														<label class="cr-od-option">
+															<input type="radio" name="<?php echo esc_attr( $wq['key'] ); ?>" value="<?php echo esc_attr( $i ); ?>" />
+															<span><?php echo esc_html( $i ); ?></span>
+															<small><?php echo esc_html( $qopts[ $i ] ); ?></small>
+														</label>
+													<?php endfor; ?>
+												</div>
+											</div>
+										<?php endforeach; ?>
+									</fieldset>
+								<?php endforeach; ?>
+							</fieldset>
 
 							<div class="cr-od-form-submit">
 								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت ارزیابی و بروزرسانی داشبورد</button>
@@ -564,6 +674,15 @@ class Coachroom_OD_Render {
 								<h3 class="cr-od-card-title">نقش سرپرستان و مربی‌گری (مشروط به آمادگی)</h3>
 								<p>تغییر ساختار بدون تغییر رفتار ممکن نیست. سرپرستان حلقه اتصال مدیریت و کارکنان‌اند؛ اگر آن‌ها به‌جای دستوردهی، <strong>گوش دادن فعال، پرسش‌گری واگرا و بازخورد ساختارمند</strong> را تمرین کنند، رسمیت کم، تمرکز تصمیم واگذار و سیلوهای ساختاری کاهش می‌یابد. اما این پلتفرم «سرپرست → مربی عملکردی» را پیش‌فرض نمی‌کند؛ این راهبرد فقط وقتی از داده‌های بلوغ استخراج می‌شود که امنیت روانی، شنیدن فعال و ساختار به آستانه آمادگی رسیده باشند.</p>
 							</article>
+							<article class="cr-od-card cr-od-blog-card">
+								<h3 class="cr-od-card-title">مدل شش‌جعبه‌ای وایزبورد (Weisbord, 1976)</h3>
+								<p>وایزبورد برای تشخیص سازمان‌های بزرگ سلسله‌مراتبی، شش «جعبه» کلیدی را پیشنهاد می‌کند: <strong>اهداف، ساختار، روابط، پاداش، رهبری و مکانیسم‌های کمکی</strong>. این مدل از آنجا اهمیت دارد که ساختار رسمی و غیررسمی را هم‌زمان می‌بیند و به مدیر کمک می‌کند بداند مشکل صرفاً در «نمودار سازمانی» نیست، بلکه در هدف‌های مبهم، روابط بی‌اعتماد یا پاداش نادرست هم می‌تواند باشد. در این پلتفرم، نتیجه این مدل به‌صورت جداگانه و کنار EFQM نمایش داده می‌شود تا مدیر بتواند سه رویکرد را با هم مقایسه کند.</p>
+								<blockquote>«اگر جعبه‌های اهداف، ساختار، روابط، پاداش و مکانیسم‌های کمکی با هم ناسازگار باشند، رهبری باید تعادل بین آن‌ها را برقرار کند.» — ماروین وایزبورد</blockquote>
+							</article>
+							<article class="cr-od-card cr-od-blog-card">
+								<h3 class="cr-od-card-title">تضمین روایی و پایایی</h3>
+								<p>روایی محتوا یعنی هر سؤال به یک مدل/منبع علمی مشخص متصل باشد؛ در این پلتفرم ابعاد بلوغ به مینتزبرگ، برنز و استالکر، راجرز، سنژ، ادموندسون، دوئر و وایتمور و شش جعبه به وایزبورد نگاشت شده‌اند. پایایی نیز با <strong>ضریب آلفای کرونباخ</strong> برای سه مقیاس «کل ارزیابی»، «ابعاد بلوغ» و «شش جعبه وایزبورد» محاسبه می‌شود. اگر کمتر از ۳ پاسخ‌دهنده کامل وجود داشته باشد، پلتفرم به‌جای عدد گمراه‌کننده، پیام «داده کافی نیست» نمایش می‌دهد.</p>
+							</article>
 						</div>
 
 						<div class="cr-od-blog-waves">
@@ -677,7 +796,7 @@ class Coachroom_OD_Render {
 								</div>
 							</div>
 							<div class="cr-od-efqm-learn-note">
-								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (از ۳۰ سؤال) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
+								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (از ۴۸ سؤال: ۳۰ سؤال بلوغ + ۱۸ سؤال وایزبورد) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
 							</div>
 						</div>
 
@@ -847,7 +966,24 @@ class Coachroom_OD_Render {
 								</div>
 							</div>
 
-							<h3>نتیجه‌گیری مدیریتی</h3>
+							<div class="cr-od-report-efqm" id="cr-report-weisbord">
+							<h4>تشخیص شش‌جعبه‌ای وایزبورد</h4>
+							<div class="cr-od-report-proof">
+								<div><span>امتیاز کل تشخیص</span><strong id="cr-report-weisbord-overall" data-fa-num><?php echo esc_html( isset( $weisbord['overall'] ) ? $weisbord['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+								<div><span>سطح تشخیص</span><strong id="cr-report-weisbord-level"><?php echo esc_html( isset( $weisbord['level'] ) ? $weisbord['level'] : '—' ); ?></strong><small>مدل وایزبورد</small></div>
+								<div><span>جعبه‌های بحرانی</span><strong id="cr-report-weisbord-low" data-fa-num><?php echo esc_html( isset( $weisbord['low'] ) ? count( $weisbord['low'] ) : 0 ); ?></strong><small>از ۶ جعبه</small></div>
+							</div>
+							<p class="cr-od-analysis-text"><?php echo esc_html( isset( $weisbord['diagnosis'] ) ? $weisbord['diagnosis'] : 'پس از تکمیل سؤال‌های تشخیصی، نتیجه نمایش داده می‌شود.' ); ?></p>
+							<?php if ( ! empty( $weisbord['low'] ) ) : ?>
+								<div class="cr-od-report-color-list">
+									<?php foreach ( $weisbord['low'] as $low_box ) : ?>
+										<span style="color:<?php echo esc_attr( $low_box['color'] ); ?>"><?php echo esc_html( $low_box['short'] ); ?> — <?php echo esc_html( $low_box['likely'] ); ?></span>
+									<?php endforeach; ?>
+								</div>
+							<?php endif; ?>
+						</div>
+
+						<h3>نتیجه‌گیری مدیریتی</h3>
 							<div class="cr-od-report-body">
 							<p>سازمان در حال حاضر در <strong><?php echo esc_html( $data['summary']['wave_label'] ); ?></strong> قرار دارد. داده‌های ثبت‌شده نشان می‌دهد پایین‌ترین نمرات مربوط به <strong><?php echo esc_html( implode( '، ', $weak_labels ) ?: 'شاخص‌های اندازه‌گیری‌شده' ); ?></strong> است. همین شاخص‌ها مبناي انتخاب راهبرد قرار می‌گیرند.</p>
 							<p>راهبردها در این گزارش به‌صورت <strong>تطبیقی و بر اساس بلوغ سازمان</strong> انتخاب شده‌اند: <?php echo esc_html( implode( '؛ ', $strategy_titles ) ?: 'برای این دوره هنوز ارزیابی کافی ثبت نشده است.' ); ?>. <?php if ( $coaching_rec ) : ?>داده‌ها نشان می‌دهد سازمان برای راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» آماده است؛ بنابراین این راهبرد در برنامه فعال شده است.<?php else : ?><?php echo esc_html( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : 'راهبرد مربی‌گری در صورت تأیید آستانه‌های آمادگی در دوره‌های بعد اضافه می‌شود.' ); ?><?php endif; ?></p>

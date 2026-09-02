@@ -305,6 +305,408 @@ class Coachroom_OD_Helpers {
 	}
 
 	/**
+	 * Weisbord Six-Box diagnosis model (Weisbord, 1976).
+	 *
+	 * The six boxes form a separate diagnostic lens from the ten maturity
+	 * dimensions. Each box answers a key diagnostic question and connects back
+	 * to the EFQM criteria so management can compare the formal and informal
+	 * structure at the same time.
+	 *
+	 * @return array
+	 */
+	public static function weisbord_boxes() {
+		return array(
+			'weisbord_goals' => array(
+				'slug'        => 'weisbord_goals',
+				'label'       => 'اهداف (Goals)',
+				'short'       => 'اهداف',
+				'icon'        => '◎',
+				'weight'      => 1.2,
+				'key_question'=> 'آیا اهداف سازمان شفاف، مشترک و قابل‌فهم‌اند؟',
+				'likely'      => 'اهداف مبهم، متناقض و صرفاً بالادستی؛ در عین حال جلسات ماهانه ندارند.',
+				'findings'    => 'برای تشخیص، شفافیت هدف در جلسات، هم‌راستایی اهداف واحدها و درک مشترک سنجه‌ها بررسی می‌شود.',
+				'efqm'        => 'راهبرد و برنامه‌ریزی + نتایج کلیدی',
+				'strategy'    => 'feedback_performance',
+			),
+			'weisbord_structure' => array(
+				'slug'        => 'weisbord_structure',
+				'label'       => 'ساختار (Structure)',
+				'short'       => 'ساختار',
+				'icon'        => '⬢',
+				'weight'      => 1.1,
+				'key_question'=> 'آیا ساختار با اهداف همخوانی دارد؟',
+				'likely'      => 'سلسله‌مراتب صلب، سیلوهای سازمانی و بروکراسی ناکارآمد.',
+				'findings'    => 'لایه‌های تصمیم، رسمیت، تمرکز و هماهنگی بین‌واحدی به‌عنوان علائم ساختاری بررسی می‌شوند.',
+				'efqm'        => 'رهبری و حکمرانی + فرایندها',
+				'strategy'    => 'structure_simplification',
+			),
+			'weisbord_relationships' => array(
+				'slug'        => 'weisbord_relationships',
+				'label'       => 'روابط (Relationships)',
+				'short'       => 'روابط',
+				'icon'        => '↔',
+				'weight'      => 1.3,
+				'key_question'=> 'کیفیت تعاملات بین واحدها چگونه است؟',
+				'likely'      => 'رقابت مخرب، بی‌اعتمادی و ارتباطات یک‌طرفه.',
+				'findings'    => 'گوش دادن فعال، بازخورد دوسویه، امنیت روانی و حل‌مسئله مشترک بین‌واحدی بررسی می‌شوند.',
+				'efqm'        => 'منابع انسانی و فرهنگ + نتایج کارکنان',
+				'strategy'    => 'network_innovation',
+			),
+			'weisbord_rewards' => array(
+				'slug'        => 'weisbord_rewards',
+				'label'       => 'پاداش (Rewards)',
+				'short'       => 'پاداش',
+				'icon'        => '◆',
+				'weight'      => 1.2,
+				'key_question'=> 'آیا سیستم انگیزشی با عملکرد واقعی مرتبط است؟',
+				'likely'      => 'پاداش مبتنی بر سابقه و وفاداری، نه شایستگی و عملکرد.',
+				'findings'    => 'پیوند ارزیابی با پاداش، شفافیت معیارها و عادلانه‌بودن نظام پاداش بررسی می‌شوند.',
+				'efqm'        => 'نتایج کارکنان + نتایج کلیدی',
+				'strategy'    => 'feedback_performance',
+			),
+			'weisbord_leadership' => array(
+				'slug'        => 'weisbord_leadership',
+				'label'       => 'رهبری (Leadership)',
+				'short'       => 'رهبری',
+				'icon'        => '♛',
+				'weight'      => 1.4,
+				'key_question'=> 'آیا رهبران تعادل بین جعبه‌ها را حفظ می‌کنند؟',
+				'likely'      => 'مدیریت بحران‌محور، واکنشی و فاقد چشم‌انداز توسعه‌ای.',
+				'findings'    => 'تعادل رهبری بین اهداف، ساختار، روابط، پاداش و فرایندهای کمکی بررسی می‌شود.',
+				'efqm'        => 'رهبری و حکمرانی',
+				'strategy'    => 'safety_learning',
+			),
+			'weisbord_helping' => array(
+				'slug'        => 'weisbord_helping',
+				'label'       => 'مکانیسم‌های کمکی (Helping Mechanisms)',
+				'short'       => 'مکانیسم‌های کمکی',
+				'icon'        => '❖',
+				'weight'      => 1.1,
+				'key_question'=> 'آیا فرایندها، فناوری و سیستم‌های اطلاعاتی کارآمدند؟',
+				'likely'      => 'سیستم‌های اطلاعاتی جزیره‌ای و داده‌های غیرقابل‌اتکا.',
+				'findings'    => 'داده‌محوری، ابزارها، فرآیندهای پشتیبان و کیفیت اطلاعات برای تصمیم‌گیری بررسی می‌شوند.',
+				'efqm'        => 'شراکت‌ها و منابع + فرایندها',
+				'strategy'    => 'learning_sustainability',
+			),
+		);
+	}
+
+	/**
+	 * Weisbord diagnostic questions (3 per box = 18).
+	 *
+	 * @return array
+	 */
+	public static function weisbord_questions() {
+		return array(
+			array( 'key' => 'weisbord_goals_q1', 'dimension' => 'weisbord_goals', 'label' => 'اهداف سازمان برای همه واحدها شفاف و قابل‌فهم است؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_goals_q2', 'dimension' => 'weisbord_goals', 'label' => 'اهداف واحدها با اهداف شرکت هم‌راستا هستند؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_goals_q3', 'dimension' => 'weisbord_goals', 'label' => 'پیشرفت نسبت به اهداف به‌صورت منظم و با سنجه مشخص بررسی می‌شود؟', 'weight' => 1.2 ),
+
+			array( 'key' => 'weisbord_structure_q1', 'dimension' => 'weisbord_structure', 'label' => 'ساختار سازمان برای هدف‌ها و نوع کار مناسب است؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_structure_q2', 'dimension' => 'weisbord_structure', 'label' => 'هماهنگی بین واحدها با کمترین ارجاع اضافی انجام می‌شود؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_structure_q3', 'dimension' => 'weisbord_structure', 'label' => 'لایه‌های تصمیم‌گیری به‌اندازه ضروری محدود شده‌اند؟', 'weight' => 1.1 ),
+
+			array( 'key' => 'weisbord_relationships_q1', 'dimension' => 'weisbord_relationships', 'label' => 'واحدها به‌جای رقابت مخرب با هم همکاری می‌کنند؟', 'weight' => 1.3 ),
+			array( 'key' => 'weisbord_relationships_q2', 'dimension' => 'weisbord_relationships', 'label' => 'ارتباطات بین واحدها دوسویه، امن و بدون ترس است؟', 'weight' => 1.3 ),
+			array( 'key' => 'weisbord_relationships_q3', 'dimension' => 'weisbord_relationships', 'label' => 'اختلاف‌ها به‌صورت باز و با حل مسئله مشترک مدیریت می‌شوند؟', 'weight' => 1.3 ),
+
+			array( 'key' => 'weisbord_rewards_q1', 'dimension' => 'weisbord_rewards', 'label' => 'پاداش و تشویق بر اساس عملکرد واقعی و شایستگی است؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_rewards_q2', 'dimension' => 'weisbord_rewards', 'label' => 'معیارهای پاداش از قبل شفاف و برای همه یکسان است؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_rewards_q3', 'dimension' => 'weisbord_rewards', 'label' => 'رفتارهای همکاری، یادگیری و توسعه نیز پاداش می‌گیرند؟', 'weight' => 1.2 ),
+
+			array( 'key' => 'weisbord_leadership_q1', 'dimension' => 'weisbord_leadership', 'label' => 'رهبران بین اهداف، ساختار، روابط و پاداش تعادل برقرار می‌کنند؟', 'weight' => 1.4 ),
+			array( 'key' => 'weisbord_leadership_q2', 'dimension' => 'weisbord_leadership', 'label' => 'مدیریت به‌جای واکنش به بحران، چشم‌انداز توسعه‌ای دارد؟', 'weight' => 1.4 ),
+			array( 'key' => 'weisbord_leadership_q3', 'dimension' => 'weisbord_leadership', 'label' => 'رهبران الگوی رفتار یادگیری، بازخورد و هم‌آفرینی هستند؟', 'weight' => 1.4 ),
+
+			array( 'key' => 'weisbord_helping_q1', 'dimension' => 'weisbord_helping', 'label' => 'فرایندهای پشتیبان و ابزارها کار را آسان می‌کنند؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_helping_q2', 'dimension' => 'weisbord_helping', 'label' => 'داده‌ها و گزارش‌ها برای تصمیم‌گیری قابل‌اتکا و یکپارچه‌اند؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_helping_q3', 'dimension' => 'weisbord_helping', 'label' => 'سیستم اطلاعاتی از مدیریت پروفایل واحدها و نقش‌ها پشتیبانی می‌کند؟', 'weight' => 1.1 ),
+		);
+	}
+
+	/**
+	 * Aggregate Weisbord box scores into a diagnostic result.
+	 *
+	 * @param array $score_map box slug => 1-4 score.
+	 * @return array
+	 */
+	public static function weisbord_data( $score_map ) {
+		$boxes  = self::weisbord_boxes();
+		$result = array();
+		$sum_w  = 0.0;
+		$sum_sc = 0.0;
+
+		foreach ( $boxes as $slug => $box ) {
+			$score = isset( $score_map[ $slug ] ) ? (float) $score_map[ $slug ] : 1.0;
+			if ( $score < 2.2 ) {
+				$status = 'نیازمند مداخله فوری';
+				$color  = '#b91c1c';
+			} elseif ( $score < 2.75 ) {
+				$status = 'شکننده / در حال شفاف‌سازی';
+				$color  = '#d97706';
+			} elseif ( $score < 3.35 ) {
+				$status = 'در حال بهبود';
+				$color  = '#2563eb';
+			} else {
+				$status = 'مطلوب و پایدار';
+				$color  = '#0f766e';
+			}
+			$result[ $slug ] = array(
+				'slug'         => $slug,
+				'label'        => $box['label'],
+				'short'        => $box['short'],
+				'icon'         => $box['icon'],
+				'score'        => $score,
+				'status'       => $status,
+				'color'        => $color,
+				'key_question' => $box['key_question'],
+				'likely'       => $box['likely'],
+				'findings'     => $box['findings'],
+				'efqm'         => $box['efqm'],
+				'strategy'     => $box['strategy'],
+			);
+			$sum_w  += (float) $box['weight'];
+			$sum_sc += $score * (float) $box['weight'];
+		}
+
+		$overall = $sum_w > 0 ? round( $sum_sc / $sum_w, 2 ) : 2.0;
+
+		$low = array();
+		foreach ( $result as $item ) {
+			if ( $item['score'] < 2.75 ) {
+				$low[] = $item;
+			}
+		}
+		usort( $low, function ( $a, $b ) {
+			return $a['score'] <=> $b['score'];
+		} );
+
+		$diagnosis = 'بر اساس مدل شش‌جعبه‌ای وایزبورد، شش بعد کلیدی سازمان به‌صورت جداگانه تشخیص داده شدند. ';
+		if ( $low ) {
+			$diagnosis .= 'ضعیف‌ترین جعبه‌ها: ' . implode( '، ', array_map( function ( $item ) {
+				return $item['short'] . ' (' . round( $item['score'], 1 ) . ' از ۴)';
+			}, array_slice( $low, 0, 3 ) ) ) . '. ';
+		} else {
+			$diagnosis .= 'هیچ جعبه‌ای در محدوده بحرانی نیست و تمرکز اصلی بر تثبیت و ارتقای مستمر است. ';
+		}
+		$diagnosis .= 'این مدل در کنار EFQM باعث می‌شود ساختار رسمی و غیررسمی به‌صورت هم‌زمان دیده شوند.';
+
+		return array(
+			'overall'   => $overall,
+			'boxes'     => $result,
+			'low'       => array_slice( $low, 0, 3 ),
+			'diagnosis' => $diagnosis,
+			'level'     => $overall < 2.2 ? 'ضعیف/بوروکراتیک' : ( $overall < 2.75 ? 'شکننده' : ( $overall < 3.35 ? 'در حال بهبود' : 'مطلوب' ) ),
+		);
+	}
+
+	/**
+	 * Content-validity mapping: each dimension and box is anchored to a credible
+	 * source/model so the assessment is transparent for managers.
+	 *
+	 * @return array
+	 */
+	public static function validity_sources() {
+		return array(
+			'formalization'        => array( 'model' => 'ساختار سازمانی مینتزبرگ', 'source' => 'Mintzberg, H. (1979). The Structuring of Organizations.' ),
+			'centralization'       => array( 'model' => 'ساختار سازمانی مینتزبرگ', 'source' => 'Mintzberg, H. (1979).' ),
+			'complexity'           => array( 'model' => 'ساختار ارگانیک/مکانیکی', 'source' => 'Burns, T. & Stalker, G. M. (1961). The Management of Innovation.' ),
+			'active_listening'     => array( 'model' => 'مهارت‌های گفت‌وگو و مربی‌گری', 'source' => 'Rogers, C. R. & Farson, R. E. (1957). Active Listening.' ),
+			'questioning'          => array( 'model' => 'پرسش‌گری و سازمان یادگیرنده', 'source' => 'Senge, P. M. (1990). The Fifth Discipline.' ),
+			'feedback'             => array( 'model' => 'بازخورد رفتاری', 'source' => 'Center for Creative Leadership; SBI model.' ),
+			'performance_eval'     => array( 'model' => 'مدیریت عملکرد و OKR', 'source' => 'Doerr, J. (2018). Measure What Matters.' ),
+			'psychological_safety' => array( 'model' => 'امنیت روانی تیم', 'source' => 'Edmondson, A. C. (1999). Psychological Safety and Learning Behavior in Work Teams.' ),
+			'learning_culture'     => array( 'model' => 'سازمان یادگیرنده', 'source' => 'Senge, P. M. (1990). The Fifth Discipline.' ),
+			'coaching_culture'     => array( 'model' => 'مربی‌گری عملکردی', 'source' => 'Whitmore, J. (2009). Coaching for Performance (GROW).' ),
+			'weisbord_goals'       => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976). Organizational Diagnosis.' ),
+			'weisbord_structure'   => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
+			'weisbord_relationships' => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
+			'weisbord_rewards'     => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
+			'weisbord_leadership'  => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
+			'weisbord_helping'     => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
+		);
+	}
+
+	/**
+	 * Multi-perspective diagnostic matrix.
+	 *
+	 * @param array $score_map  Dimension scores.
+	 * @param array $weisbord   Weisbord diagnostic.
+	 * @param array $efqm       EFQM data.
+	 * @param array $strategy   Adaptive strategy data.
+	 * @return array
+	 */
+	public static function model_matrix( $score_map, $weisbord, $efqm, $strategy ) {
+		$wave       = self::wave_from_score( self::weighted_average( $score_map ) );
+		$waves      = self::waves();
+		$strategies = self::strategies();
+
+		$matrix = array(
+			array(
+				'key'      => 'maturity',
+				'title'    => 'موج بلوغ سازمانی',
+				'color'    => isset( $waves[ $wave ]['color'] ) ? $waves[ $wave ]['color'] : '#0d9488',
+				'diagnosis'=> 'سازمان در "' . $waves[ $wave ]['title'] . '" قرار دارد؛ داده‌های ۳۰ سؤالی ابعاد ساختاری و فرهنگی در کنار ۱۸ سؤال تشخیصی شش‌جعبه وایزبورد وضعیت فعلی را نشان می‌دهند.',
+				'strategies' => array(),
+				'note'     => 'این مدل مسیر حرکت به موج بعدی را تعیین می‌کند.',
+			),
+			array(
+				'key'      => 'efqm',
+				'title'    => 'مدل تعالی EFQM',
+				'color'    => '#2563eb',
+				'diagnosis'=> 'امتیاز تعالی ' . ( isset( $efqm['score'] ) ? $efqm['score'] : 0 ) . ' از ۱۰۰۰ با سطح "' . ( isset( $efqm['level'] ) ? $efqm['level'] : '—' ) . '" است.',
+				'strategies' => array(),
+				'note'     => 'نگاه سیستم‌اتیک به توانمندسازها و نتایج؛ مبنای RADAR.',
+			),
+			array(
+				'key'      => 'weisbord',
+				'title'    => 'شش‌جعبه وایزبورد',
+				'color'    => '#7c3aed',
+				'diagnosis'=> ( isset( $weisbord['diagnosis'] ) ? $weisbord['diagnosis'] : 'در انتظار داده کافی.' ),
+				'strategies' => array(),
+				'note'     => 'تشخیص ساختار رسمی و غیررسمی هم‌زمان؛ مناسب سازمان‌های سلسله‌مراتبی.',
+			),
+		);
+
+		foreach ( $matrix as $idx => $row ) {
+			$titles = array();
+			if ( 'maturity' === $row['key'] ) {
+				$titles = array_map( function ( $st ) { return $st['title']; }, (array) $strategy['selected'] );
+			} elseif ( 'efqm' === $row['key'] ) {
+				$titles = array( 'راهبردهای تطبیقی بر اساس معیارهای ضعیف EFQM' );
+			} elseif ( 'weisbord' === $row['key'] && isset( $weisbord['low'] ) ) {
+				$titles = array();
+				foreach ( $weisbord['low'] as $box ) {
+					if ( isset( $strategies[ $box['strategy'] ] ) ) {
+						$titles[] = $strategies[ $box['strategy'] ]['title'];
+					}
+				}
+			}
+			$matrix[ $idx ]['strategies'] = array_slice( array_values( array_unique( array_filter( $titles ) ) ), 0, 3 );
+		}
+
+		return array(
+			'matrix'  => $matrix,
+			'methods' => array(
+				'موج بلوغ سازمانی' => $waves[ $wave ]['short'],
+				'EFQM'          => ( isset( $efqm['level'] ) ? $efqm['level'] : '—' ),
+				'Weisbord'      => ( isset( $weisbord['level'] ) ? $weisbord['level'] : '—' ),
+			),
+		);
+	}
+
+	/**
+	 * Cronbach's alpha reliability estimate for the assessment scales.
+	 *
+	 * Items are the question keys; respondents are the combination of cycle,
+	 * department, role and user. Returns null when there are not enough usable
+	 * respondents so the platform can show "needs more data" instead of a
+	 * misleading number.
+	 *
+	 * @param array $rows Database response rows.
+	 * @return array
+	 */
+	public static function reliability_data( $rows ) {
+		$instances = array();
+		foreach ( $rows as $row ) {
+			$key = $row->cycle_id . '|' . $row->user_id . '|' . $row->department . '|' . $row->assessor_role;
+			if ( ! isset( $instances[ $key ] ) ) {
+				$instances[ $key ] = array();
+			}
+			$instances[ $key ][ $row->question_key ] = max( 1, min( 4, (float) $row->score ) );
+		}
+
+		$dimensions   = self::dimensions();
+		$weisbord     = self::weisbord_boxes();
+		$questions    = self::questions();
+		$wquestions   = self::weisbord_questions();
+
+		$scope_map = array(
+			'overall' => array(
+				'label' => 'کل ارزیابی (۴۸ سؤال)',
+				'items' => array_merge(
+					array_values( array_unique( wp_list_pluck( $questions, 'key' ) ) ),
+					array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) )
+				),
+			),
+			'maturity' => array(
+				'label' => 'ابعاد بلوغ (۱۰ بُعد)',
+				'items' => array_values( array_unique( wp_list_pluck( $questions, 'key' ) ) ),
+			),
+			'weisbord' => array(
+				'label' => 'شش جعبه وایزبورد (۱۸ سؤال)',
+				'items' => array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) ),
+			),
+		);
+
+		$result = array( 'scales' => array(), 'sample_n' => 0, 'valid' => false, 'method' => 'Cronbach alpha' );
+		foreach ( $scope_map as $scope => $meta ) {
+			$usable = array();
+			foreach ( $instances as $key => $scores ) {
+				$ok = true;
+				foreach ( $meta['items'] as $item ) {
+					if ( ! isset( $scores[ $item ] ) ) {
+						$ok = false;
+						break;
+					}
+				}
+				if ( $ok ) {
+					$usable[ $key ] = $scores;
+				}
+			}
+
+			$n = count( $usable );
+			$alpha = null;
+			$label = 'داده کافی نیست؛ حداقل ۳ پاسخ‌دهنده کامل لازم است.';
+			if ( $n >= 3 ) {
+				$k = count( $meta['items'] );
+				$item_vars = array();
+				$totals    = array();
+				foreach ( $meta['items'] as $item ) {
+					$vals = array();
+					foreach ( $usable as $scores ) {
+						$vals[] = (float) $scores[ $item ];
+					}
+					$mean = array_sum( $vals ) / $n;
+					$var  = 0.0;
+					foreach ( $vals as $v ) {
+						$var += ( $v - $mean ) * ( $v - $mean );
+					}
+					$item_vars[ $item ] = $var / $n;
+				}
+				foreach ( $usable as $scores ) {
+					$total = 0;
+					foreach ( $meta['items'] as $item ) {
+						$total += (float) $scores[ $item ];
+					}
+					$totals[] = $total;
+				}
+				$tmean = array_sum( $totals ) / $n;
+				$tvar  = 0.0;
+				foreach ( $totals as $t ) {
+					$tvar += ( $t - $tmean ) * ( $t - $tmean );
+				}
+				$tvar = $tvar / $n;
+				$sum_item_vars = array_sum( $item_vars );
+				if ( $k > 1 && $tvar > 0 ) {
+					$alpha = round( ( $k / ( $k - 1 ) ) * ( 1 - ( $sum_item_vars / $tvar ) ), 3 );
+				}
+				$label = 'پایایی معنا می‌کند: ' . ( $alpha >= 0.7 ? 'قابل قبول/خوب' : ( $alpha !== null && $alpha >= 0.6 ? 'قابل قبول مشروط' : 'نیازمند بررسی' ) ) . ' (' . round( $alpha, 2 ) . ')';
+			}
+
+			$result['scales'][ $scope ] = array(
+				'label'  => $meta['label'],
+				'n'      => $n,
+				'alpha'  => $alpha,
+				'note'   => $label,
+			);
+		}
+		$result['sample_n'] = max( array_column( $result['scales'], 'n' ) );
+		$result['valid']    = $result['sample_n'] >= 3;
+		return $result;
+	}
+
+	/**
 	 * Wave / maturity model.
 	 *
 	 * @return array
@@ -830,6 +1232,11 @@ class Coachroom_OD_Helpers {
 			'maturity_text' => $maturity_text,
 			'coaching_recommended' => $coaching_recommended,
 			'coaching_reason'      => $coaching_reason,
+			'by_model' => array(
+				'weave'   => array_map( function ( $st ) { return $st['title']; }, array_slice( $selected, 0, 3 ) ),
+				'efqm'    => array( 'تقویت معیارهای ضعیف توانمندساز و نتایج' ),
+				'weisbord'=> array( 'شروع از ضعیف‌ترین جعبه شش‌گانه وایزبورد' ),
+			),
 		);
 	}
 
@@ -951,7 +1358,8 @@ class Coachroom_OD_Helpers {
 			? 'بر اساس آستانه‌های آمادگی (امنیت روانی، شنیدن فعال و ساختار)، راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» در این دوره مؤثر است.'
 			: ( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : '' );
 
-		$summary_text = 'بر اساس ارزیابی ۳۰ سؤالی ثبت‌شده، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
+		$summary_text = 'بر اساس ارزیابی ۴۸ سؤالی ثبت‌شده (۳۰ سؤال بلوغ + ۱۸ سؤال تشخیص وایزبورد)، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
+			. 'این نتیجه در کنار مدل تعالی EFQM و مدل شش‌جعبه‌ای وایزبورد بررسی شده است. '
 			. 'راهبردهای متناسب با بلوغ فعلی: ' . $strategy_text . '. ' . $coach_line;
 
 		$efqm_roadmap = array(
@@ -1118,6 +1526,23 @@ class Coachroom_OD_Helpers {
 			);
 		}
 
+		// Weisbord box scores are stored alongside maturity dimensions under
+		// question keys like weisbord_goals_q1. We aggregate them separately so
+		// the formal structure (Mintzberg type) and informal diagnosis stay distinct.
+		$weisbord_boxes = self::weisbord_boxes();
+		$wq_to_box      = array();
+		foreach ( self::weisbord_questions() as $wq ) {
+			$wq_to_box[ $wq['key'] ] = $wq['dimension'];
+		}
+		$w_scores = array();
+		foreach ( $weisbord_boxes as $slug => $box ) {
+			$w_scores[ $slug ] = array(
+				'sum' => 0.0,
+				'n'   => 0,
+			);
+		}
+		$weisbord_score_map = array();
+
 		$by_department = array();
 		$by_role       = array();
 		$count_rows    = 0;
@@ -1127,14 +1552,31 @@ class Coachroom_OD_Helpers {
 		$last_slug       = '';
 
 		foreach ( $rows as $row ) {
-			if ( ! isset( $dimensions[ $row->dimension ] ) ) {
-				continue;
-			}
-			$slug        = $row->dimension;
+			$is_weisbord = isset( $wq_to_box[ $row->question_key ] );
 			$score       = max( 1, min( 4, (float) $row->score ) );
 			$dept_key    = $row->department ? $row->department : 'نامشخص';
 			$role_key    = $row->assessor_role ? $row->assessor_role : 'کارمند';
 			$count_rows ++;
+
+			if ( $is_weisbord ) {
+				$box = $wq_to_box[ $row->question_key ];
+				if ( isset( $w_scores[ $box ] ) ) {
+					$w_scores[ $box ]['sum'] += $score;
+					$w_scores[ $box ]['n']++;
+				}
+				if ( ! empty( $row->created_at ) ) {
+					$last_date     = $row->created_at;
+					$last_department = $dept_key;
+					$last_role       = $role_key;
+					$last_slug       = $box;
+				}
+				continue;
+			}
+
+			if ( ! isset( $dimensions[ $row->dimension ] ) ) {
+				continue;
+			}
+			$slug        = $row->dimension;
 
 			$scores[ $slug ]['sum'] += $score;
 			$scores[ $slug ]['n']++;
@@ -1201,6 +1643,15 @@ class Coachroom_OD_Helpers {
 				'score' => $avg,
 				'icon'  => $dim['icon'],
 			);
+		}
+
+		// Normalize Weisbord box scores.
+		foreach ( $weisbord_boxes as $slug => $box ) {
+			$avg = 1.0;
+			if ( isset( $w_scores[ $slug ]['n'] ) && $w_scores[ $slug ]['n'] > 0 ) {
+				$avg = round( $w_scores[ $slug ]['sum'] / $w_scores[ $slug ]['n'], 2 );
+			}
+			$weisbord_score_map[ $slug ] = $avg;
 		}
 
 		$overall = self::weighted_average( $score_map );
@@ -1328,6 +1779,13 @@ class Coachroom_OD_Helpers {
 		$analysis = self::analysis_data( $score_map, $summary, $efqm );
 		$okr      = self::okr_systemic( $score_map, $departments, $roles, $strategy );
 
+		// Hybrid assessment: the 30 maturity questions plus 18 Weisbord diagnostic
+		// questions (48 total). The pure maturity part remains the wavelet engine.
+		$w_score_map   = $weisbord_score_map;
+		$weisbord      = self::weisbord_data( $w_score_map );
+		$model_matrix  = self::model_matrix( $score_map, $weisbord, $efqm, $strategy );
+		$reliability   = self::reliability_data( $rows );
+
 		// A premature coaching recommendation must not appear while readiness gates are unmet.
 		if ( empty( $strategy['coaching_recommended'] ) ) {
 			$recommendations = array_values( array_filter( $recommendations, function ( $rec ) {
@@ -1347,6 +1805,9 @@ class Coachroom_OD_Helpers {
 			'analysis'       => $analysis,
 			'okr'            => $okr,
 			'strategy'       => $strategy,
+			'weisbord'       => $weisbord,
+			'model_matrix'   => $model_matrix,
+			'reliability'    => $reliability,
 		);
 	}
 

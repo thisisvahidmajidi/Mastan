@@ -50,7 +50,10 @@ class Coachroom_OD_Ajax {
 	public function save_response() {
 		check_ajax_referer( 'cr_od_nonce', 'nonce' );
 
-		$allowed = array_keys( Coachroom_OD_Helpers::dimensions() );
+		$allowed = array_merge(
+			array_keys( Coachroom_OD_Helpers::dimensions() ),
+			array_keys( Coachroom_OD_Helpers::weisbord_boxes() )
+		);
 		$dept    = isset( $_POST['department'] ) ? sanitize_text_field( wp_unslash( $_POST['department'] ) ) : 'نامشخص';
 		$role    = isset( $_POST['assessor_role'] ) ? sanitize_text_field( wp_unslash( $_POST['assessor_role'] ) ) : 'کارمند';
 		$notes   = isset( $_POST['notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['notes'] ) ) : '';

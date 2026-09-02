@@ -9,6 +9,8 @@
     waves: window.crODData.waves || {},
     dimensions: window.crODData.dimensions || {},
     questions: window.crODData.questions || [],
+    weisbordQuestions: window.crODData.weisbordQuestions || [],
+    weisbordBoxes: window.crODData.weisbordBoxes || {},
     data: window.crODData.data || { summary: {}, dimensions: [], departments: [], trend: [], recommendations: [] }
   };
 
@@ -19,7 +21,11 @@
   function getSummary() { return getData().summary || {}; }
   function getDims() { return getData().dimensions || []; }
   function getQuestions() { return state.questions || []; }
+  function getWeisbordQuestions() { return state.weisbordQuestions || []; }
   function getStrategy() { return getData().strategy || {}; }
+  function getWeisbord() { return getData().weisbord || {}; }
+  function getReliability() { return getData().reliability || {}; }
+  function getModelMatrix() { return getData().model_matrix || {}; }
   function getDepts() { return getData().departments || []; }
   function getRoles() { return getData().roles || []; }
   function getTrendData() { return getData().trend || []; }
@@ -90,7 +96,9 @@
     ['پیچیدگی', 'پیچیدگی ساختاری به تعداد لایه‌ها، واحدها و نیاز به هماهنگی بین‌بخشی اشاره دارد؛ پیچیدگی زیاد معمولاً با سیلو و فرایند کند همراه است.'],
     ['تاب‌آوری', 'تاب‌آوری سازمانی یعنی توانایی پیش‌بینی، پاسخ‌دهی و بازگشت سریع از بحران و تغییرات غیرمنتظره بدون از دست دادن عملکرد پایدار.'],
     ['پایداری', 'پایداری یعنی تأمین نیاز امروز بدون به خطر انداختن آینده؛ در سازمان یعنی تعادل میان سود، مردم، جامعه و محیط‌زیست.'],
-    ['کالیبراسیون', 'کالیبراسیون ارزیابی یعنی نشست مدیران برای هم‌سطح‌سازی نمرات و کاهش سوگیری شخصی به‌منظور ارزیابی عادلانه و داده‌محور.']
+    ['کالیبراسیون', 'کالیبراسیون ارزیابی یعنی نشست مدیران برای هم‌سطح‌سازی نمرات و کاهش سوگیری شخصی به‌منظور ارزیابی عادلانه و داده‌محور.'],
+    ['وایزبورد', 'مدل شش‌جعبه‌ای وایزبورد (Weisbord, 1976) سازمان را از شش زاویه اهداف، ساختار، روابط، پاداش، رهبری و مکانیسم‌های کمکی تشخیص می‌دهد و برای سازمان‌های سلسله‌مراتبی مناسب است.'],
+    ['آلفای کرونباخ', 'آلفای کرونباخ ضریب پایایی است که هم‌سو بودن سؤال‌های یک مقیاس را نشان می‌دهد؛ معمولاً ۰.۷ به بالا پایایی قابل قبول محسوب می‌شود.']
   ];
 
   function isSkippableNode(node) {
@@ -693,6 +701,65 @@
     convertDigitsInside(note || document.getElementById('cr-od-root'));
   }
 
+  function refreshWeisbord() {
+    var w = getWeisbord() || {};
+    setText('cr-weisbord-overall', faNum(fmtNum(num(w.overall))));
+    setText('cr-weisbord-level', w.level || '—');
+    setText('cr-weisbord-low-count', faNum((w.low || []).length));
+    setText('cr-weisbord-diagnosis-text', w.diagnosis || 'پس از تکمیل ۱۸ سؤال وایزبورد، نتیجه تشخیصی نمایش داده می‌شود.');
+    setText('cr-report-weisbord-overall', faNum(fmtNum(num(w.overall))));
+    setText('cr-report-weisbord-level', w.level || '—');
+    setText('cr-report-weisbord-low', faNum((w.low || []).length));
+    var grid = q('.cr-od-weisbord-grid');
+    if (!grid || !w.boxes) { return; }
+    grid.innerHTML = w.boxes.map(function (box) {
+      return '<div class="cr-od-weisbord-box" style="--box-color:' + esc(box.color || '#0d9488') + '">' +
+        '<div class="cr-od-weisbord-box-head"><span class="cr-od-q-icon">' + esc(box.icon || '') + '</span>' +
+        '<div><strong>' + esc(box.label || '') + '</strong><small>' + esc(box.key_question || '') + '</small></div>' +
+        '<b class="cr-od-weisbord-score" data-fa-num>' + esc(fmtNum(num(box.score))) + '</b></div>' +
+        '<p class="cr-od-weisbord-likely">' + esc(box.likely || '') + '</p>' +
+        '<span class="cr-od-weisbord-status" style="color:' + esc(box.color || '#0d9488') + '">' + esc(box.status || '') + '</span>' +
+        '<small class="cr-od-weisbord-efqm">اتصال به EFQM: ' + esc(box.efqm || '') + '</small></div>';
+    }).join('');
+    convertDigitsInside(grid);
+  }
+
+  function refreshModelMatrix() {
+    var mm = getModelMatrix() || {};
+    var el = q('#cr-model-matrix .cr-od-model-matrix');
+    if (!el) { return; }
+    var rows = mm.matrix || [];
+    if (!rows.length) {
+      el.innerHTML = '<div class="cr-od-empty">پس از تکمیل ارزیابی، ماتریس چندمدلی نمایش داده می‌شود.</div>';
+      return;
+    }
+    el.innerHTML = rows.map(function (row) {
+      var strategies = (row.strategies || []).length
+        ? row.strategies.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('')
+        : '<small>راهبرد پس از تکمیل ارزیابی انتخاب می‌شود.</small>';
+      return '<div class="cr-od-model-row"><div class="cr-od-model-head"><strong style="color:' + esc(row.color || '#0d9488') + '">' + esc(row.title || '') + '</strong></div>' +
+        '<div class="cr-od-model-body"><p>' + esc(row.diagnosis || '') + '</p>' +
+        '<div class="cr-od-model-strategies">' + strategies + '</div>' +
+        '<small class="cr-od-model-note">' + esc(row.note || '') + '</small></div></div>';
+    }).join('');
+    convertDigitsInside(el);
+  }
+
+  function refreshReliability() {
+    var r = getReliability() || {};
+    var scopes = { overall: 'کل ارزیابی', maturity: 'ابعاد بلوغ', weisbord: 'شش جعبه وایزبورد' };
+    var el = q('#cr-reliability .cr-od-reliability-grid');
+    if (!el) { return; }
+    el.innerHTML = Object.keys(scopes).map(function (scope) {
+      var s = (r.scales && r.scales[scope]) || {};
+      var alpha = (s.alpha === null || s.alpha === undefined) ? '—' : fmtNum(s.alpha, 2);
+      return '<div class="cr-od-reliability-card"><strong>' + esc(scopes[scope]) + '</strong>' +
+        '<span class="cr-od-reliability-alpha"><span data-fa-num>' + esc(alpha) + '</span> α</span>' +
+        '<small>' + esc((s.n || 0) + ' پاسخ‌دهنده کامل — ' + (s.note || 'در انتظار داده کافی')) + '</small></div>';
+    }).join('');
+    convertDigitsInside(el);
+  }
+
   function updateAll() {
     refreshKpis();
     refreshLastSave();
@@ -707,6 +774,9 @@
     refreshAnalysis();
     refreshOkr();
     refreshStrategy();
+    refreshWeisbord();
+    refreshModelMatrix();
+    refreshReliability();
     drawAll();
     convertDigitsInside();
     enhanceGlossary(document.getElementById('cr-od-root'));
@@ -721,7 +791,8 @@
       'cr-od-assessment-form', 'cr-dept-tbody', 'cr-role-tbody', 'cr-role-dim-tbody',
       'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm',
       'cr-okr-grid', 'cr-okr-roadmap', 'cr-report-okr', 'cr-report-okr-tbody',
-      'cr-strategy-note', 'cr-roadmap-phase-30', 'cr-roadmap-phase-60', 'cr-roadmap-phase-90'
+      'cr-strategy-note', 'cr-roadmap-phase-30', 'cr-roadmap-phase-60', 'cr-roadmap-phase-90',
+      'cr-weisbord-diagnosis', 'cr-model-matrix', 'cr-reliability', 'cr-report-weisbord'
     ];
     requiredIds.forEach(function (id) {
       if (!document.getElementById(id)) { issues.push('missing:' + id); }
@@ -731,7 +802,11 @@
     if (!s || typeof s !== 'object') { issues.push('summary'); }
     if (!Array.isArray(getDims()) || getDims().length < 10) { issues.push('dimensions'); }
     if (!Array.isArray(getQuestions()) || getQuestions().length < 30) { issues.push('questions'); }
-    if (qa('.cr-od-sub-question').length < 30) { issues.push('question-fields'); }
+    if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 18) { issues.push('weisbord-questions'); }
+    if (qa('.cr-od-sub-question').length < 48) { issues.push('question-fields'); }
+    if (!getWeisbord() || typeof getWeisbord() !== 'object') { issues.push('weisbord'); }
+    if (!getReliability() || typeof getReliability() !== 'object') { issues.push('reliability'); }
+    if (!getModelMatrix() || typeof getModelMatrix() !== 'object') { issues.push('model-matrix'); }
     if (!Array.isArray(getRoles())) { issues.push('roles'); }
     if (!Array.isArray(getDepts())) { issues.push('departments'); }
     if (!Array.isArray(getRecs())) { issues.push('recommendations'); }
@@ -785,12 +860,12 @@
 
   /* ---------------- Assessment form ---------------- */
   function bindSelection() {
-    qa('.cr-od-question').forEach(function (fieldset) {
+    qa('.cr-od-sub-question').forEach(function (fieldset) {
       qa('input[type=radio]', fieldset).forEach(function (input) {
         input.addEventListener('change', function () {
           qa('.cr-od-option', fieldset).forEach(function (opt) {
             var radio = q('input', opt);
-            opt.classList.toggle('is-selected', radio.checked);
+            if (radio) { opt.classList.toggle('is-selected', radio.checked); }
           });
         });
       });
@@ -832,12 +907,13 @@
       var missing = [];
       var payload = [];
       var questions = getQuestions();
+      var weisbordQuestions = getWeisbordQuestions();
       var dimensionFromSlug = {};
       Object.keys(state.dimensions || {}).forEach(function (slug) {
         dimensionFromSlug[slug] = slug;
       });
 
-      questions.forEach(function (q) {
+      function collect(q) {
         var slug = q.dimension || '';
         var key = q.key || '';
         var name = key || slug;
@@ -851,10 +927,12 @@
             score: Number(checked.value)
           });
         }
-      });
+      }
+      questions.forEach(collect);
+      weisbordQuestions.forEach(collect);
 
       // Fallback: if for any reason question metadata is unavailable, still collect dimension-level radios.
-      if (!questions.length) {
+      if (!questions.length && !weisbordQuestions.length) {
         Object.keys(state.dimensions || {}).forEach(function (slug) {
           var checked = q('input[name="' + slug + '"]:checked', form);
           if (!checked) { missing.push(state.dimensions[slug].label); }
@@ -963,6 +1041,9 @@
     refreshAnalysis();
     refreshOkr();
     refreshStrategy();
+    refreshWeisbord();
+    refreshModelMatrix();
+    refreshReliability();
     drawAll();
     enhanceGlossary(document.getElementById('cr-od-root'));
     convertDigitsInside();

@@ -97,7 +97,7 @@ class Coachroom_OD_DB {
 		}
 
 		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
-			update_option( 'cr_od_db_version', '1.5.0' );
+			update_option( 'cr_od_db_version', '1.6.0' );
 			return;
 		}
 
@@ -111,7 +111,7 @@ class Coachroom_OD_DB {
 			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
-		update_option( 'cr_od_db_version', '1.5.0' );
+		update_option( 'cr_od_db_version', '1.6.0' );
 	}
 
 	/**
@@ -194,6 +194,11 @@ class Coachroom_OD_DB {
 		$dimensions = Coachroom_OD_Helpers::dimensions();
 		$weights    = Coachroom_OD_Helpers::weights();
 		$questions  = Coachroom_OD_Helpers::questions();
+		$wquestions = Coachroom_OD_Helpers::weisbord_questions();
+		$wweights   = array();
+		foreach ( Coachroom_OD_Helpers::weisbord_boxes() as $slug => $box ) {
+			$wweights[ $slug ] = (float) $box['weight'];
+		}
 
 		$cycle1 = self::create_cycle( 'دوره پایه — پاییز ۱۴۰۴', 'ارزیابی اولیه ساختار سازمانی' );
 		$cycle2 = self::create_cycle( 'دوره میانی — زمستان ۱۴۰۴', 'ارزیابی پس از شروع برنامه مربی‌گری سرپرستان' );
@@ -267,35 +272,63 @@ class Coachroom_OD_DB {
 				continue;
 			}
 			foreach ( $departments as $dept_name => $dept_adj ) {
-				foreach ( $questions as $q_index => $question ) {
-					$slug  = $question['dimension'];
-					$score = $base[ $slug ]
-						+ $dept_adj['base']
-						+ ( isset( $dept_adj[ $slug ] ) ? $dept_adj[ $slug ] : 0 )
-						+ $adjust
-						+ ( ( $q_index % 3 ) - 1 ) * 0.15;
-					$score = max( 1, min( 4, round( $score * 2 ) / 2 ) );
-					if ( 0 === $index % 3 ) {
-						$notes = 'شاخص‌های مشاهده‌ای از جلسات تیمی و نتایج ارزیابی عملکرد.';
-					} else {
-						$notes = '';
+				foreach ( $roles as $role_index => $role_name ) {
+					// Every role completes the full assessment for a department so
+					// role/unit profiles and reliability are computed on complete data.
+					foreach ( $questions as $q_index => $question ) {
+						$slug  = $question['dimension'];
+						$score = $base[ $slug ]
+							+ $dept_adj['base']
+							+ ( isset( $dept_adj[ $slug ] ) ? $dept_adj[ $slug ] : 0 )
+							+ $adjust
+							+ ( ( $q_index % 3 ) - 1 ) * 0.15
+							+ ( ( $role_index % 2 ) ? 0.05 : -0.05 );
+						$score = max( 1, min( 4, round( $score * 2 ) / 2 ) );
+						$notes = 0 === ( $index % 3 ) ? 'شاخص‌های مشاهده‌ای از جلسات تیمی و نتایج ارزیابی عملکرد.' : '';
+						self::insert_response(
+							array(
+								'cycle_id'      => $cycle_id,
+								'user_id'       => 0,
+								'organization'  => 'شرکت توسعه انرژی و نفت',
+								'department'    => $dept_name,
+								'assessor_role' => $role_name,
+								'dimension'     => $slug,
+								'question_key'  => $question['key'],
+								'question_label'=> $question['label'],
+								'score'         => $score,
+								'weight'        => isset( $weights[ $slug ] ) ? $weights[ $slug ] : 1,
+								'notes'         => $notes,
+							)
+						);
+						$index++;
 					}
-					self::insert_response(
-						array(
-							'cycle_id'      => $cycle_id,
-							'user_id'       => 0,
-							'organization'  => 'شرکت توسعه انرژی و نفت',
-							'department'    => $dept_name,
-							'assessor_role' => $roles[ $index % count( $roles ) ],
-							'dimension'     => $slug,
-							'question_key'  => $question['key'],
-							'question_label'=> $question['label'],
-							'score'         => $score,
-							'weight'        => isset( $weights[ $slug ] ) ? $weights[ $slug ] : 1,
-							'notes'         => $notes,
-						)
-					);
-					$index++;
+
+					// Weisbord Six-Box diagnostic questions (18 per role/unit/cycle).
+					foreach ( $wquestions as $q_index => $question ) {
+						$slug  = $question['dimension'];
+						$score = 2.3
+							+ $dept_adj['base']
+							+ $adjust
+							+ ( ( $q_index % 3 ) - 1 ) * 0.25
+							+ ( ( $role_index % 2 ) ? 0.05 : -0.05 );
+						$score = max( 1, min( 4, round( $score * 2 ) / 2 ) );
+						self::insert_response(
+							array(
+								'cycle_id'      => $cycle_id,
+								'user_id'       => 0,
+								'organization'  => 'شرکت توسعه انرژی و نفت',
+								'department'    => $dept_name,
+								'assessor_role' => $role_name,
+								'dimension'     => $slug,
+								'question_key'  => $question['key'],
+								'question_label'=> $question['label'],
+								'score'         => $score,
+								'weight'        => isset( $wweights[ $slug ] ) ? $wweights[ $slug ] : 1,
+								'notes'         => '',
+							)
+						);
+						$index++;
+					}
 				}
 			}
 		}
