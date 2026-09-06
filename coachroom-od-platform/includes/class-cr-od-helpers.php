@@ -501,6 +501,293 @@ class Coachroom_OD_Helpers {
 	}
 
 	/**
+	 * Iran Oil & Gas HR strategic programme components (Horizon 1410).
+	 *
+	 * The vision is: "حوزه منابع انسانی صنعت نفت، برند برتر کارفرمایی در ایران
+	 * با شاخصه‌های توسعه‌یافتگی، جذابیت و بهره‌وری بالا در افق ۱۴۱۰".
+	 *
+	 * @return array
+	 */
+	public static function hr1410_components() {
+		return array(
+			'brand_employer' => array(
+				'slug'   => 'brand_employer',
+				'label'  => 'برند برتر کارفرمایی',
+				'short'  => 'برند کارفرمایی',
+				'icon'   => '★',
+				'weight' => 1.2,
+				'kpi'    => 'شاخص برند کارفرمایی و اولویت انتخاب صنعت نفت در بازار کار',
+				'mapping'=> array( 'psychological_safety', 'active_listening', 'weisbord_relationships', 'attitude_satisfaction' ),
+			),
+			'development' => array(
+				'slug'   => 'development',
+				'label'  => 'توسعه‌یافتگی منابع انسانی',
+				'short'  => 'توسعه‌یافتگی',
+				'icon'   => '✦',
+				'weight' => 1.1,
+				'kpi'    => 'شاخص توسعه و یادگیری منابع انسانی؛ سطح شایستگی‌محوری',
+				'mapping'=> array( 'learning_culture', 'coaching_culture', 'questioning', 'attitude_commitment' ),
+			),
+			'attractiveness' => array(
+				'slug'   => 'attractiveness',
+				'label'  => 'جذابیت و نگهداشت',
+				'short'  => 'جذابیت',
+				'icon'   => '♥',
+				'weight' => 1.2,
+				'kpi'    => 'شاخص جذابیت، انگیزه و تمایل به ماندگاری',
+				'mapping'=> array( 'psychological_safety', 'feedback', 'performance_eval', 'attitude_satisfaction', 'attitude_other' ),
+			),
+			'productivity' => array(
+				'slug'   => 'productivity',
+				'label'  => 'بهره‌وری بالا',
+				'short'  => 'بهره‌وری',
+				'icon'   => '↗',
+				'weight' => 1.2,
+				'kpi'    => 'شاخص بهره‌وری منابع انسانی؛ بهبود عملکرد فردی و سازمانی',
+				'mapping'=> array( 'feedback', 'performance_eval', 'formalization', 'complexity', 'attitude_commitment' ),
+			),
+		);
+	}
+
+	/**
+	 * Employee attitude model from the Iran oil industry HR strategy.
+	 *
+	 * Satisfaction, commitment and other attitudes jointly drive employee
+	 * performance, which in turn drives customer satisfaction and profitability.
+	 *
+	 * @return array
+	 */
+	public static function attitude_groups() {
+		return array(
+			'attitude_satisfaction' => array(
+				'slug'   => 'attitude_satisfaction',
+				'label'  => 'رضایت شغلی',
+				'short'  => 'رضایت',
+				'icon'   => '◆',
+				'weight' => 1.3,
+				'items'  => array( 'پیشرفت شغلی', 'ارتباط با مدیران', 'حقوق و مزایا', 'محیط کار' ),
+			),
+			'attitude_commitment' => array(
+				'slug'   => 'attitude_commitment',
+				'label'  => 'تعهد سازمانی',
+				'short'  => 'تعهد',
+				'icon'   => '⚙',
+				'weight' => 1.4,
+				'items'  => array( 'تعهد احساسی', 'تعهد رفتاری', 'هم‌هویتی با سازمان', 'تمایل به مشارکت' ),
+			),
+			'attitude_other' => array(
+				'slug'   => 'attitude_other',
+				'label'  => 'سایر نگرش‌ها',
+				'short'  => 'سایر نگرش‌ها',
+				'icon'   => '❋',
+				'weight' => 1.2,
+				'items'  => array( 'عدالت سازمانی', 'میل به ترک شغل', 'سلامت روان', 'تعادل کار و زندگی' ),
+			),
+		);
+	}
+
+	/**
+	 * Attitude questions (4 per group = 12).
+	 *
+	 * @return array
+	 */
+	public static function attitude_questions() {
+		return array(
+			array( 'key' => 'attitude_satisfaction_q1', 'dimension' => 'attitude_satisfaction', 'label' => 'کارکنان فرصت روشن برای پیشرفت و رشد شغلی دارند؟', 'weight' => 1.3 ),
+			array( 'key' => 'attitude_satisfaction_q2', 'dimension' => 'attitude_satisfaction', 'label' => 'کارکنان امکان ارتباط مؤثر و منظم با مدیران خود دارند؟', 'weight' => 1.3 ),
+			array( 'key' => 'attitude_satisfaction_q3', 'dimension' => 'attitude_satisfaction', 'label' => 'حقوق، مزایا و جبران خدمت منصفانه و مبتنی بر عملکرد است؟', 'weight' => 1.3 ),
+			array( 'key' => 'attitude_satisfaction_q4', 'dimension' => 'attitude_satisfaction', 'label' => 'محیط کار فیزیکی و روانی برای کار و رشد مناسب است؟', 'weight' => 1.3 ),
+
+			array( 'key' => 'attitude_commitment_q1', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان به‌صورت احساسی به سازمان و اهداف آن متعهد هستند؟', 'weight' => 1.4 ),
+			array( 'key' => 'attitude_commitment_q2', 'dimension' => 'attitude_commitment', 'label' => 'تعهد رفتاری (حضور، همکاری و مسئولیت‌پذیری) در عمل دیده می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'attitude_commitment_q3', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان هویت مشترکی با سازمان و صنعت نفت دارند؟', 'weight' => 1.4 ),
+			array( 'key' => 'attitude_commitment_q4', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان داوطلبانه در بهبود و تیم‌های توسعه مشارکت می‌کنند؟', 'weight' => 1.4 ),
+
+			array( 'key' => 'attitude_other_q1', 'dimension' => 'attitude_other', 'label' => 'عدالت سازمانی در توزیع فرصت‌ها، پاداش و دسترسی رعایت می‌شود؟', 'weight' => 1.2 ),
+			array( 'key' => 'attitude_other_q2', 'dimension' => 'attitude_other', 'label' => 'میل به ترک شغل در سازمان پایین است؟', 'weight' => 1.2 ),
+			array( 'key' => 'attitude_other_q3', 'dimension' => 'attitude_other', 'label' => 'سلامت روان و به‌زیستی کارکنان به‌صورت فعال پشتیبانی می‌شود؟', 'weight' => 1.2 ),
+			array( 'key' => 'attitude_other_q4', 'dimension' => 'attitude_other', 'label' => 'تعادل کار و زندگی در برنامه کاری و فرهنگی سازمان لحاظ می‌شود؟', 'weight' => 1.2 ),
+		);
+	}
+
+	/**
+	 * Build the employee attitude model result.
+	 *
+	 * @param array $score_map group slug => 1-4 score.
+	 * @return array
+	 */
+	public static function attitude_data( $score_map ) {
+		$groups   = self::attitude_groups();
+		$result   = array();
+		$sum_w    = 0.0;
+		$sum_sc   = 0.0;
+
+		foreach ( $groups as $slug => $group ) {
+			$score = isset( $score_map[ $slug ] ) ? (float) $score_map[ $slug ] : 1.0;
+			if ( $score < 2.2 ) {
+				$status = 'بحرانی';
+				$color  = '#b91c1c';
+			} elseif ( $score < 2.75 ) {
+				$status = 'شکننده';
+				$color  = '#d97706';
+			} elseif ( $score < 3.35 ) {
+				$status = 'در حال بهبود';
+				$color  = '#2563eb';
+			} else {
+				$status = 'مطلوب';
+				$color  = '#0f766e';
+			}
+			$likely = array(
+				'attitude_satisfaction' => 'افت انگیزه و کیفیت رابطه؛ توقف زنجیره بهبود عملکرد و رضایت مشتری.',
+				'attitude_commitment'   => 'کاهش مشارکت، ماندگاری و هویت سازمانی؛ تضعیف برند کارفرمایی.',
+				'attitude_other'        => 'افزایش میل به ترک و کاهش سلامت روان/تعادل؛ کاهش بهره‌وری پایدار.',
+			);
+			$result[ $slug ] = array(
+				'slug'    => $slug,
+				'label'   => $group['label'],
+				'short'   => $group['short'],
+				'icon'    => $group['icon'],
+				'score'   => $score,
+				'status'  => $status,
+				'color'   => $color,
+				'items'   => $group['items'],
+				'likely'  => isset( $likely[ $slug ] ) ? $likely[ $slug ] : '',
+			);
+			$sum_w  += (float) $group['weight'];
+			$sum_sc += $score * (float) $group['weight'];
+		}
+
+		$satisfaction = isset( $result['attitude_satisfaction']['score'] ) ? $result['attitude_satisfaction']['score'] : 1.0;
+		$commitment   = isset( $result['attitude_commitment']['score'] ) ? $result['attitude_commitment']['score'] : 1.0;
+		$other        = isset( $result['attitude_other']['score'] ) ? $result['attitude_other']['score'] : 1.0;
+
+		$employee_performance = round( ( $satisfaction * 0.35 ) + ( $commitment * 0.40 ) + ( $other * 0.25 ), 2 );
+		$customer_satisfaction = round( ( $employee_performance * 0.70 ) + ( $satisfaction * 0.30 ), 2 );
+		$profitability = round( ( $customer_satisfaction * 0.65 ) + ( $commitment * 0.35 ), 2 );
+
+		$chain = array(
+			'employee_performance' => $employee_performance,
+			'customer_satisfaction'=> $customer_satisfaction,
+			'profitability'        => $profitability,
+		);
+
+		$low = array_values( array_filter( $result, function ( $r ) {
+			return $r['score'] < 2.75;
+		} ) );
+		usort( $low, function ( $a, $b ) {
+			return $a['score'] <=> $b['score'];
+		} );
+
+		$diagnosis = 'بر اساس مدل نگرش شغلی، سه گروه «رضایت، تعهد و سایر نگرش‌ها» به‌صورت جداگانه سنجیده شدند. ';
+		if ( $low ) {
+			$diagnosis .= 'ضعیف‌ترین محورها: ' . implode( '، ', array_map( function ( $r ) {
+				return $r['short'] . ' (' . round( $r['score'], 1 ) . ')';
+			}, array_slice( $low, 0, 3 ) ) ) . '. ';
+		} else {
+			$diagnosis .= 'هیچ محوری در محدوده بحرانی نیست. ';
+		}
+		$diagnosis .= 'این نگرش‌ها به‌ترتیب بر عملکرد کارکنان، رضایت مشتریان و سودآوری اثر می‌گذارند.';
+
+		return array(
+			'overall'     => $sum_w > 0 ? round( $sum_sc / $sum_w, 2 ) : 1.0,
+			'groups'      => $result,
+			'low'         => array_slice( $low, 0, 3 ),
+			'chain'       => $chain,
+			'diagnosis'   => $diagnosis,
+			'level'       => $sum_w > 0 && $sum_sc / $sum_w < 2.2 ? 'بحرانی' : ( $sum_w > 0 && $sum_sc / $sum_w < 2.75 ? 'شکننده' : ( $sum_w > 0 && $sum_sc / $sum_w < 3.35 ? 'در حال بهبود' : 'مطلوب' ) ),
+		);
+	}
+
+	/**
+	 * Build the Horizon-1410 alignment score.
+	 *
+	 * @param array $score_map Dimension/box/attitude score map.
+	 * @param array $attitude  Attitude model result.
+	 * @return array
+	 */
+	public static function hr1410_data( $score_map, $attitude ) {
+		$components = self::hr1410_components();
+		$label_map  = array();
+		foreach ( self::dimensions() as $slug => $dim ) {
+			$label_map[ $slug ] = $dim['label'];
+		}
+		foreach ( self::weisbord_boxes() as $slug => $box ) {
+			$label_map[ $slug ] = $box['label'];
+		}
+		foreach ( self::attitude_groups() as $slug => $group ) {
+			$label_map[ $slug ] = $group['label'];
+		}
+		$result     = array();
+		$sum_w      = 0.0;
+		$sum_sc     = 0.0;
+
+		foreach ( $components as $slug => $comp ) {
+			$scores = array();
+			foreach ( $comp['mapping'] as $m ) {
+				if ( isset( $score_map[ $m ] ) ) {
+					$scores[] = (float) $score_map[ $m ];
+				}
+			}
+			if ( empty( $scores ) && isset( $attitude['overall'] ) ) {
+				$scores[] = (float) $attitude['overall'];
+			}
+			$score = $scores ? round( array_sum( $scores ) / count( $scores ), 2 ) : 1.0;
+			$target = 3.35;
+			$gap = max( 0, round( $target - $score, 2 ) );
+			if ( $score < 2.2 ) {
+				$status = 'نیازمند مداخله فوری';
+				$color  = '#b91c1c';
+			} elseif ( $score < 2.75 ) {
+				$status = 'شکننده';
+				$color  = '#d97706';
+			} elseif ( $score < 3.35 ) {
+				$status = 'در مسیر چشم‌انداز';
+				$color  = '#2563eb';
+			} else {
+				$status = 'منطبق با افق ۱۴۱۰';
+				$color  = '#0f766e';
+			}
+			$mapping_labels = array();
+			foreach ( $comp['mapping'] as $m ) {
+				$mapping_labels[] = isset( $label_map[ $m ] ) ? $label_map[ $m ] : $m;
+			}
+			$result[ $slug ] = array(
+				'slug'           => $slug,
+				'label'          => $comp['label'],
+				'short'          => $comp['short'],
+				'icon'           => $comp['icon'],
+				'score'          => $score,
+				'gap'            => $gap,
+				'status'         => $status,
+				'color'          => $color,
+				'kpi'            => $comp['kpi'],
+				'mapping'        => $comp['mapping'],
+				'mapping_labels' => $mapping_labels,
+			);
+			$sum_w  += (float) $comp['weight'];
+			$sum_sc += $score * (float) $comp['weight'];
+		}
+
+		$overall = $sum_w > 0 ? round( $sum_sc / $sum_w, 2 ) : 1.0;
+		$gap     = max( 0, round( 3.35 - $overall, 2 ) );
+
+		$priority = array_values( $result );
+		usort( $priority, function ( $a, $b ) {
+			return $a['score'] <=> $b['score'];
+		} );
+
+		return array(
+			'overall'    => $overall,
+			'gap'        => $gap,
+			'components' => $result,
+			'priority'   => array_slice( $priority, 0, 3 ),
+			'vision'     => 'حوزه منابع انسانی صنعت نفت، برند برتر کارفرمایی در ایران با شاخصه‌های توسعه‌یافتگی، جذابیت و بهره‌وری بالا در افق ۱۴۱۰.',
+			'aligned'    => $overall >= 3.35,
+			'level'      => $overall < 2.2 ? 'فاصله زیاد از چشم‌انداز' : ( $overall < 2.75 ? 'فاصله قابل توجه' : ( $overall < 3.35 ? 'در مسیر چشم‌انداز' : 'منطبق با چشم‌انداز' ) ),
+		);
+	}
+
+	/**
 	 * Content-validity mapping: each dimension and box is anchored to a credible
 	 * source/model so the assessment is transparent for managers.
 	 *
@@ -524,6 +811,9 @@ class Coachroom_OD_Helpers {
 			'weisbord_rewards'     => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
 			'weisbord_leadership'  => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
 			'weisbord_helping'     => array( 'model' => 'مدل شش‌جعبه‌ای وایزبورد', 'source' => 'Weisbord, M. R. (1976).' ),
+			'attitude_satisfaction' => array( 'model' => 'مدل نگرش شغلی منابع انسانی صنعت نفت', 'source' => 'برنامه راهبردی توسعه منابع انسانی صنعت نفت در افق ۱۴۱۰.' ),
+			'attitude_commitment'  => array( 'model' => 'تعهد سازمانی', 'source' => 'Meyer, J. P. & Allen, N. J. (1991). A three-component conceptualization of organizational commitment.' ),
+			'attitude_other'       => array( 'model' => 'عدالت سازمانی، به‌زیستی و تمایل به ماندگاری', 'source' => 'Greenberg, J. (1987). Organizational Justice.' ),
 		);
 	}
 
@@ -534,9 +824,11 @@ class Coachroom_OD_Helpers {
 	 * @param array $weisbord   Weisbord diagnostic.
 	 * @param array $efqm       EFQM data.
 	 * @param array $strategy   Adaptive strategy data.
+	 * @param array $attitude   Attitude model data.
+	 * @param array $hr1410     Horizon 1410 data.
 	 * @return array
 	 */
-	public static function model_matrix( $score_map, $weisbord, $efqm, $strategy ) {
+	public static function model_matrix( $score_map, $weisbord, $efqm, $strategy, $attitude = array(), $hr1410 = array() ) {
 		$wave       = self::wave_from_score( self::weighted_average( $score_map ) );
 		$waves      = self::waves();
 		$strategies = self::strategies();
@@ -566,6 +858,24 @@ class Coachroom_OD_Helpers {
 				'strategies' => array(),
 				'note'     => 'تشخیص ساختار رسمی و غیررسمی هم‌زمان؛ مناسب سازمان‌های سلسله‌مراتبی.',
 			),
+			array(
+				'key'      => 'attitude',
+				'title'    => 'مدل نگرش شغلی',
+				'color'    => '#0f766e',
+				'diagnosis'=> ( isset( $attitude['diagnosis'] ) ? $attitude['diagnosis'] : 'در انتظار داده نگرش شغلی.' ),
+				'strategies' => array(),
+				'note'     => 'رضایت، تعهد و سایر نگرش‌ها → بهبود عملکرد کارکنان → رضایت مشتریان → سودآوری.',
+			),
+			array(
+				'key'      => 'hr1410',
+				'title'    => 'برنامه راهبردی منابع انسانی نفت ۱۴۱۰',
+				'color'    => '#d97706',
+				'diagnosis'=> isset( $hr1410['overall'] )
+					? 'هم‌راستایی با چشم‌انداز ۱۴۱۰: ' . $hr1410['overall'] . ' از ۴ (فاصله ' . $hr1410['gap'] . ' تا هدف). ' . $hr1410['vision']
+					: 'در انتظار داده کافی.',
+				'strategies' => array(),
+				'note'     => 'کانون تمرکز: برند کارفرمایی، توسعه‌یافتگی، جذابیت و بهره‌وری.',
+			),
 		);
 
 		foreach ( $matrix as $idx => $row ) {
@@ -581,6 +891,16 @@ class Coachroom_OD_Helpers {
 						$titles[] = $strategies[ $box['strategy'] ]['title'];
 					}
 				}
+			} elseif ( 'attitude' === $row['key'] && isset( $attitude['low'] ) ) {
+				foreach ( $attitude['low'] as $g ) {
+					$titles[] = 'تقویت ' . $g['short'];
+				}
+				$titles[] = 'OKR بهبود عملکرد کارکنان';
+			} elseif ( 'hr1410' === $row['key'] && isset( $hr1410['priority'] ) ) {
+				foreach ( $hr1410['priority'] as $comp ) {
+					$titles[] = 'تقویت ' . $comp['short'];
+				}
+				$titles[] = 'شاخص‌های رصد ۱۴۱۰';
 			}
 			$matrix[ $idx ]['strategies'] = array_slice( array_values( array_unique( array_filter( $titles ) ) ), 0, 3 );
 		}
@@ -591,6 +911,8 @@ class Coachroom_OD_Helpers {
 				'موج بلوغ سازمانی' => $waves[ $wave ]['short'],
 				'EFQM'          => ( isset( $efqm['level'] ) ? $efqm['level'] : '—' ),
 				'Weisbord'      => ( isset( $weisbord['level'] ) ? $weisbord['level'] : '—' ),
+				'نگرش شغلی'     => ( isset( $attitude['level'] ) ? $attitude['level'] : '—' ),
+				'افق ۱۴۱۰'      => ( isset( $hr1410['level'] ) ? $hr1410['level'] : '—' ),
 			),
 		);
 	}
@@ -620,13 +942,15 @@ class Coachroom_OD_Helpers {
 		$weisbord     = self::weisbord_boxes();
 		$questions    = self::questions();
 		$wquestions   = self::weisbord_questions();
+		$aqquestions  = self::attitude_questions();
 
 		$scope_map = array(
 			'overall' => array(
-				'label' => 'کل ارزیابی (۴۸ سؤال)',
+				'label' => 'کل ارزیابی (۶۰ سؤال)',
 				'items' => array_merge(
 					array_values( array_unique( wp_list_pluck( $questions, 'key' ) ) ),
-					array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) )
+					array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) ),
+					array_values( array_unique( wp_list_pluck( $aqquestions, 'key' ) ) )
 				),
 			),
 			'maturity' => array(
@@ -636,6 +960,10 @@ class Coachroom_OD_Helpers {
 			'weisbord' => array(
 				'label' => 'شش جعبه وایزبورد (۱۸ سؤال)',
 				'items' => array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) ),
+			),
+			'attitude' => array(
+				'label' => 'مدل نگرش شغلی (۱۲ سؤال)',
+				'items' => array_values( array_unique( wp_list_pluck( $aqquestions, 'key' ) ) ),
 			),
 		);
 
@@ -993,9 +1321,12 @@ class Coachroom_OD_Helpers {
 	 * @param array $score_map slug => score.
 	 * @param array $departments Department groups.
 	 * @param array $roles       Role groups.
+	 * @param array $strategy    Strategy data.
+	 * @param array $attitude    Employee attitude data.
+	 * @param array $hr1410      Horizon 1410 data.
 	 * @return array
 	 */
-	public static function okr_systemic( $score_map, $departments, $roles, $strategy = array() ) {
+	public static function okr_systemic( $score_map, $departments, $roles, $strategy = array(), $attitude = array(), $hr1410 = array() ) {
 		$okrs = self::okr_data( $score_map );
 
 		// The coaching-oriented OKR is only included when the maturity data supports it.
@@ -1004,6 +1335,41 @@ class Coachroom_OD_Helpers {
 			$okrs = array_values( array_filter( $okrs, function ( $item ) {
 				return 'coaching_culture' !== $item['slug'];
 			} ) );
+		}
+
+		// Horizon-1410 monitoring OKR: keeps the strategic HR programme visible
+		// every 90 days and ties the roadmap to a measurable gap.
+		if ( ! empty( $hr1410 ) && isset( $hr1410['overall'] ) && $hr1410['overall'] < 3.35 ) {
+			$krs = array(
+				'افزایش امتیاز هم‌راستایی کل به‌حداقل ۳٫۳۵ در ۹۰ روز',
+				'پایش سه جزء اولویت‌دار: ' . implode( '، ', array_map( function ( $c ) { return $c['short']; }, $hr1410['priority'] ) ),
+			);
+			$okrs[] = array(
+				'slug'      => 'hr1410_alignment',
+				'objective' => 'هم‌راستایی با برنامه راهبردی منابع انسانی صنعت نفت (افق ۱۴۱۰)',
+				'krs'       => $krs,
+				'score'     => $hr1410['overall'],
+				'gap'       => $hr1410['gap'],
+				'priority'  => $hr1410['overall'] < 2.75 ? 'O1 — اولویت فوری' : 'O2 — اولویت مهم',
+				'owner'     => 'HR + معاونت توسعه سازمانی',
+			);
+		}
+
+		// Attitude performance OKR: the model explicitly predicts profitability,
+		// so the roadmap includes an objective to move the chain.
+		if ( ! empty( $attitude ) && isset( $attitude['overall'] ) && $attitude['overall'] < 3.35 ) {
+			$okrs[] = array(
+				'slug'      => 'attitude_chain',
+				'objective' => 'ارتقای نگرش کارکنان و زنجیره عملکرد-مشتری-سودآوری',
+				'krs'       => array(
+					'افزایش رضایت و تعهد به‌نمای زنجیره ارزش در ۹۰ روز',
+					'پایش شاخص عملکرد کارکنان و رضایت مشتریان: ' . ( isset( $attitude['chain']['customer_satisfaction'] ) ? $attitude['chain']['customer_satisfaction'] : '—' ),
+				),
+				'score'     => $attitude['overall'],
+				'gap'       => isset( $attitude['gap'] ) ? $attitude['gap'] : max( 0, round( 3.35 - $attitude['overall'], 2 ) ),
+				'priority'  => $attitude['overall'] < 2.75 ? 'O1 — اولویت فوری' : 'O2 — اولویت مهم',
+				'owner'     => 'HR + سرپرستان + روابط صنعتی',
+			);
 		}
 
 		$top_dept  = array();
@@ -1358,8 +1724,8 @@ class Coachroom_OD_Helpers {
 			? 'بر اساس آستانه‌های آمادگی (امنیت روانی، شنیدن فعال و ساختار)، راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» در این دوره مؤثر است.'
 			: ( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : '' );
 
-		$summary_text = 'بر اساس ارزیابی ۴۸ سؤالی ثبت‌شده (۳۰ سؤال بلوغ + ۱۸ سؤال تشخیص وایزبورد)، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
-			. 'این نتیجه در کنار مدل تعالی EFQM و مدل شش‌جعبه‌ای وایزبورد بررسی شده است. '
+		$summary_text = 'بر اساس ارزیابی ۶۰ سؤالی ثبت‌شده (۳۰ سؤال بلوغ + ۱۸ سؤال تشخیص وایزبورد + ۱۲ سؤال نگرش شغلی)، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
+			. 'این نتیجه در کنار مدل تعالی EFQM، مدل شش‌جعبه‌ای وایزبورد و مدل نگرش شغلی بررسی شده است. '
 			. 'راهبردهای متناسب با بلوغ فعلی: ' . $strategy_text . '. ' . $coach_line;
 
 		$efqm_roadmap = array(
@@ -1543,6 +1909,22 @@ class Coachroom_OD_Helpers {
 		}
 		$weisbord_score_map = array();
 
+		// Employee attitude questions are aggregated in their own groups so the
+		// satisfaction/commitment/other → performance chain can be modelled.
+		$attitude_groups = self::attitude_groups();
+		$aq_to_group     = array();
+		foreach ( self::attitude_questions() as $aq ) {
+			$aq_to_group[ $aq['key'] ] = $aq['dimension'];
+		}
+		$a_scores = array();
+		foreach ( $attitude_groups as $slug => $group ) {
+			$a_scores[ $slug ] = array(
+				'sum' => 0.0,
+				'n'   => 0,
+			);
+		}
+		$attitude_score_map = array();
+
 		$by_department = array();
 		$by_role       = array();
 		$count_rows    = 0;
@@ -1553,10 +1935,26 @@ class Coachroom_OD_Helpers {
 
 		foreach ( $rows as $row ) {
 			$is_weisbord = isset( $wq_to_box[ $row->question_key ] );
+			$is_attitude = isset( $aq_to_group[ $row->question_key ] );
 			$score       = max( 1, min( 4, (float) $row->score ) );
 			$dept_key    = $row->department ? $row->department : 'نامشخص';
 			$role_key    = $row->assessor_role ? $row->assessor_role : 'کارمند';
 			$count_rows ++;
+
+			if ( $is_attitude ) {
+				$group = $aq_to_group[ $row->question_key ];
+				if ( isset( $a_scores[ $group ] ) ) {
+					$a_scores[ $group ]['sum'] += $score;
+					$a_scores[ $group ]['n']++;
+				}
+				if ( ! empty( $row->created_at ) ) {
+					$last_date     = $row->created_at;
+					$last_department = $dept_key;
+					$last_role       = $role_key;
+					$last_slug       = $group;
+				}
+				continue;
+			}
 
 			if ( $is_weisbord ) {
 				$box = $wq_to_box[ $row->question_key ];
@@ -1652,6 +2050,15 @@ class Coachroom_OD_Helpers {
 				$avg = round( $w_scores[ $slug ]['sum'] / $w_scores[ $slug ]['n'], 2 );
 			}
 			$weisbord_score_map[ $slug ] = $avg;
+		}
+
+		// Normalize employee attitude group scores.
+		foreach ( $attitude_groups as $slug => $group ) {
+			$avg = 1.0;
+			if ( isset( $a_scores[ $slug ]['n'] ) && $a_scores[ $slug ]['n'] > 0 ) {
+				$avg = round( $a_scores[ $slug ]['sum'] / $a_scores[ $slug ]['n'], 2 );
+			}
+			$attitude_score_map[ $slug ] = $avg;
 		}
 
 		$overall = self::weighted_average( $score_map );
@@ -1777,13 +2184,18 @@ class Coachroom_OD_Helpers {
 		$efqm    = self::efqm_data( $score_map );
 		$strategy = self::strategy_data( $score_map, $departments, $roles );
 		$analysis = self::analysis_data( $score_map, $summary, $efqm );
-		$okr      = self::okr_systemic( $score_map, $departments, $roles, $strategy );
 
-		// Hybrid assessment: the 30 maturity questions plus 18 Weisbord diagnostic
-		// questions (48 total). The pure maturity part remains the wavelet engine.
+		// Hybrid assessment: 30 maturity + 18 Weisbord + 12 attitude = 60 items.
+		// The pure maturity part remains the wavelet engine; the other lenses stay
+		// separate so each model can be diagnosed independently.
 		$w_score_map   = $weisbord_score_map;
+		$a_score_map   = $attitude_score_map;
 		$weisbord      = self::weisbord_data( $w_score_map );
-		$model_matrix  = self::model_matrix( $score_map, $weisbord, $efqm, $strategy );
+		$attitude      = self::attitude_data( $a_score_map );
+		$all_score_map = array_merge( $score_map, $w_score_map, $a_score_map );
+		$hr1410        = self::hr1410_data( $all_score_map, $attitude );
+		$okr           = self::okr_systemic( $score_map, $departments, $roles, $strategy, $attitude, $hr1410 );
+		$model_matrix  = self::model_matrix( $score_map, $weisbord, $efqm, $strategy, $attitude, $hr1410 );
 		$reliability   = self::reliability_data( $rows );
 
 		// A premature coaching recommendation must not appear while readiness gates are unmet.
@@ -1806,6 +2218,8 @@ class Coachroom_OD_Helpers {
 			'okr'            => $okr,
 			'strategy'       => $strategy,
 			'weisbord'       => $weisbord,
+			'attitude'       => $attitude,
+			'hr1410'         => $hr1410,
 			'model_matrix'   => $model_matrix,
 			'reliability'    => $reliability,
 		);

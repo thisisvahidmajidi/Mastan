@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       CoachRoom - Organizational Development Platform
  * Plugin URI:        https://coachroom.ir
- * Description:       سامانه توسعه سازمانی CoachRoom؛ تشخیص ۴۸ سؤالی سازمان بر اساس موج‌های سازمانی + مدل شش‌جعبه‌ای وایزبورد در کنار مدل تعالی EFQM، سنجش روایی و پایایی، و انتخاب تطبیقی راهبرد توسعه بر اساس بلوغ واقعی. مخصوص سازمان‌های حوزه انرژی، نفت و گاز.
- * Version:           1.6.0
+ * Description:       سامانه توسعه سازمانی CoachRoom؛ تشخیص ۶۰ سؤالی سازمان بر اساس موج‌های سازمانی + مدل شش‌جعبه‌ای وایزبورد + مدل نگرش شغلی کارکنان در کنار مدل تعالی EFQM، هم‌راستا با برنامه راهبردی منابع انسانی صنعت نفت در افق ۱۴۱۰. شامل سنجش روایی و پایایی، انتخاب تطبیقی راهبرد، OKR، نقشه راه و گزارش مدیران.
+ * Version:           1.7.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            CoachRoom
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CR_OD_VERSION', '1.6.0' );
+define( 'CR_OD_VERSION', '1.7.0' );
 define( 'CR_OD_PLUGIN_FILE', __FILE__ );
 define( 'CR_OD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CR_OD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -143,10 +143,11 @@ final class Coachroom_OD_Platform {
 				<p>ویژگی‌های پلتفرم:</p>
 				<ul style="list-style:disc;padding-inline-start:20px;">
 					<li>داشبورد شاخص‌های سازمانی با نمودارهای رادار، میله‌ای و روند</li>
-					<li>ارزیابی ۴۸ سؤالی: ۳۰ سؤال بلوغ سازمانی + ۱۸ سؤال تشخیصی مدل شش‌جعبه‌ای وایزبورد</li>
-					<li>تشخیص موج سازمانی، مدل تعالی EFQM و شش جعبه وایزبورد به‌صورت جداگانه؛ انتخاب تطبیقی راهبرد</li>
+					<li>ارزیابی ۶۰ سؤالی: ۳۰ سؤال بلوغ سازمانی + ۱۸ سؤال تشخیصی شش‌جعبه‌ای وایزبورد + ۱۲ سؤال مدل نگرش شغلی</li>
+					<li>تشخیص موج سازمانی، مدل تعالی EFQM، شش جعبه وایزبورد، مدل نگرش شغلی و افق ۱۴۱۰ به‌صورت جداگانه؛ انتخاب تطبیقی راهبرد</li>
+					<li>صفحه فرود و درگاه ثبت‌نام (نام کاربری + ایمیل یا ورود به coachroom.ir) پیش از ارزیابی/تحلیل</li>
 					<li>سنجش روایی محتوا و پایایی (آلفای کرونباخ) در پنل مدیران</li>
-					<li>نقشه راه ۳۰/۶۰/۹۰ روزه مبتنی بر بلوغ واقعی؛ مربی‌گری سرپرستان فقط در صورت آمادگی</li>
+					<li>نقشه راه ۳۰/۶۰/۹۰ روزه مبتنی بر بلوغ واقعی و OKR افق ۱۴۱۰؛ مربی‌گری سرپرستان فقط در صورت آمادگی</li>
 					<li>خروجی CSV و قابلیت چاپ گزارش مدیران</li>
 				</ul>
 				<hr/>
@@ -253,8 +254,10 @@ final class Coachroom_OD_Platform {
 							<tr><th>موج فعلی</th><td><?php echo esc_html( $health['dashboard']['summary']['wave_label'] ); ?></td></tr>
 							<tr><th>اقدامات اولویت‌دار</th><td><?php echo esc_html( count( $health['dashboard']['recommendations'] ) ); ?> مورد</td></tr>
 							<tr><th>راهبرد منتخب</th><td><?php echo esc_html( count( $health['dashboard']['strategy']['selected'] ?? array() ) ); ?> راهبرد؛ مربی‌گری سرپرستان: <?php echo ! empty( $health['dashboard']['strategy']['coaching_recommended'] ) ? 'فعال ✓' : 'غیرفعال (با دلیل)'; ?></td></tr>
-							<tr><th>تشخیص شش‌جعبه وایزبورد</th><td><?php echo esc_html( $health['dashboard']['weisbord']['level'] ?? '—' ); ?> — امتیاز <?php echo esc_html( $health['dashboard']['weisbord']['overall'] ?? '—' ); ?> از ۴</td></tr>
-							<tr><th>پایایی (آلفا)</th><td><?php echo esc_html( $health['dashboard']['reliability']['scales']['overall']['alpha'] ?? '—' ); ?> — <?php echo esc_html( $health['dashboard']['reliability']['scales']['overall']['note'] ?? 'داده کافی نیست' ); ?></td></tr>
+						<tr><th>تشخیص شش‌جعبه وایزبورد</th><td><?php echo esc_html( $health['dashboard']['weisbord']['level'] ?? '—' ); ?> — امتیاز <?php echo esc_html( $health['dashboard']['weisbord']['overall'] ?? '—' ); ?> از ۴</td></tr>
+						<tr><th>مدل نگرش شغلی</th><td><?php echo esc_html( $health['dashboard']['attitude']['level'] ?? '—' ); ?> — امتیاز <?php echo esc_html( $health['dashboard']['attitude']['overall'] ?? '—' ); ?> از ۴</td></tr>
+						<tr><th>هم‌راستایی افق ۱۴۱۰</th><td><?php echo esc_html( $health['dashboard']['hr1410']['level'] ?? '—' ); ?> — امتیاز <?php echo esc_html( $health['dashboard']['hr1410']['overall'] ?? '—' ); ?>، فاصله تا هدف <?php echo esc_html( $health['dashboard']['hr1410']['gap'] ?? '—' ); ?></td></tr>
+						<tr><th>پایایی (آلفا)</th><td><?php echo esc_html( $health['dashboard']['reliability']['scales']['overall']['alpha'] ?? '—' ); ?> — <?php echo esc_html( $health['dashboard']['reliability']['scales']['overall']['note'] ?? 'داده کافی نیست' ); ?></td></tr>
 						<?php endif; ?>
 					</tbody>
 				</table>

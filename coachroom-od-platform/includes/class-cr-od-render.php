@@ -53,6 +53,8 @@ class Coachroom_OD_Render {
 		$weisbord_questions = Coachroom_OD_Helpers::weisbord_questions();
 		$strategy   = isset( $data['strategy'] ) ? $data['strategy'] : array();
 		$weisbord   = isset( $data['weisbord'] ) ? $data['weisbord'] : array();
+		$attitude   = isset( $data['attitude'] ) ? $data['attitude'] : array();
+		$hr1410     = isset( $data['hr1410'] ) ? $data['hr1410'] : array();
 		$model_matrix = isset( $data['model_matrix'] ) ? $data['model_matrix'] : array();
 		$reliability  = isset( $data['reliability'] ) ? $data['reliability'] : array();
 
@@ -103,12 +105,65 @@ class Coachroom_OD_Render {
 				'questions'        => $questions,
 				'weisbordBoxes'    => $weisbord_boxes,
 				'weisbordQuestions'=> $weisbord_questions,
+				'attitudeQuestions'=> Coachroom_OD_Helpers::attitude_questions(),
+				'attitudeGroups'   => Coachroom_OD_Helpers::attitude_groups(),
+				'hr1410Components' => Coachroom_OD_Helpers::hr1410_components(),
 				'data'             => $data,
+			)
+		);
+
+		wp_localize_script(
+			'cr-od-platform',
+			'crODGate',
+			array(
+				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+				'nonce'      => wp_create_nonce( 'cr_od_nonce' ),
+				'siteUrl'    => home_url( '/' ),
+				'coachroom'  => 'https://coachroom.ir/account/',
+				'config'     => $config,
 			)
 		);
 
 		$img   = 'assets/img/';
 		$brand = 'CoachRoom';
+
+		$gate_ok = current_user_can( 'manage_options' ) || is_user_logged_in() || ( isset( $_COOKIE['cr_od_participant'] ) && $_COOKIE['cr_od_participant'] );
+		if ( ! $gate_ok ) {
+			ob_start();
+			?>
+			<div class="cr-od-root cr-od-landing" id="cr-od-landing" dir="rtl" lang="fa">
+				<section class="cr-od-landing-hero">
+					<div class="cr-od-landing-content">
+						<div class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?></div>
+						<h1>پلتفرم توسعه سازمانی <span><?php echo esc_html( $brand ); ?></span></h1>
+						<p>تشخیص شفاف وضعیت موجود سازمان بر اساس <strong>موج‌های سازمانی</strong>، <strong>مدل تعالی EFQM</strong>، <strong>شش‌جعبه وایزبورد</strong> و <strong>مدل نگرش شغلی</strong>، هم‌راستا با برنامه راهبردی توسعه منابع انسانی صنعت نفت در افق ۱۴۱۰.</p>
+						<div class="cr-od-landing-tips">
+							<div><strong>۶۰</strong> سؤال دقیق</div>
+							<div><strong>۴</strong> مدل تشخیص</div>
+							<div><strong>OKR</strong> و شاخص رصد</div>
+							<div><strong>۳۰/۶۰/۹۰</strong> نقشه راه</div>
+						</div>
+						<form class="cr-od-landing-form" id="cr-od-register-form">
+							<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'cr_od_nonce' ) ); ?>" />
+							<label>نام کاربری
+								<input type="text" name="username" autocomplete="username" placeholder="مثلاً hr_manager" required />
+							</label>
+							<label>ایمیل
+								<input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+							</label>
+							<button type="submit" class="cr-od-btn cr-od-btn-primary">ورود به پلتفرم</button>
+						</form>
+						<p class="cr-od-landing-alt">قبلاً در coachroom.ir حساب دارید؟ <a href="https://coachroom.ir/account/" target="_blank" rel="noopener">ورود به سایت CoachRoom</a></p>
+						<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">برای استفاده از تمام قابلیت‌های پلتفرم، همین‌جا با نام کاربری و ایمیل ثبت‌نام کنید.</p>
+					</div>
+					<div class="cr-od-landing-image">
+						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'hero-energy.jpg' ); ?>" alt="صنعت انرژی، نفت و گاز" loading="lazy" />
+					</div>
+				</section>
+			</div>
+			<?php
+			return ob_get_clean();
+		}
 
 		ob_start();
 		?>
@@ -226,8 +281,63 @@ class Coachroom_OD_Render {
 							</div>
 						</article>
 
+						<article class="cr-od-card cr-od-card-wide" id="cr-attitude-diagnosis">
+							<h3 class="cr-od-card-title">مدل نگرش شغلی کارکنان <span class="cr-od-card-sub">رضایت / تعهد / سایر نگرش‌ها → سودآوری</span></h3>
+							<div class="cr-od-attitude-summary">
+								<div><span class="cr-od-kpi-label">شاخص نگرش شغلی</span><strong id="cr-attitude-overall" data-fa-num><?php echo esc_html( isset( $data['attitude']['overall'] ) ? $data['attitude']['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+								<div><span class="cr-od-kpi-label">سطح نگرش</span><strong id="cr-attitude-level"><?php echo esc_html( isset( $data['attitude']['level'] ) ? $data['attitude']['level'] : '—' ); ?></strong><small>مدل نگرش شغلی</small></div>
+								<div><span class="cr-od-kpi-label">نگرش‌های بحرانی</span><strong id="cr-attitude-low-count" data-fa-num><?php echo esc_html( isset( $data['attitude']['low'] ) ? count( $data['attitude']['low'] ) : 0 ); ?></strong><small>زیر ۲٫۷۵</small></div>
+							</div>
+							<p class="cr-od-analysis-text" id="cr-attitude-diagnosis-text"><?php echo esc_html( isset( $data['attitude']['diagnosis'] ) ? $data['attitude']['diagnosis'] : 'پس از تکمیل ۱۲ سؤال نگرش، نتیجه نمایش داده می‌شود.' ); ?></p>
+							<div class="cr-od-attitude-chain" id="cr-attitude-chain">
+								<?php if ( isset( $data['attitude']['chain']['employee_performance'] ) ) : ?>
+									<div class="cr-od-attitude-chain-step"><span>بهبود عملکرد کارکنان</span><b id="cr-attitude-employee-performance" data-fa-num><?php echo esc_html( $data['attitude']['chain']['employee_performance'] ); ?></b></div>
+									<div class="cr-od-attitude-chain-step"><span>رضایت مشتریان</span><b id="cr-attitude-customer-satisfaction" data-fa-num><?php echo esc_html( $data['attitude']['chain']['customer_satisfaction'] ); ?></b></div>
+									<div class="cr-od-attitude-chain-step"><span>سودآوری</span><b id="cr-attitude-profitability" data-fa-num><?php echo esc_html( $data['attitude']['chain']['profitability'] ); ?></b></div>
+								<?php endif; ?>
+							</div>
+							<div class="cr-od-attitude-grid">
+								<?php if ( ! empty( $data['attitude']['groups'] ) ) : ?>
+									<?php foreach ( $data['attitude']['groups'] as $grp ) : ?>
+										<div class="cr-od-attitude-group" style="--group-color:<?php echo esc_attr( $grp['color'] ); ?>">
+											<div class="cr-od-attitude-group-head">
+												<strong><?php echo esc_html( $grp['label'] ); ?></strong>
+												<b data-fa-num><?php echo esc_html( $grp['score'] ); ?></b>
+											</div>
+											<div class="cr-od-bar"><span style="width:<?php echo esc_attr( $grp['score'] * 25 ); ?>%"></span></div>
+											<small><?php echo esc_html( implode( '، ', $grp['items'] ) ); ?> — <span style="color:<?php echo esc_attr( $grp['color'] ); ?>"><?php echo esc_html( $grp['status'] ); ?></span></small>
+										</div>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</div>
+						</article>
+
+						<article class="cr-od-card cr-od-card-wide" id="cr-hr1410-diagnosis">
+							<h3 class="cr-od-card-title">هم‌راستایی با برنامه راهبردی منابع انسانی صنعت نفت — افق ۱۴۱۰ <span class="cr-od-card-sub">برند کارفرمایی / توسعه‌یافتگی / جذابیت / بهره‌وری</span></h3>
+							<div class="cr-od-hr1410-summary">
+								<div><span class="cr-od-kpi-label">امتیاز هم‌راستایی چشم‌انداز</span><strong id="cr-hr1410-overall" data-fa-num><?php echo esc_html( isset( $data['hr1410']['overall'] ) ? $data['hr1410']['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+								<div><span class="cr-od-kpi-label">فاصله تا افق ۱۴۱۰</span><strong id="cr-hr1410-gap" data-fa-num><?php echo esc_html( isset( $data['hr1410']['gap'] ) ? $data['hr1410']['gap'] : '—' ); ?></strong><small>هدف ۳٫۳۵</small></div>
+								<div><span class="cr-od-kpi-label">وضعیت</span><strong id="cr-hr1410-status"><?php echo esc_html( isset( $data['hr1410']['status'] ) ? $data['hr1410']['status'] : '—' ); ?></strong><small><?php echo esc_html( isset( $data['hr1410']['vision'] ) ? $data['hr1410']['vision'] : 'چشم‌انداز راهبردی' ); ?></small></div>
+							</div>
+							<div class="cr-od-hr1410-grid">
+								<?php if ( ! empty( $data['hr1410']['components'] ) ) : ?>
+									<?php foreach ( $data['hr1410']['components'] as $comp ) : ?>
+										<div class="cr-od-hr1410-component" style="--comp-color:<?php echo esc_attr( $comp['color'] ); ?>">
+											<div class="cr-od-hr1410-component-head">
+												<strong><?php echo esc_html( $comp['label'] ); ?></strong>
+												<b data-fa-num><?php echo esc_html( $comp['score'] ); ?></b>
+											</div>
+											<div class="cr-od-bar"><span style="width:<?php echo esc_attr( $comp['score'] * 25 ); ?>%"></span></div>
+											<small>KPI: <?php echo esc_html( $comp['kpi'] ); ?> — <span style="color:<?php echo esc_attr( $comp['color'] ); ?>"><?php echo esc_html( $comp['status'] ); ?></span></small>
+											<small class="cr-od-hr1410-mapping"><?php echo esc_html( implode( ' + ', $comp['mapping_labels'] ) ); ?></small>
+										</div>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</div>
+						</article>
+
 						<article class="cr-od-card cr-od-card-wide" id="cr-model-matrix">
-							<h3 class="cr-od-card-title">ماتریس چندمدلی تشخیص و راهبرد <span class="cr-od-card-sub">موج / EFQM / وایزبورد</span></h3>
+							<h3 class="cr-od-card-title">ماتریس چندمدلی تشخیص و راهبرد <span class="cr-od-card-sub">موج / EFQM / وایزبورد / نگرش / ۱۴۱۰</span></h3>
 							<div class="cr-od-model-matrix">
 								<?php if ( ! empty( $model_matrix['matrix'] ) ) : ?>
 									<?php foreach ( $model_matrix['matrix'] as $row ) : ?>
@@ -255,7 +365,7 @@ class Coachroom_OD_Render {
 						<article class="cr-od-card cr-od-card-wide" id="cr-reliability">
 							<h3 class="cr-od-card-title">روایی و پایایی ارزیابی <span class="cr-od-card-sub">ضریب آلفای کرونباخ</span></h3>
 							<div class="cr-od-reliability-grid">
-								<?php foreach ( array( 'overall' => 'کل ارزیابی', 'maturity' => 'ابعاد بلوغ', 'weisbord' => 'شش جعبه وایزبورد' ) as $scope => $title ) : ?>
+								<?php foreach ( array( 'overall' => 'کل ارزیابی', 'maturity' => 'ابعاد بلوغ', 'weisbord' => 'شش جعبه وایزبورد', 'attitude' => 'مدل نگرش شغلی' ) as $scope => $title ) : ?>
 									<?php $s = isset( $reliability['scales'][ $scope ] ) ? $reliability['scales'][ $scope ] : array(); ?>
 									<div class="cr-od-reliability-card">
 										<strong><?php echo esc_html( $title ); ?></strong>
@@ -264,7 +374,7 @@ class Coachroom_OD_Render {
 									</div>
 								<?php endforeach; ?>
 							</div>
-							<p class="cr-od-analysis-text">برای روایی محتوا، هر بُعد به یک مدل و منبع معتبر نگاشت شده است (مینتزبرگ، برنز و استالکر، راجرز، سنژ، ادموندسون، کرنل، دوئر، وایزبورد و وایتمور). پایایی با آلفای کرونباخ در صورت وجود ۳ یا بیشتر پاسخ‌دهنده کامل محاسبه و در گزارش مدیران شفاف نمایش داده می‌شود.</p>
+							<p class="cr-od-analysis-text">برای روایی محتوا، هر بُعد به یک مدل و منبع معتبر نگاشت شده است (مینتزبرگ، برنز و استالکر، راجرز، سنژ، ادموندسون، کرنل، دوئر، وایزبورد، وایتمور، میر و آلن و گرینبرگ). پایایی با آلفای کرونباخ در صورت وجود ۳ یا بیشتر پاسخ‌دهنده کامل محاسبه و در گزارش مدیران شفاف نمایش داده می‌شود.</p>
 							<div class="cr-od-validity-sources">
 								<?php foreach ( $validity as $slug => $src ) : ?>
 									<span><?php echo esc_html( $src['model'] ); ?> — <?php echo esc_html( $src['source'] ); ?></span>
@@ -408,6 +518,36 @@ class Coachroom_OD_Render {
 								<?php endforeach; ?>
 							</fieldset>
 
+							<fieldset class="cr-od-question cr-od-attitude-section">
+								<legend>
+									<span class="cr-od-q-icon">◒</span>
+									<span class="cr-od-q-label">مدل نگرش شغلی کارکنان (پروژه HR ۱۴۱۰)</span>
+									<span class="cr-od-q-indicator">رضایت، تعهد و سایر نگرش‌ها → بهبود عملکرد کارکنان → رضایت مشتریان → سودآوری.</span>
+									<span class="cr-od-q-count"><?php echo esc_html( count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> سؤال</span>
+								</legend>
+
+								<?php foreach ( Coachroom_OD_Helpers::attitude_groups() as $group_slug => $group ) : ?>
+									<fieldset class="cr-od-sub-box" data-group="<?php echo esc_attr( $group_slug ); ?>">
+										<legend><strong><?php echo esc_html( $group['label'] ); ?></strong> <small><?php echo esc_html( implode( '، ', $group['items'] ) ); ?></small></legend>
+										<?php foreach ( Coachroom_OD_Helpers::attitude_questions() as $aq ) : ?>
+											<?php if ( $aq['dimension'] !== $group_slug ) { continue; } ?>
+											<div class="cr-od-sub-question" data-question-key="<?php echo esc_attr( $aq['key'] ); ?>">
+												<div class="cr-od-question-text"><span class="cr-od-qq"><?php echo esc_html( $aq['label'] ); ?></span></div>
+												<div class="cr-od-levels">
+													<?php for ( $i = 1; $i <= 4; $i++ ) : ?>
+														<label class="cr-od-option">
+															<input type="radio" name="<?php echo esc_attr( $aq['key'] ); ?>" value="<?php echo esc_attr( $i ); ?>" />
+															<span><?php echo esc_html( $i ); ?></span>
+															<small><?php echo esc_html( $qopts[ $i ] ); ?></small>
+														</label>
+													<?php endfor; ?>
+												</div>
+											</div>
+										<?php endforeach; ?>
+									</fieldset>
+								<?php endforeach; ?>
+							</fieldset>
+
 							<div class="cr-od-form-submit">
 								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت ارزیابی و بروزرسانی داشبورد</button>
 								<span class="cr-od-form-status" role="status"></span>
@@ -420,7 +560,7 @@ class Coachroom_OD_Render {
 						<div class="cr-od-roadmap-intro">
 							<div class="cr-od-intro-text">
 								<h2>نقشه راه تطبیقی توسعه سازمانی</h2>
-								<p>راهبردها اکنون بر اساس بلوغ واقعی سازمان از داده‌های ارزیابی انتخاب می‌شوند. اگر شاخص‌های پیش‌نیاز (امنیت روانی، ساختار، بازخورد) آماده نباشند، ابتدا همان‌ها تقویت می‌شوند و راهبرد «ارتقای سرپرستان به مربیان عملکردی» فقط زمانی اضافه می‌شود که شواهد آن را تأیید کند.</p>
+								<p>راهبردها اکنون بر اساس بلوغ واقعی سازمان از داده‌های ارزیابی انتخاب می‌شوند. اگر شاخص‌های پیش‌نیاز (امنیت روانی، ساختار، بازخورد) آماده نباشند، ابتدا همان‌ها تقویت می‌شوند و راهبرد «ارتقای سرپرستان به مربیان عملکردی» فقط زمانی اضافه می‌شود که شواهد آن را تأیید کند. در همین نقشه راه، هدف‌های <strong>افق ۱۴۱۰</strong> (برند کارفرمایی، توسعه‌یافتگی، جذابیت و بهره‌وری) و <strong>زنجیره نگرش شغلی</strong> (رضایت/تعهد → عملکرد کارکنان → رضایت مشتری → سودآوری) نیز با OKR و KPI قابل رصد شده‌اند.</p>
 								<div class="cr-od-strategy-note" id="cr-strategy-note">
 									<?php
 									$coaching_rec = isset( $strategy['coaching_recommended'] ) && $strategy['coaching_recommended'];
@@ -681,7 +821,15 @@ class Coachroom_OD_Render {
 							</article>
 							<article class="cr-od-card cr-od-blog-card">
 								<h3 class="cr-od-card-title">تضمین روایی و پایایی</h3>
-								<p>روایی محتوا یعنی هر سؤال به یک مدل/منبع علمی مشخص متصل باشد؛ در این پلتفرم ابعاد بلوغ به مینتزبرگ، برنز و استالکر، راجرز، سنژ، ادموندسون، دوئر و وایتمور و شش جعبه به وایزبورد نگاشت شده‌اند. پایایی نیز با <strong>ضریب آلفای کرونباخ</strong> برای سه مقیاس «کل ارزیابی»، «ابعاد بلوغ» و «شش جعبه وایزبورد» محاسبه می‌شود. اگر کمتر از ۳ پاسخ‌دهنده کامل وجود داشته باشد، پلتفرم به‌جای عدد گمراه‌کننده، پیام «داده کافی نیست» نمایش می‌دهد.</p>
+								<p>روایی محتوا یعنی هر سؤال به یک مدل/منبع علمی مشخص متصل باشد؛ در این پلتفرم ابعاد بلوغ به مینتزبرگ، برنز و استالکر، راجرز، سنژ، ادموندسون، دوئر و وایتمور، شش جعبه به وایزبورد و نگرش شغلی به میر و آلن و گرینبرگ نگاشت شده‌اند. پایایی نیز با <strong>ضریب آلفای کرونباخ</strong> برای مقیاس‌های «کل ارزیابی»، «ابعاد بلوغ»، «شش جعبه وایزبورد» و «مدل نگرش شغلی» محاسبه می‌شود. اگر کمتر از ۳ پاسخ‌دهنده کامل وجود داشته باشد، پلتفرم به‌جای عدد گمراه‌کننده، پیام «داده کافی نیست» نمایش می‌دهد.</p>
+							</article>
+							<article class="cr-od-card cr-od-blog-card">
+								<h3 class="cr-od-card-title">افق ۱۴۱۰ و برنامه راهبردی منابع انسانی نفت</h3>
+								<p>چشم‌انداز راهبردی این است که «منابع انسانی صنعت نفت، برند برتر کارفرمایی در ایران با شاخصه‌های <strong>توسعه‌یافتگی، جذابیت و بهره‌وری</strong> بالا در افق ۱۴۱۰» باشد. در این پلتفرم چهار مؤلفه <strong>برند کارفرمایی، توسعه‌یافتگی، جذابیت و بهره‌وری</strong> از داده‌های ارزیابی محاسبه و به KPIهای قابل رصد تبدیل می‌شوند؛ یعنی مدیر می‌تواند فاصله فعلی تا چشم‌انداز را عددی ببیند و در OKR دوره بعد هدفگذاری کند.</p>
+							</article>
+							<article class="cr-od-card cr-od-blog-card">
+								<h3 class="cr-od-card-title">مدل نگرش شغلی کارکنان</h3>
+								<p>رضایت (پیشرفت، ارتباط با مدیر، حقوق و محیط)، تعهد (احساسی، رفتاری، هویتی و مشارکت) و سایر نگرش‌ها (عدالت سازمانی، میل به ترک، سلامت روان و تعادل کار/زندگی) یک زنجیره تشخیصی می‌سازند: <strong>نگرش‌ها → بهبود عملکرد کارکنان → رضایت مشتریان → سودآوری</strong>. این مدل به مدیر کمک می‌کند به‌جای اتکا به «خروجی مالی»، علت‌های پیش‌بینی‌کننده سودآوری پایدار را همانجا در سه گروه نگرشی رصد کند.</p>
 							</article>
 						</div>
 
@@ -796,7 +944,7 @@ class Coachroom_OD_Render {
 								</div>
 							</div>
 							<div class="cr-od-efqm-learn-note">
-								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (از ۴۸ سؤال: ۳۰ سؤال بلوغ + ۱۸ سؤال وایزبورد) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
+								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (از ۶۰ سؤال: ۳۰ سؤال بلوغ + ۱۸ سؤال وایزبورد + ۱۲ سؤال نگرش شغلی) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار، شاخص‌های افق ۱۴۱۰ و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
 							</div>
 						</div>
 
@@ -982,6 +1130,33 @@ class Coachroom_OD_Render {
 								</div>
 							<?php endif; ?>
 						</div>
+
+							<div class="cr-od-report-efqm" id="cr-report-attitude">
+								<h4>مدل نگرش شغلی کارکنان</h4>
+								<div class="cr-od-report-proof">
+									<div><span>شاخص نگرش شغلی</span><strong id="cr-report-attitude-overall" data-fa-num><?php echo esc_html( isset( $data['attitude']['overall'] ) ? $data['attitude']['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+									<div><span>سطح نگرش</span><strong id="cr-report-attitude-level"><?php echo esc_html( isset( $data['attitude']['level'] ) ? $data['attitude']['level'] : '—' ); ?></strong><small>مدل نگرش شغلی</small></div>
+									<div><span>زنجیره ارزش</span><strong id="cr-report-attitude-chain" data-fa-num><?php echo esc_html( isset( $data['attitude']['chain']['profitability'] ) ? $data['attitude']['chain']['profitability'] : '—' ); ?></strong><small>سودآوری</small></div>
+								</div>
+								<p class="cr-od-analysis-text"><?php echo esc_html( isset( $data['attitude']['diagnosis'] ) ? $data['attitude']['diagnosis'] : 'پس از تکمیل ۱۲ سؤال نگرش، نتیجه نمایش داده می‌شود.' ); ?></p>
+								<?php if ( ! empty( $data['attitude']['low'] ) ) : ?>
+									<div class="cr-od-report-color-list">
+										<?php foreach ( $data['attitude']['low'] as $grp ) : ?>
+											<span style="color:<?php echo esc_attr( $grp['color'] ); ?>"><?php echo esc_html( $grp['short'] ); ?> — <?php echo esc_html( $grp['likely'] ); ?></span>
+										<?php endforeach; ?>
+									</div>
+								<?php endif; ?>
+							</div>
+
+							<div class="cr-od-report-efqm" id="cr-report-hr1410">
+								<h4>هم‌راستایی با برنامه راهبردی منابع انسانی صنعت نفت — افق ۱۴۱۰</h4>
+								<div class="cr-od-report-proof">
+									<div><span>امتیاز هم‌راستایی</span><strong id="cr-report-hr1410-overall" data-fa-num><?php echo esc_html( isset( $data['hr1410']['overall'] ) ? $data['hr1410']['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+									<div><span>فاصله تا افق ۱۴۱۰</span><strong id="cr-report-hr1410-gap" data-fa-num><?php echo esc_html( isset( $data['hr1410']['gap'] ) ? $data['hr1410']['gap'] : '—' ); ?></strong><small>هدف ۳٫۳۵</small></div>
+									<div><span>اولویت مداخله</span><strong><?php echo esc_html( isset( $data['hr1410']['priority'] ) ? implode( '، ', array_map( function ( $c ) { return $c['short']; }, $data['hr1410']['priority'] ) ) : '—' ); ?></strong><small>بهترین گام بعدی</small></div>
+								</div>
+								<p class="cr-od-analysis-text"><?php echo esc_html( isset( $data['hr1410']['vision'] ) ? $data['hr1410']['vision'] : 'چشم‌انداز: برند برتر کارفرمایی در ایران با شاخصه‌های توسعه‌یافتگی، جذابیت و بهره‌وری بالا در افق ۱۴۱۰.' ); ?></p>
+							</div>
 
 						<h3>نتیجه‌گیری مدیریتی</h3>
 							<div class="cr-od-report-body">

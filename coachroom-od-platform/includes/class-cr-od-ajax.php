@@ -39,6 +39,70 @@ class Coachroom_OD_Ajax {
 	private function __construct() {
 		add_action( 'wp_ajax_cr_od_save_response', array( $this, 'save_response' ) );
 		add_action( 'wp_ajax_nopriv_cr_od_save_response', array( $this, 'save_response' ) );
+		add_action( 'wp_ajax_cr_od_register_participant', array( $this, 'register_participant' ) );
+		add_action( 'wp_ajax_nopriv_cr_od_register_participant', array( $this, 'register_participant' ) );
+	}
+
+	/**
+	 * Register the minimal participant profile on the landing page.
+	 *
+	 * A WordPress subscriber is created (or reused) from an e-mail and a
+	 * username, then the participant is automatically signed in so the next
+	 * page load reveals the full platform.
+	 */
+	public function register_participant() {
+		check_ajax_referer( 'cr_od_nonce', 'nonce' );
+
+		$username = isset( $_POST['username'] ) ? sanitize_user( wp_unslash( $_POST['username'] ) ) : '';
+		$email    = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+
+		if ( ! $username || strlen( $username ) < 3 || ! is_email( $email ) ) {
+			wp_send_json_error( array( 'message' => 'لطفاً نام کاربری (حداقل ۳ حرف) و ایمیل معتبر وارد کنید.' ) );
+		}
+
+		$exists_by_login = get_user_by( 'login', $username );
+		$exists_by_email = get_user_by( 'email', $email );
+		if ( $exists_by_login && $exists_by_email && $exists_by_login->ID === $exists_by_email->ID ) {
+			$user_id = (int) $exists_by_login->ID;
+		} elseif ( $exists_by_email || $exists_by_login ) {
+			wp_send_json_error( array( 'message' => 'این نام کاربری یا ایمیل قبلاً ثبت شده است. از همان اطلاعات استفاده کنید یا وارد coachroom.ir شوید.' ) );
+		} else {
+			$password = wp_generate_password( 16, true );
+			$user_id  = wp_insert_user(
+				array(
+					'user_login' => $username,
+					'user_email' => $email,
+					'user_pass'  => $password,
+					'role'       => 'subscriber',
+				)
+			);
+			if ( is_wp_error( $user_id ) ) {
+				wp_send_json_error( array( 'message' => $user_id->get_error_message() ) );
+			}
+			update_user_meta( $user_id, 'cr_od_participant', 1 );
+			update_user_meta( $user_id, 'cr_od_participant_since', current_time( 'mysql' ) );
+		}
+
+		wp_set_current_user( $user_id );
+		wp_set_auth_cookie( $user_id, true );
+		$token = md5( $user_id . '|' . wp_generate_password( 24, false ) . '|' . get_option( 'cr_od_org_name', 'coachroom' ) );
+		update_user_meta( $user_id, 'cr_od_access_token', $token );
+
+		if ( ! headers_sent() ) {
+			$cookie_domain = defined( 'COOKIE_DOMAIN' ) && COOKIE_DOMAIN ? COOKIE_DOMAIN : '';
+			setcookie( 'cr_od_participant', $token, time() + 30 * DAY_IN_SECONDS, '/', $cookie_domain );
+		}
+
+		wp_send_json_success(
+			array(
+				'message' => 'ثبت‌نام انجام شد و به پلتفرم دسترسی دارید.',
+				'user'    => array(
+					'id'       => $user_id,
+					'username' => $username,
+					'email'    => $email,
+				),
+			)
+		);
 	}
 
 	/**
@@ -52,7 +116,8 @@ class Coachroom_OD_Ajax {
 
 		$allowed = array_merge(
 			array_keys( Coachroom_OD_Helpers::dimensions() ),
-			array_keys( Coachroom_OD_Helpers::weisbord_boxes() )
+			array_keys( Coachroom_OD_Helpers::weisbord_boxes() ),
+			array_keys( Coachroom_OD_Helpers::attitude_groups() )
 		);
 		$dept    = isset( $_POST['department'] ) ? sanitize_text_field( wp_unslash( $_POST['department'] ) ) : 'نامشخص';
 		$role    = isset( $_POST['assessor_role'] ) ? sanitize_text_field( wp_unslash( $_POST['assessor_role'] ) ) : 'کارمند';

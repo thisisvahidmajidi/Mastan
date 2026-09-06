@@ -22,8 +22,11 @@
   function getDims() { return getData().dimensions || []; }
   function getQuestions() { return state.questions || []; }
   function getWeisbordQuestions() { return state.weisbordQuestions || []; }
+  function getAttitudeQuestions() { return state.attitudeQuestions || []; }
   function getStrategy() { return getData().strategy || {}; }
   function getWeisbord() { return getData().weisbord || {}; }
+  function getAttitude() { return getData().attitude || {}; }
+  function getHr1410() { return getData().hr1410 || {}; }
   function getReliability() { return getData().reliability || {}; }
   function getModelMatrix() { return getData().model_matrix || {}; }
   function getDepts() { return getData().departments || []; }
@@ -669,6 +672,24 @@
       else { buckets['90'].push(st); }
     });
 
+    // Add horizon-1410 and employee-attitude objectives to the roadmap so the
+    // strategic HR programme and the attitude→performance chain stay visible.
+    (getOkr().items || []).forEach(function (item) {
+      if (item.slug === 'hr1410_alignment') {
+        buckets['60'].push({
+          title: item.objective,
+          gate: 'performance',
+          actions: (item.krs || []).slice(0, 2)
+        });
+      } else if (item.slug === 'attitude_chain') {
+        buckets['90'].push({
+          title: item.objective,
+          gate: 'coaching',
+          actions: (item.krs || []).slice(0, 2)
+        });
+      }
+    });
+
     var fallback = {
       '30': '<li>نقشه راه مرحله ۳۰ بر اساس داده‌های پایه از همین فرم محاسبه می‌شود.</li>',
       '60': '<li>راهبردهای شواهدمحور در این بازه بر اساس نتایج ارزیابی انتخاب می‌شوند.</li>',
@@ -724,6 +745,54 @@
     convertDigitsInside(grid);
   }
 
+  function refreshAttitude() {
+    var a = getAttitude() || {};
+    setText('cr-attitude-overall', faNum(fmtNum(num(a.overall))));
+    setText('cr-attitude-level', a.level || '—');
+    setText('cr-attitude-low-count', faNum((a.low || []).length));
+    setText('cr-attitude-diagnosis-text', a.diagnosis || 'پس از تکمیل ۱۲ سؤال نگرش شغلی، نتیجه نمایش داده می‌شود.');
+    setText('cr-report-attitude-overall', faNum(fmtNum(num(a.overall))));
+    setText('cr-report-attitude-level', a.level || '—');
+    setText('cr-report-attitude-chain', faNum(fmtNum(num((a.chain || {}).profitability))));
+    var grid = q('.cr-od-attitude-grid');
+    if (grid && (a.groups || []).length) {
+      grid.innerHTML = a.groups.map(function (grp) {
+        return '<div class="cr-od-attitude-group" style="--group-color:' + esc(grp.color || '#0f766e') + '">' +
+          '<div class="cr-od-attitude-group-head"><strong>' + esc(grp.label || '') + '</strong>' +
+          '<b data-fa-num>' + esc(fmtNum(num(grp.score))) + '</b></div>' +
+          '<div class="cr-od-bar"><span style="width:' + esc(num(grp.score) * 25) + '%"></span></div>' +
+          '<small>' + esc((grp.items || []).join('، ')) + ' — <span style="color:' + esc(grp.color || '#0f766e') + '">' + esc(grp.status || '') + '</span></small></div>';
+      }).join('');
+      convertDigitsInside(grid);
+    }
+    if (a.chain) {
+      setText('cr-attitude-employee-performance', faNum(fmtNum(num(a.chain.employee_performance))));
+      setText('cr-attitude-customer-satisfaction', faNum(fmtNum(num(a.chain.customer_satisfaction))));
+      setText('cr-attitude-profitability', faNum(fmtNum(num(a.chain.profitability))));
+    }
+  }
+
+  function refreshHr1410() {
+    var h = getHr1410() || {};
+    setText('cr-hr1410-overall', faNum(fmtNum(num(h.overall))));
+    setText('cr-hr1410-gap', faNum(fmtNum(num(h.gap))));
+    setText('cr-hr1410-status', h.status || '—');
+    setText('cr-report-hr1410-overall', faNum(fmtNum(num(h.overall))));
+    setText('cr-report-hr1410-gap', faNum(fmtNum(num(h.gap))));
+    var grid = q('.cr-od-hr1410-grid');
+    if (grid && (h.components || []).length) {
+      grid.innerHTML = h.components.map(function (comp) {
+        return '<div class="cr-od-hr1410-component" style="--comp-color:' + esc(comp.color || '#d97706') + '">' +
+          '<div class="cr-od-hr1410-component-head"><strong>' + esc(comp.label || '') + '</strong>' +
+          '<b data-fa-num>' + esc(fmtNum(num(comp.score))) + '</b></div>' +
+          '<div class="cr-od-bar"><span style="width:' + esc(num(comp.score) * 25) + '%"></span></div>' +
+          '<small>KPI: ' + esc(comp.kpi || '') + ' — <span style="color:' + esc(comp.color || '#d97706') + '">' + esc(comp.status || '') + '</span></small>' +
+          '<small class="cr-od-hr1410-mapping">' + esc((comp.mapping_labels || []).join(' + ')) + '</small></div>';
+      }).join('');
+      convertDigitsInside(grid);
+    }
+  }
+
   function refreshModelMatrix() {
     var mm = getModelMatrix() || {};
     var el = q('#cr-model-matrix .cr-od-model-matrix');
@@ -747,7 +816,7 @@
 
   function refreshReliability() {
     var r = getReliability() || {};
-    var scopes = { overall: 'کل ارزیابی', maturity: 'ابعاد بلوغ', weisbord: 'شش جعبه وایزبورد' };
+    var scopes = { overall: 'کل ارزیابی', maturity: 'ابعاد بلوغ', weisbord: 'شش جعبه وایزبورد', attitude: 'مدل نگرش شغلی' };
     var el = q('#cr-reliability .cr-od-reliability-grid');
     if (!el) { return; }
     el.innerHTML = Object.keys(scopes).map(function (scope) {
@@ -775,6 +844,8 @@
     refreshOkr();
     refreshStrategy();
     refreshWeisbord();
+    refreshAttitude();
+    refreshHr1410();
     refreshModelMatrix();
     refreshReliability();
     drawAll();
@@ -792,7 +863,8 @@
       'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm',
       'cr-okr-grid', 'cr-okr-roadmap', 'cr-report-okr', 'cr-report-okr-tbody',
       'cr-strategy-note', 'cr-roadmap-phase-30', 'cr-roadmap-phase-60', 'cr-roadmap-phase-90',
-      'cr-weisbord-diagnosis', 'cr-model-matrix', 'cr-reliability', 'cr-report-weisbord'
+      'cr-weisbord-diagnosis', 'cr-attitude-diagnosis', 'cr-hr1410-diagnosis',
+      'cr-model-matrix', 'cr-reliability', 'cr-report-weisbord', 'cr-report-attitude', 'cr-report-hr1410'
     ];
     requiredIds.forEach(function (id) {
       if (!document.getElementById(id)) { issues.push('missing:' + id); }
@@ -803,8 +875,11 @@
     if (!Array.isArray(getDims()) || getDims().length < 10) { issues.push('dimensions'); }
     if (!Array.isArray(getQuestions()) || getQuestions().length < 30) { issues.push('questions'); }
     if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 18) { issues.push('weisbord-questions'); }
-    if (qa('.cr-od-sub-question').length < 48) { issues.push('question-fields'); }
+    if (!Array.isArray(getAttitudeQuestions()) || getAttitudeQuestions().length < 12) { issues.push('attitude-questions'); }
+    if (qa('.cr-od-sub-question').length < 60) { issues.push('question-fields'); }
     if (!getWeisbord() || typeof getWeisbord() !== 'object') { issues.push('weisbord'); }
+    if (!getAttitude() || typeof getAttitude() !== 'object') { issues.push('attitude'); }
+    if (!getHr1410() || typeof getHr1410() !== 'object') { issues.push('hr1410'); }
     if (!getReliability() || typeof getReliability() !== 'object') { issues.push('reliability'); }
     if (!getModelMatrix() || typeof getModelMatrix() !== 'object') { issues.push('model-matrix'); }
     if (!Array.isArray(getRoles())) { issues.push('roles'); }
@@ -908,6 +983,7 @@
       var payload = [];
       var questions = getQuestions();
       var weisbordQuestions = getWeisbordQuestions();
+      var attitudeQuestions = getAttitudeQuestions();
       var dimensionFromSlug = {};
       Object.keys(state.dimensions || {}).forEach(function (slug) {
         dimensionFromSlug[slug] = slug;
@@ -930,9 +1006,10 @@
       }
       questions.forEach(collect);
       weisbordQuestions.forEach(collect);
+      attitudeQuestions.forEach(collect);
 
       // Fallback: if for any reason question metadata is unavailable, still collect dimension-level radios.
-      if (!questions.length && !weisbordQuestions.length) {
+      if (!questions.length && !weisbordQuestions.length && !attitudeQuestions.length) {
         Object.keys(state.dimensions || {}).forEach(function (slug) {
           var checked = q('input[name="' + slug + '"]:checked', form);
           if (!checked) { missing.push(state.dimensions[slug].label); }
@@ -996,6 +1073,14 @@
         getDims().forEach(function (d) {
           rows.push([d.label, fmtNum(num(d.score)), d.score < 2.5 ? 'اولویت بهبود' : (d.score < 3.35 ? 'پایش' : 'نقطه قوت')]);
         });
+        var att = getAttitude() || {};
+        (att.groups || []).forEach(function (g) {
+          rows.push(['نگرش ' + g.label, fmtNum(num(g.score)), g.status || '']);
+        });
+        var h = getHr1410() || {};
+        (h.components || []).forEach(function (c) {
+          rows.push(['افق ۱۴۱۰ ' + c.label, fmtNum(num(c.score)), c.status || '']);
+        });
         rows.push([]);
         rows.push(['واحد سازمانی', 'امتیاز کل', 'موج']);
         getDepts().forEach(function (d) {
@@ -1022,8 +1107,54 @@
     }
   }
 
+  /* ---------------- Registration gate (landing page) ---------------- */
+  function bindGate() {
+    var form = document.getElementById('cr-od-register-form');
+    if (!form) { return; }
+    var status = document.getElementById('cr-od-gate-status');
+    var submit = q('button[type=submit]', form);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (status) { status.textContent = 'در حال ثبت‌نام...'; status.className = 'cr-od-landing-status'; }
+      if (submit) { submit.disabled = true; }
+      var gate = window.crODGate || {};
+      var body = new URLSearchParams();
+      body.append('action', 'cr_od_register_participant');
+      body.append('nonce', gate.nonce || (q('input[name="nonce"]', form) ? q('input[name="nonce"]', form).value : ''));
+      body.append('username', q('input[name="username"]', form) ? q('input[name="username"]', form).value.trim() : '');
+      body.append('email', q('input[name="email"]', form) ? q('input[name="email"]', form).value.trim() : '');
+      fetch(gate.ajaxUrl || '/wp-admin/admin-ajax.php', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      }).then(function (res) {
+        return res.text().then(function (text) {
+          try { return JSON.parse(text); }
+          catch (e2) { throw new Error('پاسخ سرور قابل خواندن نیست (' + res.status + ')'); }
+        });
+      }).then(function (res) {
+        if (!res || res.success === false) {
+          var msg = (res && res.data && res.data.message) ? res.data.message : 'خطا در ثبت‌نام.';
+          throw new Error(msg);
+        }
+        if (status) { status.textContent = 'ثبت‌نام با موفقیت انجام شد. در حال ورود به پلتفرم...'; status.className = 'cr-od-landing-status ok'; }
+        setTimeout(function () {
+          if (typeof window.location.reload === 'function') { window.location.reload(); }
+        }, 800);
+      }).catch(function (err) {
+        if (submit) { submit.disabled = false; }
+        if (status) { status.textContent = 'خطا: ' + (err && err.message ? err.message : 'لطفاً دوباره تلاش کنید.'); status.className = 'cr-od-landing-status err'; }
+      });
+    });
+  }
+
   /* ---------------- Init ---------------- */
   function init() {
+    // On the registration/landing screen only the gate UI exists.
+    bindGate();
+    if (!document.getElementById('cr-od-root')) { return; }
+
     bindTabs();
     bindSelection();
     bindForm();
@@ -1042,6 +1173,8 @@
     refreshOkr();
     refreshStrategy();
     refreshWeisbord();
+    refreshAttitude();
+    refreshHr1410();
     refreshModelMatrix();
     refreshReliability();
     drawAll();

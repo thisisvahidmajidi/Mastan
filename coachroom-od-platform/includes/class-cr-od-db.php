@@ -97,7 +97,7 @@ class Coachroom_OD_DB {
 		}
 
 		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
-			update_option( 'cr_od_db_version', '1.6.0' );
+			update_option( 'cr_od_db_version', '1.7.0' );
 			return;
 		}
 
@@ -111,7 +111,7 @@ class Coachroom_OD_DB {
 			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
-		update_option( 'cr_od_db_version', '1.6.0' );
+		update_option( 'cr_od_db_version', '1.7.0' );
 	}
 
 	/**
@@ -198,6 +198,11 @@ class Coachroom_OD_DB {
 		$wweights   = array();
 		foreach ( Coachroom_OD_Helpers::weisbord_boxes() as $slug => $box ) {
 			$wweights[ $slug ] = (float) $box['weight'];
+		}
+		$aqquestions = Coachroom_OD_Helpers::attitude_questions();
+		$aweights    = array();
+		foreach ( Coachroom_OD_Helpers::attitude_groups() as $slug => $group ) {
+			$aweights[ $slug ] = (float) $group['weight'];
 		}
 
 		$cycle1 = self::create_cycle( 'دوره پایه — پاییز ۱۴۰۴', 'ارزیابی اولیه ساختار سازمانی' );
@@ -324,6 +329,36 @@ class Coachroom_OD_DB {
 								'question_label'=> $question['label'],
 								'score'         => $score,
 								'weight'        => isset( $wweights[ $slug ] ) ? $wweights[ $slug ] : 1,
+								'notes'         => '',
+							)
+						);
+						$index++;
+					}
+
+					// Employee attitude model questions (12 per role/unit/cycle).
+					foreach ( $aqquestions as $q_index => $question ) {
+						$slug  = $question['dimension'];
+						$score = 2.55
+							+ $dept_adj['base']
+							+ $adjust
+							+ ( ( $q_index % 4 ) - 1.5 ) * 0.1
+							+ ( ( $role_index % 2 ) ? 0.05 : -0.05 );
+						if ( 'attitude_other' === $slug ) {
+							$score -= 0.15;
+						}
+						$score = max( 1, min( 4, round( $score * 2 ) / 2 ) );
+						self::insert_response(
+							array(
+								'cycle_id'      => $cycle_id,
+								'user_id'       => 0,
+								'organization'  => 'شرکت توسعه انرژی و نفت',
+								'department'    => $dept_name,
+								'assessor_role' => $role_name,
+								'dimension'     => $slug,
+								'question_key'  => $question['key'],
+								'question_label'=> $question['label'],
+								'score'         => $score,
+								'weight'        => isset( $aweights[ $slug ] ) ? $aweights[ $slug ] : 1,
 								'notes'         => '',
 							)
 						);

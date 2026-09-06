@@ -158,8 +158,68 @@
 .cr-od-report-color-list span{background:var(--cr-soft);border-radius:8px;padding:7px 10px;font-size:12.5px}
 .cr-od-validity-sources{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .cr-od-validity-sources span{background:var(--cr-soft);border:1px solid var(--cr-line);border-radius:8px;padding:6px 9px;font-size:11.5px;color:var(--cr-muted)}
+
+/* Employee attitude model */
+.cr-od-attitude-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.cr-od-attitude-summary>div{background:var(--cr-soft);border-radius:12px;padding:12px}
+.cr-od-attitude-summary strong{display:block;font-size:24px;color:var(--cr-dark);margin:4px 0}
+.cr-od-attitude-summary small{color:var(--cr-muted);font-size:12px}
+.cr-od-attitude-chain{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.cr-od-attitude-chain-step{background:linear-gradient(135deg,#0f766e,#115e59);color:#fff;border-radius:12px;padding:12px;text-align:center}
+.cr-od-attitude-chain-step span{display:block;font-size:12px;opacity:.85;margin-bottom:5px}
+.cr-od-attitude-chain-step b{font-size:22px}
+.cr-od-attitude-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.cr-od-attitude-group{border:1px solid var(--cr-line);border-top:4px solid var(--group-color,#0f766e);border-radius:12px;padding:14px;background:#fff}
+.cr-od-attitude-group-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cr-od-attitude-group-head b{font-size:22px;color:var(--cr-dark)}
+.cr-od-attitude-group small{display:block;font-size:11.5px;color:var(--cr-muted);line-height:1.7;margin-top:6px}
+.cr-od-attitude-section{margin-top:22px;border-top:3px solid rgba(15,118,110,.3)}
+.cr-od-attitude-section .cr-od-sub-box{background:#f3faf9}
+
+/* Horizon 1410 */
+.cr-od-hr1410-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.cr-od-hr1410-summary>div{background:var(--cr-soft);border-radius:12px;padding:12px}
+.cr-od-hr1410-summary strong{display:block;font-size:24px;color:var(--cr-dark);margin:4px 0}
+.cr-od-hr1410-summary small{color:var(--cr-muted);font-size:11.5px;line-height:1.7;display:block}
+.cr-od-hr1410-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.cr-od-hr1410-component{border:1px solid var(--cr-line);border-top:4px solid var(--comp-color,#d97706);border-radius:12px;padding:14px;background:#fff}
+.cr-od-hr1410-component-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.cr-od-hr1410-component-head b{font-size:22px;color:var(--cr-dark)}
+.cr-od-hr1410-component small{display:block;font-size:11.5px;color:var(--cr-muted);line-height:1.7;margin-top:6px}
+.cr-od-hr1410-mapping{background:var(--cr-soft);border-radius:8px;padding:6px 8px}
+
+/* Landing / registration gate */
+.cr-od-landing{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:linear-gradient(135deg,#022c22 0%,#065f46 55%,#0f766e 100%)}
+.cr-od-landing-hero{width:min(1060px,100%);display:grid;grid-template-columns:1.15fr .85fr;gap:28px;background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+.cr-od-landing-content{padding:38px}
+.cr-od-landing-content h1{font-size:38px;line-height:1.35;margin:10px 0 12px;color:var(--cr-dark)}
+.cr-od-landing-content h1 span{color:var(--cr-primary-2)}
+.cr-od-landing-content p{color:var(--cr-muted);font-size:15px;line-height:1.9}
+.cr-od-badge{display:inline-block;background:var(--cr-soft);color:var(--cr-primary-2);border:1px solid rgba(15,118,110,.25);font-size:12px;font-weight:800;padding:6px 12px;border-radius:999px}
+.cr-od-landing-tips{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+.cr-od-landing-tips div{background:var(--cr-soft);border:1px solid var(--cr-line);border-radius:12px;padding:10px 14px;font-size:13px;color:var(--cr-muted)}
+.cr-od-landing-tips strong{color:var(--cr-dark);font-size:18px}
+.cr-od-landing-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.cr-od-landing-form label{font-size:12.5px;color:var(--cr-dark);font-weight:700}
+.cr-od-landing-form input{width:100%;border:1px solid var(--cr-line);border-radius:12px;padding:12px 13px;font-size:14px;margin-top:5px;background:#fff}
+.cr-od-landing-form .cr-od-btn{grid-column:1/-1;justify-content:center}
+.cr-od-landing-alt{font-size:13px;margin-top:14px}
+.cr-od-landing-status{font-size:13px;color:var(--cr-muted);margin-top:12px;min-height:20px}
+.cr-od-landing-status.ok{color:#0f766e;font-weight:700}
+.cr-od-landing-status.err{color:#b91c1c;font-weight:700}
+.cr-od-landing-image{min-height:100%;background:#022c22}
+.cr-od-landing-image img{width:100%;height:100%;object-fit:cover;min-height:100%}
+
+@media(max-width:900px){
+  .cr-od-landing-hero{grid-template-columns:1fr}
+  .cr-od-landing-image{display:none}
+  .cr-od-hr1410-grid{grid-template-columns:1fr}
+}
+
 @media(max-width:720px){
   .cr-od-weisbord-summary,.cr-od-weisbord-grid,.cr-od-reliability-grid{grid-template-columns:1fr}
+  .cr-od-attitude-summary,.cr-od-attitude-chain,.cr-od-attitude-grid,.cr-od-hr1410-summary{grid-template-columns:1fr}
+  .cr-od-landing-form{grid-template-columns:1fr}
   .cr-od-model-row{grid-template-columns:1fr}
 }
 
