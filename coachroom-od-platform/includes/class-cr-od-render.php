@@ -57,6 +57,7 @@ class Coachroom_OD_Render {
 		$hr1410     = isset( $data['hr1410'] ) ? $data['hr1410'] : array();
 		$model_matrix = isset( $data['model_matrix'] ) ? $data['model_matrix'] : array();
 		$reliability  = isset( $data['reliability'] ) ? $data['reliability'] : array();
+		$exec_guide = Coachroom_OD_Helpers::execution_guide();
 
 		$strategy_titles = array();
 		foreach ( (array) $strategy['selected'] as $st ) {
@@ -108,6 +109,7 @@ class Coachroom_OD_Render {
 				'attitudeQuestions'=> Coachroom_OD_Helpers::attitude_questions(),
 				'attitudeGroups'   => Coachroom_OD_Helpers::attitude_groups(),
 				'hr1410Components' => Coachroom_OD_Helpers::hr1410_components(),
+				'executionGuide'   => $exec_guide,
 				'data'             => $data,
 			)
 		);
@@ -134,13 +136,13 @@ class Coachroom_OD_Render {
 			<div class="cr-od-root cr-od-landing" id="cr-od-landing" dir="rtl" lang="fa">
 				<section class="cr-od-landing-hero">
 					<div class="cr-od-landing-content">
-						<div class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?></div>
-						<h1>پلتفرم توسعه سازمانی <span><?php echo esc_html( $brand ); ?></span></h1>
-						<p>تشخیص شفاف وضعیت موجود سازمان بر اساس <strong>موج‌های سازمانی</strong>، <strong>مدل تعالی EFQM</strong>، <strong>شش‌جعبه وایزبورد</strong> و <strong>مدل نگرش شغلی</strong>، هم‌راستا با برنامه راهبردی توسعه منابع انسانی صنعت نفت در افق ۱۴۱۰.</p>
+						<div class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?> — برنامه راهبردی منابع انسانی نفت ۱۴۱۰</div>
+						<h1>سازمان خود را با <span>داده</span> به موج توسعه‌یافته برسانید</h1>
+						<p>پلتفرم توسعه سازمانی <strong>CoachRoom</strong> با ۶۰ سؤال دقیق، وضعیت سازمان شما را از لنزهای <strong>موج بلوغ، EFQM، شش‌جعبه وایزبورد، مدل نگرش شغلی و افق ۱۴۱۰</strong> تشخیص می‌دهد؛ سپس راهبرد، OKR و نقشه راه ۳۰/۶۰/۹۰ را با شاخص‌های قابل اندازه‌گیری ارائه می‌کند.</p>
 						<div class="cr-od-landing-tips">
 							<div><strong>۶۰</strong> سؤال دقیق</div>
-							<div><strong>۴</strong> مدل تشخیص</div>
-							<div><strong>OKR</strong> و شاخص رصد</div>
+							<div><strong>۵</strong> لنز تشخیصی</div>
+							<div><strong>OKR/KPI</strong> شاخص رصد</div>
 							<div><strong>۳۰/۶۰/۹۰</strong> نقشه راه</div>
 						</div>
 						<form class="cr-od-landing-form" id="cr-od-register-form">
@@ -151,13 +153,47 @@ class Coachroom_OD_Render {
 							<label>ایمیل
 								<input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
 							</label>
-							<button type="submit" class="cr-od-btn cr-od-btn-primary">ورود به پلتفرم</button>
+							<button type="submit" class="cr-od-btn cr-od-btn-primary">شروع ارزیابی و ساخت نقشه راه</button>
 						</form>
 						<p class="cr-od-landing-alt">قبلاً در coachroom.ir حساب دارید؟ <a href="https://coachroom.ir/account/" target="_blank" rel="noopener">ورود به سایت CoachRoom</a></p>
-						<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">برای استفاده از تمام قابلیت‌های پلتفرم، همین‌جا با نام کاربری و ایمیل ثبت‌نام کنید.</p>
+						<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">بدون نیاز به پرداخت؛ با ثبت‌نام به پلتفرم کامل دسترسی می‌گیرید.</p>
 					</div>
 					<div class="cr-od-landing-image">
-						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'hero-energy.jpg' ); ?>" alt="صنعت انرژی، نفت و گاز" loading="lazy" />
+						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'oil-gas-worker.jpg' ); ?>" alt="کارشناس صنعت نفت و گاز در حال بازبینی عملیات" loading="eager" fetchpriority="high" />
+					</div>
+				</section>
+
+				<section class="cr-od-landing-value">
+					<div class="cr-od-landing-section-head"><span class="cr-od-badge">ارزش‌آفرینی برای سازمان</span><h2>چرا این پلتفرم برای توسعه سازمان مهم است؟</h2></div>
+					<div class="cr-od-landing-value-grid">
+						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">🎯</span><h3>تشخیص شفاف به‌جای حدس</h3><p>به‌جای نظر شخصی، وضعیت رسمیت، پیچیدگی، تمرکز، بازخورد، امنیت روانی و فرهنگ یادگیری با داده سنجیده می‌شود.</p></div>
+						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">🧭</span><h3>راهبرد متناسب با بلوغ</h3><p>موتور تطبیقی فقط راهبردهایی را فعال می‌کند که سازمان برای آن‌ها آماده است؛ از مربی‌گری زودهنگام جلوگیری می‌کند.</p></div>
+						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">📈</span><h3>شاخص‌های قابل اندازه‌گیری</h3><p>هر اقدام به OKR و KPI وصل است؛ بهبود در دوره ۹۰ روزه با داده مقایسه و در گزارش مدیران منتشر می‌شود.</p></div>
+						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">♥</span><h3>نگرش کارکنان و سودآوری</h3><p>رضایت، تعهد و سایر نگرش‌ها به زنجیره عملکرد کارکنان ← رضایت مشتری ← سودآوری متصل می‌شوند.</p></div>
+					</div>
+				</section>
+
+				<section class="cr-od-landing-how">
+					<div class="cr-od-landing-section-head"><span class="cr-od-badge">چطور کار می‌کند؟</span><h2>از ثبت‌نام تا نقشه راه اجرایی در چهار گام</h2></div>
+					<div class="cr-od-landing-steps">
+						<div class="cr-od-landing-step"><b>۱</b><h3>ثبت و ورود</h3><p>با نام کاربری و ایمیل وارد شوید؛ نیازی به پرداخت یا نصب اضافه نیست.</p></div>
+						<div class="cr-od-landing-step"><b>۲</b><h3>ارزیابی ۶۰ سؤالی</h3><p>ساختار، فرهنگ، شش‌جعبه سازمانی و نگرش کارکنان را در یک جلسه ثبت کنید.</p></div>
+						<div class="cr-od-landing-step"><b>۳</b><h3>پردازش چندمدلی</h3><p>سیستم امتیازها را با پنج لنز تحلیل و فاصله تا موج هدف و افق ۱۴۱۰ را محاسبه می‌کند.</p></div>
+						<div class="cr-od-landing-step"><b>۴</b><h3>نقشه راه و پایش</h3><p>داشبورد، OKR، اقدامات اولویت‌دار و گزارش مدیران را دریافت و بهبود را دنبال کنید.</p></div>
+					</div>
+				</section>
+
+				<section class="cr-od-landing-gallery">
+					<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'refinery-horizon.webp' ); ?>" alt="پالایشگاه و چشم‌انداز صنعت انرژی" loading="lazy" />
+					<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه توسعه سازمانی و مربی‌گری تیمی" loading="lazy" />
+					<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'control-room.jpg' ); ?>" alt="اتاق کنترل عملیات و داده‌محوری" loading="lazy" />
+				</section>
+
+				<section class="cr-od-landing-cta">
+					<div class="cr-od-landing-cta-inner">
+						<h2>همین امروز از گزارش محوری به <span>توسعه داده‌محور</span> حرکت کنید</h2>
+						<p>اولین ارزیابی، اولین نقشه راه و اولین مقایسه بهبود شما در پلتفرم CoachRoom آماده است.</p>
+						<a href="#cr-od-register-form" class="cr-od-btn cr-od-btn-primary">شروع با ثبت‌نام رایگان</a>
 					</div>
 				</section>
 			</div>
@@ -200,8 +236,9 @@ class Coachroom_OD_Render {
 					<button type="button" class="cr-od-tab" data-tab="roadmap" role="tab" aria-selected="false">نقشه راه مربی‌گری</button>
 					<button type="button" class="cr-od-tab" data-tab="departments" role="tab" aria-selected="false">واحدها و روند</button>
 					<button type="button" class="cr-od-tab" data-tab="blog" role="tab" aria-selected="false">بلاگ و مبانی علمی</button>
-					<button type="button" class="cr-od-tab" data-tab="reports" role="tab" aria-selected="false">گزارش مدیران</button>
-				</nav>
+						<button type="button" class="cr-od-tab" data-tab="guide" role="tab" aria-selected="false">راهنمای اجرا</button>
+						<button type="button" class="cr-od-tab" data-tab="reports" role="tab" aria-selected="false">گزارش مدیران</button>
+					</nav>
 
 				<main class="cr-od-content">
 
@@ -970,11 +1007,54 @@ class Coachroom_OD_Render {
 									<li>United Nations (2015). <em>2030 Agenda for Sustainable Development / SDGs</em>.</li>
 								</ul>
 							</div>
-						</article>
-					</section>
+					</article>
+				</section>
 
-					<!-- REPORTS -->
-					<section class="cr-od-panel" id="cr-reports" role="tabpanel" hidden>
+				<!-- GUIDE -->
+				<section class="cr-od-panel" id="cr-guide" role="tabpanel" hidden>
+					<div class="cr-od-guide-intro">
+						<div>
+							<span class="cr-od-badge cr-od-badge-blog">راهنمای کاربری و اجرا</span>
+							<h2><?php echo esc_html( $exec_guide['title'] ); ?></h2>
+							<p><?php echo esc_html( $exec_guide['intro'] ); ?></p>
+						</div>
+						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'strategy-board.jpg' ); ?>" alt="راهنمای اجرای اقدامات توسعه سازمانی" loading="lazy" />
+					</div>
+
+					<div class="cr-od-guide-grid">
+						<?php foreach ( $exec_guide['tools'] as $tool ) : ?>
+							<article class="cr-od-card cr-od-guide-card">
+								<div class="cr-od-guide-head">
+									<span class="cr-od-guide-icon"><?php echo esc_html( $tool['icon'] ); ?></span>
+									<div><h3><?php echo esc_html( $tool['title'] ); ?></h3><small><?php echo esc_html( $tool['owner'] ); ?></small></div>
+								</div>
+								<div class="cr-od-guide-meta">
+									<span>⏱ <?php echo esc_html( $tool['when'] ); ?></span>
+									<span>👤 <?php echo esc_html( $tool['owner'] ); ?></span>
+								</div>
+								<ol class="cr-od-guide-steps">
+									<?php foreach ( $tool['steps'] as $step ) : ?>
+										<li><?php echo esc_html( $step ); ?></li>
+									<?php endforeach; ?>
+								</ol>
+								<div class="cr-od-guide-kpi"><strong>KPI موفقیت:</strong> <?php echo esc_html( $tool['kpi'] ); ?></div>
+							</article>
+						<?php endforeach; ?>
+					</div>
+
+					<div class="cr-od-guide-faq">
+						<h3>پرسش‌های پرتکرار در اجرا</h3>
+						<?php foreach ( $exec_guide['faq'] as $faq ) : ?>
+							<details class="cr-od-guide-faq-item">
+								<summary><?php echo esc_html( $faq['q'] ); ?></summary>
+								<p><?php echo esc_html( $faq['a'] ); ?></p>
+							</details>
+						<?php endforeach; ?>
+					</div>
+				</section>
+
+				<!-- REPORTS -->
+				<section class="cr-od-panel" id="cr-reports" role="tabpanel" hidden>
 						<div class="cr-od-report-hero">
 							<div>
 								<h2>گزارش توسعه سازمانی برای مدیران و تصمیم‌گیران</h2>

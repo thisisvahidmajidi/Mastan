@@ -97,7 +97,7 @@ class Coachroom_OD_DB {
 		}
 
 		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
-			update_option( 'cr_od_db_version', '1.7.0' );
+			update_option( 'cr_od_db_version', '1.8.0' );
 			return;
 		}
 
@@ -111,7 +111,7 @@ class Coachroom_OD_DB {
 			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
-		update_option( 'cr_od_db_version', '1.7.0' );
+		update_option( 'cr_od_db_version', '1.8.0' );
 	}
 
 	/**
