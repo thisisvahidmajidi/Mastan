@@ -117,6 +117,9 @@ class Coachroom_OD_Render {
 			)
 		);
 
+		$gate_ok = current_user_can( 'manage_options' ) || is_user_logged_in() || ( isset( $_COOKIE['cr_od_participant'] ) && $_COOKIE['cr_od_participant'] );
+		$home_active = $gate_ok ? '' : 'is-active';
+
 		wp_localize_script(
 			'cr-od-platform',
 			'crODGate',
@@ -126,83 +129,12 @@ class Coachroom_OD_Render {
 				'siteUrl'    => home_url( '/' ),
 				'coachroom'  => 'https://coachroom.ir/account/',
 				'config'     => $config,
+				'canAccess'  => (bool) $gate_ok,
 			)
 		);
 
 		$img   = 'assets/img/';
 		$brand = 'CoachRoom';
-
-		$gate_ok = current_user_can( 'manage_options' ) || is_user_logged_in() || ( isset( $_COOKIE['cr_od_participant'] ) && $_COOKIE['cr_od_participant'] );
-		if ( ! $gate_ok ) {
-			ob_start();
-			?>
-			<div class="cr-od-root cr-od-landing" id="cr-od-landing" dir="rtl" lang="fa">
-				<section class="cr-od-landing-hero">
-					<div class="cr-od-landing-content">
-						<div class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?> — برنامه راهبردی منابع انسانی نفت ۱۴۱۰</div>
-						<h1>سازمان خود را با <span>داده</span> به موج توسعه‌یافته برسانید</h1>
-						<p>پلتفرم توسعه سازمانی <strong>CoachRoom</strong> با ۶۰ سؤال دقیق، وضعیت سازمان شما را از لنزهای <strong>موج بلوغ، EFQM، شش‌جعبه وایزبورد، مدل نگرش شغلی و افق ۱۴۱۰</strong> تشخیص می‌دهد؛ سپس راهبرد، OKR و نقشه راه ۳۰/۶۰/۹۰ را با شاخص‌های قابل اندازه‌گیری ارائه می‌کند.</p>
-						<div class="cr-od-landing-tips">
-							<div><strong>۶۰</strong> سؤال دقیق</div>
-							<div><strong>۵</strong> لنز تشخیصی</div>
-							<div><strong>OKR/KPI</strong> شاخص رصد</div>
-							<div><strong>۳۰/۶۰/۹۰</strong> نقشه راه</div>
-						</div>
-						<form class="cr-od-landing-form" id="cr-od-register-form">
-							<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'cr_od_nonce' ) ); ?>" />
-							<label>نام کاربری
-								<input type="text" name="username" autocomplete="username" placeholder="مثلاً hr_manager" required />
-							</label>
-							<label>ایمیل
-								<input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
-							</label>
-							<button type="submit" class="cr-od-btn cr-od-btn-primary">شروع ارزیابی و ساخت نقشه راه</button>
-						</form>
-						<p class="cr-od-landing-alt">قبلاً در coachroom.ir حساب دارید؟ <a href="https://coachroom.ir/account/" target="_blank" rel="noopener">ورود به سایت CoachRoom</a></p>
-						<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">بدون نیاز به پرداخت؛ با ثبت‌نام به پلتفرم کامل دسترسی می‌گیرید.</p>
-					</div>
-					<div class="cr-od-landing-image">
-						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'oil-gas-worker.jpg' ); ?>" alt="کارشناس صنعت نفت و گاز در حال بازبینی عملیات" loading="eager" fetchpriority="high" />
-					</div>
-				</section>
-
-				<section class="cr-od-landing-value">
-					<div class="cr-od-landing-section-head"><span class="cr-od-badge">ارزش‌آفرینی برای سازمان</span><h2>چرا این پلتفرم برای توسعه سازمان مهم است؟</h2></div>
-					<div class="cr-od-landing-value-grid">
-						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">🎯</span><h3>تشخیص شفاف به‌جای حدس</h3><p>به‌جای نظر شخصی، وضعیت رسمیت، پیچیدگی، تمرکز، بازخورد، امنیت روانی و فرهنگ یادگیری با داده سنجیده می‌شود.</p></div>
-						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">🧭</span><h3>راهبرد متناسب با بلوغ</h3><p>موتور تطبیقی فقط راهبردهایی را فعال می‌کند که سازمان برای آن‌ها آماده است؛ از مربی‌گری زودهنگام جلوگیری می‌کند.</p></div>
-						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">📈</span><h3>شاخص‌های قابل اندازه‌گیری</h3><p>هر اقدام به OKR و KPI وصل است؛ بهبود در دوره ۹۰ روزه با داده مقایسه و در گزارش مدیران منتشر می‌شود.</p></div>
-						<div class="cr-od-landing-value-card"><span class="cr-od-landing-value-icon">♥</span><h3>نگرش کارکنان و سودآوری</h3><p>رضایت، تعهد و سایر نگرش‌ها به زنجیره عملکرد کارکنان ← رضایت مشتری ← سودآوری متصل می‌شوند.</p></div>
-					</div>
-				</section>
-
-				<section class="cr-od-landing-how">
-					<div class="cr-od-landing-section-head"><span class="cr-od-badge">چطور کار می‌کند؟</span><h2>از ثبت‌نام تا نقشه راه اجرایی در چهار گام</h2></div>
-					<div class="cr-od-landing-steps">
-						<div class="cr-od-landing-step"><b>۱</b><h3>ثبت و ورود</h3><p>با نام کاربری و ایمیل وارد شوید؛ نیازی به پرداخت یا نصب اضافه نیست.</p></div>
-						<div class="cr-od-landing-step"><b>۲</b><h3>ارزیابی ۶۰ سؤالی</h3><p>ساختار، فرهنگ، شش‌جعبه سازمانی و نگرش کارکنان را در یک جلسه ثبت کنید.</p></div>
-						<div class="cr-od-landing-step"><b>۳</b><h3>پردازش چندمدلی</h3><p>سیستم امتیازها را با پنج لنز تحلیل و فاصله تا موج هدف و افق ۱۴۱۰ را محاسبه می‌کند.</p></div>
-						<div class="cr-od-landing-step"><b>۴</b><h3>نقشه راه و پایش</h3><p>داشبورد، OKR، اقدامات اولویت‌دار و گزارش مدیران را دریافت و بهبود را دنبال کنید.</p></div>
-					</div>
-				</section>
-
-				<section class="cr-od-landing-gallery">
-					<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'refinery-horizon.webp' ); ?>" alt="پالایشگاه و چشم‌انداز صنعت انرژی" loading="lazy" />
-					<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه توسعه سازمانی و مربی‌گری تیمی" loading="lazy" />
-					<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'control-room.jpg' ); ?>" alt="اتاق کنترل عملیات و داده‌محوری" loading="lazy" />
-				</section>
-
-				<section class="cr-od-landing-cta">
-					<div class="cr-od-landing-cta-inner">
-						<h2>همین امروز از گزارش محوری به <span>توسعه داده‌محور</span> حرکت کنید</h2>
-						<p>اولین ارزیابی، اولین نقشه راه و اولین مقایسه بهبود شما در پلتفرم CoachRoom آماده است.</p>
-						<a href="#cr-od-register-form" class="cr-od-btn cr-od-btn-primary">شروع با ثبت‌نام رایگان</a>
-					</div>
-				</section>
-			</div>
-			<?php
-			return ob_get_clean();
-		}
 
 		ob_start();
 		?>
@@ -216,6 +148,7 @@ class Coachroom_OD_Render {
 							<div class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?></div>
 							<h1 class="cr-od-title">پلتفرم توسعه سازمانی <span><?php echo esc_html( $brand ); ?></span></h1>
 							<p class="cr-od-subtitle">از موج دوم بوروکراتیک به سازمان هم‌آفرین و یادگیرنده؛ ارزیابی داده‌محور ساختار، بازخورد، پرسش‌گری و انتخاب تطبیقی راهبردها (مربی‌گری سرپرستان در صورت آمادگی).</p>
+							<?php if ( $gate_ok ) : ?>
 							<div class="cr-od-hero-meta">
 								<span><strong data-fa-num><?php echo esc_html( $data['summary']['responses'] ); ?></strong> ارزیابی ثبت‌شده</span>
 								<span><strong id="cr-cycle-title"><?php echo esc_html( $data['summary']['cycle_title'] ); ?></strong></span>
@@ -225,6 +158,9 @@ class Coachroom_OD_Render {
 									در <strong id="cr-last-dept"><?php echo esc_html( $data['summary']['last_department'] ? $data['summary']['last_department'] : '—' ); ?></strong>
 								</span>
 							</div>
+							<?php else : ?>
+							<div class="cr-od-hero-meta"><span>برای مشاهده داده‌ها و تب‌های مدیریتی، با نام، ایمیل و شرکت/واحد ثبت‌نام کنید.</span></div>
+							<?php endif; ?>
 						</div>
 						<div class="cr-od-hero-visual">
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'hero-energy.jpg' ); ?>" alt="تیم حرفه‌ای صنعت انرژی و نفت" loading="lazy" />
@@ -234,17 +170,120 @@ class Coachroom_OD_Render {
 
 				<!-- Tabs -->
 				<nav class="cr-od-tabs" role="tablist" aria-label="بخش‌های پلتفرم">
-					<button type="button" class="cr-od-tab is-active" data-tab="dashboard" role="tab" aria-selected="true">داشبورد شاخص‌ها</button>
-					<button type="button" class="cr-od-tab" data-tab="assessment" role="tab" aria-selected="false">ارزیابی سازمانی</button>
-					<button type="button" class="cr-od-tab" data-tab="performance" role="tab" aria-selected="false">ارزیابی عملکرد فردی</button>
-					<button type="button" class="cr-od-tab" data-tab="roadmap" role="tab" aria-selected="false">نقشه راه مربی‌گری</button>
-					<button type="button" class="cr-od-tab" data-tab="departments" role="tab" aria-selected="false">واحدها و روند</button>
-					<button type="button" class="cr-od-tab" data-tab="blog" role="tab" aria-selected="false">بلاگ و مبانی علمی</button>
-						<button type="button" class="cr-od-tab" data-tab="guide" role="tab" aria-selected="false">راهنمای اجرا</button>
-						<button type="button" class="cr-od-tab" data-tab="reports" role="tab" aria-selected="false">گزارش مدیران</button>
+					<button type="button" class="cr-od-tab <?php echo $home_active; ?>" data-tab="home" role="tab" aria-selected="<?php echo ! $gate_ok ? 'true' : 'false'; ?>">خانه</button>
+					<button type="button" class="cr-od-tab" data-tab="assessment" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>ارزیابی سازمانی</button>
+					<button type="button" class="cr-od-tab <?php echo $gate_ok ? 'is-active' : ''; ?>" data-tab="dashboard" role="tab" aria-selected="<?php echo $gate_ok ? 'true' : 'false'; ?>" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>داشبورد شاخص‌ها</button>
+					<button type="button" class="cr-od-tab" data-tab="performance" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>ارزیابی عملکرد فردی و سازمانی</button>
+					<button type="button" class="cr-od-tab" data-tab="roadmap" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>نقشه راه مربی‌گری</button>
+					<button type="button" class="cr-od-tab" data-tab="departments" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>واحدها و روند</button>
+					<button type="button" class="cr-od-tab" data-tab="guide" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>راهنمای اجرا</button>
+					<button type="button" class="cr-od-tab" data-tab="blog" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>بلاگ و مبانی علمی</button>
+					<button type="button" class="cr-od-tab" data-tab="reports" role="tab" aria-selected="false" <?php echo $gate_ok ? '' : 'data-locked="1"'; ?>>گزارش مدیران</button>
 					</nav>
 
 				<main class="cr-od-content">
+
+					<!-- HOME -->
+					<section class="cr-od-panel <?php echo $home_active; ?>" id="cr-home" role="tabpanel" <?php echo $gate_ok ? 'hidden' : ''; ?>>
+						<div class="cr-od-home-hero">
+							<div class="cr-od-home-hero-text">
+								<span class="cr-od-badge"><?php echo esc_html( $config['industry'] ); ?> — نقشه راه توسعه سازمانی</span>
+								<h1>از ارزیابی داده‌محور تا <span>بهبود عملکرد فردی و سازمانی</span></h1>
+								<p>این پلتفرم یک نقشه راه اجرایی شفاف است: ابتدا وضعیت سازمان با ارزیابی سازمانی مشخص می‌شود؛ سپس عملکرد فردی/سازمانی با شاخص‌های استاندارد و مستند علمی سنجیده، و در ادامه سرپرست در نقش مربی عملکردی با بازخورد <strong>SBI</strong> و مربی‌گری <strong>OSKAR</strong> بهبود را به <strong>OKR</strong> و توسعه سازمانی متصل می‌کند.</p>
+								<div class="cr-od-landing-tips">
+									<div><strong>خانه</strong> رایگان و بدون ورود</div>
+									<div><strong>SBI</strong> بازخورد شواهد‌محور</div>
+									<div><strong>OSKAR</strong> مربی‌گری رشد‌محور</div>
+									<div><strong>OKR</strong> پیگیری و بهبود</div>
+								</div>
+								<div class="cr-od-home-hero-cta">
+									<?php if ( $gate_ok ) : ?>
+										<span class="cr-od-home-access">✓ دسترسی کامل شما فعال است. از تب‌های بالای پلتفرم استفاده کنید.</span>
+									<?php else : ?>
+										<a href="#cr-od-register-form" class="cr-od-btn cr-od-btn-primary">ثبت‌نام و دسترسی به تب‌های پلتفرم</a>
+										<a href="#cr-home-roadmap" class="cr-od-btn">مشاهده نقشه راه کل</a>
+									<?php endif; ?>
+								</div>
+							</div>
+							<div class="cr-od-home-hero-img">
+								<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'oil-gas-worker.jpg' ); ?>" alt="کارشناس صنعت انرژی و نفت" loading="eager" fetchpriority="high" />
+							</div>
+						</div>
+
+						<section class="cr-od-home-section" id="cr-home-roadmap">
+							<div class="cr-od-landing-section-head"><span class="cr-od-badge">نقشه راه کل</span><h2>چرخه پلتفرم در هفت گام</h2></div>
+							<div class="cr-od-home-roadmap">
+								<div class="cr-od-home-step"><b>۱</b><div><h3>خانه (رایگان)</h3><p>آشنایی با نقشه راه، سازوکار و ابزارها بدون ثبت‌نام.</p></div></div>
+								<div class="cr-od-home-step"><b>۲</b><div><h3>ارزیابی سازمانی</h3><p>۶۰ سؤال استاندارد برای شناخت موج بلوغ، وایزبورد، نگرش و افق ۱۴۱۰.</p></div></div>
+								<div class="cr-od-home-step"><b>۳</b><div><h3>داشبورد شاخص‌ها</h3><p>امتیاز کلی، نقاط قوت/ضعف و فاصله تا موج هدف را ببینید.</p></div></div>
+								<div class="cr-od-home-step"><b>۴</b><div><h3>ارزیابی عملکرد فردی و سازمانی</h3><p>شش شاخص استاندارد با سطح‌بندی دقیق و مستند عینی؛ بدون سلیقه شخصی.</p></div></div>
+								<div class="cr-od-home-step"><b>۵</b><div><h3>بازخورد SBI و مربی‌گری OSKAR</h3><p>سرپرست با شواهد بازخورد می‌دهد و با مدل OSKAR گام رشد را طراحی می‌کند.</p></div></div>
+								<div class="cr-od-home-step"><b>۶</b><div><h3>OKR و نقشه راه ۳۰/۶۰/۹۰</h3><p>اهداف کیفی، نتایج کلیدی و پیگیری دوره‌ای برای هر کارمند و واحد.</p></div></div>
+								<div class="cr-od-home-step"><b>۷</b><div><h3>گزارش مدیران و ارتقای موج</h3><p>پایش، کالیبراسیون و تصمیم‌های داده‌محور برای توسعه سازمانی.</p></div></div>
+							</div>
+						</section>
+
+						<section class="cr-od-home-section cr-od-home-model">
+							<div class="cr-od-landing-section-head"><span class="cr-od-badge">چطور به هم متصل می‌شود؟</span><h2>کمک مربی عملکردی در نقش کوچ به بهبود فردی و سازمانی می‌رسد</h2></div>
+							<div class="cr-od-home-chain">
+								<div class="cr-od-home-chain-item"><span>ارزیابی سازمانی</span><small>داده بلوغ و بستر</small></div>
+								<div class="cr-od-home-chain-arrow">←</div>
+								<div class="cr-od-home-chain-item"><span>ارزیابی عملکرد فردی/سازمانی</span><small>شاخص استاندارد + شاهد عینی</small></div>
+								<div class="cr-od-home-chain-arrow">←</div>
+								<div class="cr-od-home-chain-item"><span>بازخورد SBI</span><small>موقعیت، رفتار، اثر</small></div>
+								<div class="cr-od-home-chain-arrow">←</div>
+								<div class="cr-od-home-chain-item"><span>مربی‌گری OSKAR</span><small>نتیجه، مقیاس، دانش، تأیید، مرور</small></div>
+								<div class="cr-od-home-chain-arrow">←</div>
+								<div class="cr-od-home-chain-item"><span>OKR رشدی</span><small>هدف + نتایج کلیدی</small></div>
+								<div class="cr-od-home-chain-arrow">←</div>
+								<div class="cr-od-home-chain-item"><span>توسعه سازمانی</span><small>ارتقای موج و افق ۱۴۱۰</small></div>
+							</div>
+						</section>
+
+						<section class="cr-od-home-section cr-od-landing-value">
+							<div class="cr-od-landing-section-head"><span class="cr-od-badge">ارزش‌آفرینی</span><h2>چرا مسیر «ارزیابی ← بازخورد ← مربی‌گری ← OKR» مؤثر است؟</h2></div>
+							<div class="cr-od-landing-value-grid">
+								<div class="cr-od-landing-value-card"><span>🎯</span><h3>بدون سلیقه شخصی</h3><p>نمره‌ها با سطح‌بندی استاندارد و مستند عینی سنجیده می‌شوند.</p></div>
+								<div class="cr-od-landing-value-card"><span>💬</span><h3>بازخورد شواهد‌محور</h3><p>SBI یعنی موقعیت، رفتار و اثر؛ نه نظر کلی و ذهنی.</p></div>
+								<div class="cr-od-landing-value-card"><span>🌱</span><h3>مربی‌گری رشد‌محور</h3><p>OSKAR نقاط قوت را می‌بیند و گام بعدی را روشن می‌کند.</p></div>
+								<div class="cr-od-landing-value-card"><span>📈</span><h3>پیگیری با OKR</h3><p>هر بهبود به هدف و نتیجه کلیدی قابل اندازه متصل است.</p></div>
+							</div>
+						</section>
+
+						<div class="cr-od-gate-inline <?php echo $gate_ok ? 'is-hidden' : ''; ?>" id="cr-od-gate-inline" role="status">
+							<strong><?php echo $gate_ok ? 'دسترسی کامل فعال است' : 'برای مشاهده تب‌های مدیریتی ثبت‌نام کنید'; ?></strong>
+							<span class="cr-od-gate-inline-msg"><?php echo $gate_ok ? 'اکنون می‌توانید از همه تب‌های پلتفرم استفاده کنید.' : 'تب «خانه» رایگان است؛ سایر تب‌ها پس از ثبت‌نام با نام، ایمیل و شرکت/واحد باز می‌شوند.'; ?></span>
+						</div>
+
+						<?php if ( ! $gate_ok ) : ?>
+						<section class="cr-od-home-section" id="cr-od-register-section">
+							<div class="cr-od-landing-section-head"><span class="cr-od-badge">ورود به پلتفرم</span><h2>برای مشاهده تب‌های ارزیابی، مربی‌گری و گزارش، مشخصات خود را ثبت کنید</h2></div>
+							<form class="cr-od-landing-form cr-od-home-register" id="cr-od-register-form">
+								<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'cr_od_nonce' ) ); ?>" />
+								<label>نام و نام خانوادگی
+									<input type="text" name="name" autocomplete="name" placeholder="مثلاً رضا محمدی" required />
+								</label>
+								<label>ایمیل
+									<input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+								</label>
+								<label>شرکت / واحد سازمان
+									<input type="text" name="company" autocomplete="organization" placeholder="مثلاً شرکت توسعه انرژی و نفت" required />
+								</label>
+								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت‌نام و مشاهده تب‌های پلتفرم</button>
+							</form>
+							<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">ثبت‌نام برای مشاهده تب‌های مدیریتی الزامی است؛ تب «خانه» همیشه رایگان است.</p>
+							<p class="cr-od-landing-alt">قبلاً در coachroom.ir حساب دارید؟ <a href="https://coachroom.ir/account/" target="_blank" rel="noopener">ورود به سایت CoachRoom</a></p>
+						</section>
+						<?php endif; ?>
+
+						<section class="cr-od-landing-gallery">
+							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'refinery-horizon.webp' ); ?>" alt="پالایشگاه و چشم‌انداز صنعت انرژی" loading="lazy" />
+							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه توسعه سازمانی و مربی‌گری" loading="lazy" />
+							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'control-room.jpg' ); ?>" alt="اتاق کنترل عملیات و داده‌محوری" loading="lazy" />
+						</section>
+					</section>
+
+					<?php if ( $gate_ok ) : ?>
 
 					<!-- DASHBOARD -->
 					<section class="cr-od-panel is-active" id="cr-dashboard" role="tabpanel">
@@ -1061,16 +1100,16 @@ class Coachroom_OD_Render {
 				<section class="cr-od-panel" id="cr-performance" role="tabpanel" hidden>
 					<div class="cr-od-report-hero">
 						<div>
-							<h2>ارزیابی عملکرد فردی و مربی‌گری داده‌محور</h2>
-							<p>این تب کمبود ارزیابی عملکرد فردی را با شاخص‌های شفاف و قابل مشاهده پر می‌کند. نمره‌ها از ۱ تا ۴ ثبت می‌شوند، امتیاز کل به‌صورت وزنی محاسبه، با بازخورد <strong>SBI</strong> جفت و سپس در قالب مربی‌گری <strong>OSKAR</strong> به رشد و ارتقای موج سازمانی تبدیل می‌شود.</p>
+							<h2>ارزیابی عملکرد فردی و سازمانی</h2>
+							<p>این تب پس از ارزیابی سازمانی فعال می‌شود. نمره‌ها بر اساس <strong>شاخص‌های کاربردی، سطح‌بندی استاندارد و مستند عینی</strong> ثبت می‌شوند تا سلیقه شخصی ارزیاب دخیل نشود. خروجیِ امتیاز، بازخورد <strong>SBI</strong>، مربی‌گری <strong>OSKAR</strong> و OKR رشدی هر کارمند را برای سرپرست در نقش مربی عملکردی آماده می‌کند و در نهایت به توسعه سازمانی و ارتقای موج بلوغ متصل می‌شود.</p>
 						</div>
-						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه ارزیابی عملکرد و مربی‌گری" loading="lazy" />
+						<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه ارزیابی عملکرد، بازخورد و مربی‌گری" loading="lazy" />
 					</div>
 
 					<div class="cr-od-perf-models">
 						<div class="cr-od-card">
 							<h3>مدل بازخورد SBI</h3>
-							<p>یک بازخورد اثربخش سه قسمت دارد: موقعیت (Situation)، رفتار قابل مشاهده (Behavior) و اثر (Impact). این ساختار، نمره ارزیابی را به شواهد عینی متصل می‌کند و از قضاوت شخصی جدا می‌شود.</p>
+							<p>SBI یعنی موقعیت (Situation)، رفتار (Behavior) و اثر (Impact). این ساختار به سرپرست کمک می‌کند بازخورد را بر اساس شاهد عینی بدهد، نه نظر شخصی.</p>
 							<ol class="cr-od-guide-steps">
 								<li>Situation: زمان و مکان دقیق اتفاق را بدون قضاوت بگویید.</li>
 								<li>Behavior: رفتار مشخص و قابل مشاهده را توصیف کنید.</li>
@@ -1079,12 +1118,17 @@ class Coachroom_OD_Render {
 						</div>
 						<div class="cr-od-card">
 							<h3><?php echo esc_html( $perf_model['label'] ); ?></h3>
-							<p>OSKAR یک مربی‌گری ارزش‌محور و نقطه‌قوت‌محور است؛ از نمره فعلی شروع و با تأیید پیشرفت به گام بعدی می‌رسد.</p>
+							<p>OSKAR یک مربی‌گری ارزش‌محور و نقطه‌قوت‌محور است؛ از نمره فعلی شروع و با تأیید پیشرفت، گام بعدی و مرور را مشخص می‌کند.</p>
 							<ol class="cr-od-guide-steps">
 								<?php foreach ( $perf_model['steps'] as $step ) : ?>
 									<li><strong><?php echo esc_html( $step['fa'] ); ?>:</strong> <?php echo esc_html( $step['meaning'] ); ?></li>
 								<?php endforeach; ?>
 							</ol>
+						</div>
+						<div class="cr-od-card cr-od-perf-standards">
+							<h3>چرا نمره‌ها بدون سلیقه شخصی است؟</h3>
+							<p>هر شاخص یک سطح‌بندی ۱ تا ۴ دارد که از قبل اعلام شده و با منبع علمی/استاندارد صنعتی متصل است. ارزیاب باید برای هر نمره <strong>شاهد عینی</strong> ثبت کند و اگر شاهد موجود نباشد، نمره بالاتر و بدون شاهد پذیرفته نمی‌شود.</p>
+							<p class="cr-od-home-gate">این تب بر اساس نتایج تب «ارزیابی سازمانی» کالیبره می‌شود؛ بستر سازمانی (بلوغ، بازخورد، امنیت روانی) زمینه استفاده درست از مربی‌گری را مشخص می‌کند.</p>
 						</div>
 					</div>
 
@@ -1110,17 +1154,32 @@ class Coachroom_OD_Render {
 							</div>
 
 							<div class="cr-od-perf-scores">
-								<h4>شاخص‌های عملکرد (۱ تا ۴)</h4>
+								<h4>شاخص‌های عملکرد فردی/سازمانی (۱ تا ۴)</h4>
+								<p class="cr-od-hint">برای هر شاخص، نمره را بر اساس استاندارد اعلام‌شده انتخاب و یک شاهد عینی کوتاه ثبت کنید. بدون شاهد قابل قبول، نمره به‌عنوان ارزیابی مستند محسوب نمی‌شود.</p>
 								<?php foreach ( $perf_dims as $dim ) : ?>
 									<div class="cr-od-perf-score-input">
-										<div><span class="cr-od-perf-score-icon"><?php echo esc_html( $dim['icon'] ); ?></span><strong><?php echo esc_html( $dim['label'] ); ?></strong><small><?php echo esc_html( $dim['answer'] ); ?></small></div>
-										<input type="number" name="score_<?php echo esc_attr( $dim['key'] ); ?>" min="1" max="4" step="0.1" value="2.5" required aria-label="<?php echo esc_attr( $dim['label'] ); ?>" />
+										<div>
+											<span class="cr-od-perf-score-icon"><?php echo esc_html( $dim['icon'] ); ?></span>
+											<strong><?php echo esc_html( $dim['label'] ); ?></strong>
+											<small><strong>KPI:</strong> <?php echo esc_html( $dim['kpi'] ); ?> — <?php echo esc_html( $dim['answer'] ); ?></small>
+											<details class="cr-od-perf-rubric">
+												<summary>مقیاس استاندارد (۱ تا ۴)</summary>
+												<?php foreach ( $dim['rubric'] as $score => $desc ) : ?>
+													<div><b><?php echo esc_html( $score ); ?></b> — <?php echo esc_html( $desc ); ?></div>
+												<?php endforeach; ?>
+												<small class="cr-od-perf-source">مبنای علمی: <?php echo esc_html( $dim['source'] ); ?></small>
+											</details>
+										</div>
+										<div class="cr-od-perf-score-control">
+											<input type="number" name="score_<?php echo esc_attr( $dim['key'] ); ?>" min="1" max="4" step="0.1" value="2.5" required aria-label="<?php echo esc_attr( $dim['label'] ); ?>" />
+											<textarea name="evidence_<?php echo esc_attr( $dim['key'] ); ?>" rows="2" required placeholder="شاهد عینی: درصد تحقق، گزارش ممیزی، بازخورد، خروجی مستند..."></textarea>
+										</div>
 									</div>
 								<?php endforeach; ?>
 							</div>
 
 							<div class="cr-od-perf-coaching">
-								<h4>بازخورد SBI و مربی‌گری OSKAR</h4>
+								<h4>بازخورد SBI و مربی‌گری OSKAR توسط سرپرست / مربی عملکردی</h4>
 								<div class="cr-od-perf-fields">
 									<label class="cr-od-check-field"><input type="checkbox" name="feedback_given" value="1" /> بازخورد SBI در جلسه ۱:۱ ارائه شد</label>
 									<label>کیفیت بازخورد SBI (۱ تا ۴)
@@ -1134,10 +1193,16 @@ class Coachroom_OD_Render {
 										<input type="number" name="growth_score" min="1" max="4" step="0.1" value="1" />
 									</label>
 								</div>
-								<label>یادداشت سرپرست / مربی
-									<textarea name="notes" rows="3" placeholder="نتیجه جلسه، گام بعدی OSKAR و شاخص مرور ..."></textarea>
+								<label>سازوکار مربی‌گری (OSKAR) — گام بعدی
+									<textarea name="coaching_gate" rows="3" placeholder="نتیجه مطلوب، مقیاس فعلی، دانش و مهارت موردنیاز، تأیید نقطه قوت و زمان مرور ..."></textarea>
 								</label>
-								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت ارزیابی عملکرد و فعال‌سازی مربی‌گری</button>
+								<label>OKR رشدی — هدف (Objective)
+									<input type="text" name="okr_objective" placeholder="مثلاً ارتقای کیفیت مستندات و کاهش بازکاری واحد" />
+								</label>
+								<label>نتایج کلیدی (Key Results) — هر سطر یک KR
+									<input type="text" name="okr_krs" placeholder="مثلاً کاهش نرخ بازکاری به زیر ۵٪؛ ثبت ۳ درس‌آموخته" />
+								</label>
+								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت ارزیابی و فعال‌سازی بازخورد، مربی‌گری و OKR</button>
 							</div>
 						</form>
 
@@ -1145,7 +1210,8 @@ class Coachroom_OD_Render {
 							<div class="cr-od-kpi-grid cr-od-perf-summary" id="cr-perf-summary">
 								<div class="cr-od-kpi"><span class="cr-od-kpi-label">کارکنان ارزیابی‌شده</span><span class="cr-od-kpi-value">—</span></div>
 							</div>
-							<div class="cr-od-perf-status" id="cr-perf-status"><?php echo esc_html( ! empty( $performance['diagnosis'] ) ? $performance['diagnosis'] : 'در انتظار ثبت اولین ارزیابی عملکرد.' ); ?></div>
+							<div class="cr-od-perf-status" id="cr-perf-status"><?php echo esc_html( ! empty( $performance['diagnosis'] ) ? $performance['diagnosis'] : 'در انتظار ثبت اولین ارزیابی عملکرد فردی/سازمانی.' ); ?></div>
+							<div class="cr-od-perf-units" id="cr-perf-units"></div>
 							<div class="cr-od-perf-lowest" id="cr-perf-lowest"></div>
 						</aside>
 					</div>
@@ -1165,10 +1231,11 @@ class Coachroom_OD_Render {
 									<th>بازخورد / مربی‌گری</th>
 									<th>اثربخشی</th>
 									<th>رشد</th>
+									<th>OSKAR / OKR پیشنهادی</th>
 								</tr>
 							</thead>
 							<tbody id="cr-perf-tbody">
-								<tr><td colspan="13">در انتظار داده.</td></tr>
+								<tr><td colspan="14">در انتظار داده.</td></tr>
 							</tbody>
 						</table>
 					</div>
@@ -1316,7 +1383,7 @@ class Coachroom_OD_Render {
 							</div>
 
 							<div class="cr-od-report-efqm" id="cr-report-performance">
-								<h4>ارزیابی عملکرد فردی و مربی‌گری داده‌محور</h4>
+								<h4>ارزیابی عملکرد فردی و سازمانی + مربی‌گری داده‌محور</h4>
 								<div class="cr-od-report-proof">
 									<div><span>کارکنان ارزیابی‌شده</span><strong id="cr-report-perf-count" data-fa-num><?php echo esc_html( ! empty( $performance['count'] ) ? $performance['count'] : 0 ); ?></strong><small>دوره جاری</small></div>
 									<div><span>میانگین عملکرد</span><strong id="cr-report-perf-avg" data-fa-num><?php echo esc_html( ! empty( $performance['average'] ) ? $performance['average'] : '—' ); ?></strong><small>از ۴</small></div>
@@ -1338,6 +1405,7 @@ class Coachroom_OD_Render {
 												<th>SBI / OSKAR</th>
 												<th>اثربخشی</th>
 												<th>رشد</th>
+												<th>OSKAR / OKR پیشنهادی</th>
 											</tr>
 										</thead>
 										<tbody id="cr-report-perf-tbody">
@@ -1354,10 +1422,11 @@ class Coachroom_OD_Render {
 														<td><?php echo esc_html( $perf_item['feedback_given'] ? 'SBI ✓' : '—' ); ?> <?php echo esc_html( $perf_item['oskar_used'] ? 'OSKAR ✓' : '' ); ?></td>
 														<td data-fa-num><?php echo esc_html( $perf_item['coaching_effectiveness'] ); ?></td>
 														<td data-fa-num><?php echo esc_html( $perf_item['growth_score'] ); ?></td>
+														<td class="cr-od-table-long"><strong><?php echo esc_html( $perf_item['plan']['okr_objective'] ); ?></strong><small><?php echo esc_html( implode( ' | ', $perf_item['plan']['okr_krs'] ) ); ?></small></td>
 													</tr>
 												<?php endforeach; ?>
 											<?php else : ?>
-												<tr><td colspan="<?php echo esc_attr( 4 + count( $perf_dims ) + 3 ); ?>">در انتظار داده.</td></tr>
+												<tr><td colspan="<?php echo esc_attr( 4 + count( $perf_dims ) + 4 ); ?>">در انتظار داده.</td></tr>
 											<?php endif; ?>
 										</tbody>
 									</table>
@@ -1447,6 +1516,13 @@ class Coachroom_OD_Render {
 							<div class="cr-od-report-footer">تهیه‌شده توسط پلتفرم توسعه سازمانی <strong>CoachRoom</strong> — coachroom.ir</div>
 						</div>
 					</section>
+
+					<?php else : ?>
+					<section class="cr-od-locked-note" id="cr-od-locked-panels">
+						<h2>تب‌های مدیریتی پس از ثبت‌نام باز می‌شوند</h2>
+						<p>برای مشاهده ارزیابی سازمانی، داشبورد شاخص‌ها، ارزیابی عملکرد فردی و سازمانی، نقشه راه مربی‌گری، راهنمای اجرا و گزارش مدیران، لطفاً نام، ایمیل و شرکت/واحد سازمانی خود را از بخش «خانه» ثبت کنید.</p>
+					</section>
+					<?php endif; ?>
 
 				</main>
 

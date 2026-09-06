@@ -516,8 +516,68 @@ html{scroll-behavior:smooth}
 .cr-tip:hover::after,.cr-tip:focus::after,.cr-tip:hover::before,.cr-tip:focus::before{opacity:1;visibility:visible}
 .cr-tip:focus{outline:2px dashed rgba(13,148,136,.45)}
 
+/* Home / free access + gated platform */
+.cr-od-home-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:28px;align-items:center;padding:38px 34px;background:linear-gradient(135deg,#0c4a6e 0%,#0d9488 60%,#134e4a 100%);color:#fff;border-radius:22px;margin-bottom:18px;box-shadow:var(--cr-shadow)}
+.cr-od-home-hero h1{color:#fff;font-size:clamp(24px,3vw,38px);line-height:1.45}
+.cr-od-home-hero h1 span{color:#fedfaa}
+.cr-od-home-hero p{color:#e5f1f5;line-height:2;font-size:15px}
+.cr-od-home-hero img{aspect-ratio:16/11;object-fit:cover;width:100%;box-shadow:0 22px 48px rgba(0,0,0,.22)}
+.cr-od-home-hero .cr-od-landing-tips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0}
+.cr-od-home-hero .cr-od-landing-tips>div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:9px;font-size:12.5px;text-align:center}
+.cr-od-home-hero-cta{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.cr-od-home-access{background:rgba(34,255,192,.14);border:1px solid rgba(34,255,192,.35);color:#c9fff0;padding:10px 14px;border-radius:12px}
+.cr-od-home-section{margin:18px 0}
+.cr-od-home-roadmap{display:grid;grid-template-columns:1fr;gap:9px}
+.cr-od-home-step{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--cr-line);border-radius:14px;padding:13px 16px}
+.cr-od-home-step b{min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:var(--cr-primary);color:#fff;font-size:14px}
+.cr-od-home-step h3{font-size:14.5px;margin:0 0 3px}
+.cr-od-home-step p{margin:0;font-size:13px;color:var(--cr-muted);line-height:1.85}
+.cr-od-home-model{background:#f0f7fa;border:1px solid var(--cr-line);border-radius:18px;padding:20px}
+.cr-od-home-chain{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:stretch;margin-top:12px}
+.cr-od-home-chain-item{background:#fff;border:1px solid var(--cr-line);border-radius:12px;padding:13px 10px;text-align:center;font-size:12.5px;color:var(--cr-dark)}
+.cr-od-home-chain-item small{display:block;color:var(--cr-muted);font-size:11px;margin-top:4px}
+.cr-od-home-chain-arrow{display:flex;align-items:center;justify-content:center;color:var(--cr-primary-2);font-weight:800}
+.cr-od-home-register{max-width:620px;margin:0 auto;background:#fff;border:1px solid var(--cr-line);border-radius:18px;padding:24px;box-shadow:var(--cr-shadow)}
+.cr-od-home-register label{display:flex;flex-direction:column;gap:6px;text-align:right;font-size:13px;color:var(--cr-muted);font-weight:600}
+.cr-od-home-register input{width:100%;padding:11px 13px;border:1px solid var(--cr-line);border-radius:11px;font-family:inherit;font-size:14px}
+.cr-od-home-register button{width:100%;margin-top:10px}
+.cr-od-gate-inline{display:flex;align-items:center;gap:12px;background:#fff8e8;border:1px solid #f0d58a;border-radius:14px;padding:13px 16px;margin:16px 0;color:#7a4a00;font-size:13.5px}
+.cr-od-gate-inline.is-hidden{display:none}
+.cr-od-tab[data-locked]::after{content:"🔒";font-size:11px;margin-right:4px}
+.cr-od-tab[data-locked]{opacity:.72}
+.cr-od-gate-inline strong{white-space:nowrap}
+.cr-od-locked-note{background:#f8fafc;border:2px dashed var(--cr-line);border-radius:18px;padding:34px;text-align:center;color:var(--cr-muted)}
+.cr-od-locked-note h2{color:var(--cr-dark)}
+.cr-od-perf-standards{grid-column:span 3}
+.cr-od-perf-standards p{margin:8px 0;font-size:13.5px;color:var(--cr-muted);line-height:1.9}
+.cr-od-home-gate{background:#f1f7fa;border-right:4px solid var(--cr-primary-2);padding:10px 12px;border-radius:9px;color:var(--cr-dark)!important}
+.cr-od-hint{font-size:13px;color:var(--cr-muted);margin:4px 0 12px;line-height:1.9}
+.cr-od-perf-score-control{display:flex;flex-direction:column;gap:8px}
+.cr-od-perf-score-control input{text-align:center;font-size:16px}
+.cr-od-perf-score-control textarea{width:100%;min-height:62px;padding:9px 11px;border:1px solid var(--cr-line);border-radius:10px;font-family:inherit;font-size:12.5px;color:var(--cr-ink);resize:vertical;background:#fbfdff}
+.cr-od-perf-rubric{margin-top:8px}
+.cr-od-perf-rubric summary{cursor:pointer;font-size:12.5px;color:var(--cr-primary);font-weight:700}
+.cr-od-perf-rubric>div{font-size:12px;color:var(--cr-ink);padding:4px 0 4px 8px;border-bottom:1px dashed var(--cr-line)}
+.cr-od-perf-rubric b{display:inline-block;min-width:20px;color:var(--cr-primary)}
+.cr-od-perf-source{display:block;margin-top:6px;font-size:11.5px;color:var(--cr-muted)}
+.cr-od-perf-units{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.cr-od-perf-unit{background:#fff;border:1px solid var(--cr-line);border-radius:12px;padding:11px 12px;font-size:12px;color:var(--cr-muted)}
+.cr-od-perf-unit strong{display:block;color:var(--cr-dark);font-size:13px;margin-bottom:5px}
+.cr-od-perf-unit b{color:var(--cr-primary)}
+@media(max-width:860px){
+  .cr-od-home-hero{grid-template-columns:1fr}
+  .cr-od-home-chain{grid-template-columns:1fr}
+  .cr-od-home-chain-arrow{transform:rotate(90deg)}
+  .cr-od-perf-standards{grid-column:span 1}
+}
+@media(max-width:640px){
+  .cr-od-home-hero .cr-od-landing-tips{grid-template-columns:repeat(2,1fr)}
+  .cr-od-home-hero-cta{flex-direction:column;align-items:stretch}
+  .cr-od-perf-units{grid-template-columns:1fr}
+}
+
 /* Performance evaluation tab */
-.cr-od-perf-models{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.cr-od-perf-models{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
 .cr-od-perf-models .cr-od-card{padding:18px 20px;background:linear-gradient(180deg,#fff, #f8fbfd);border:1px solid var(--cr-line)}
 .cr-od-perf-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.8fr);gap:16px;align-items:start}
 .cr-od-perf-form{padding:22px;background:#fff;border:1px solid var(--cr-line)}

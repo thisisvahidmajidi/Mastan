@@ -15,7 +15,7 @@
   };
 
   var FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-  var TAB_PANELS = ['dashboard', 'assessment', 'performance', 'roadmap', 'departments', 'blog', 'guide', 'reports'];
+  var TAB_PANELS = ['home', 'dashboard', 'assessment', 'performance', 'roadmap', 'departments', 'blog', 'guide', 'reports'];
 
   function getData() { return state.data || {}; }
   function getSummary() { return getData().summary || {}; }
@@ -632,12 +632,15 @@
         var cells = Object.keys(dims).map(function (k) {
           return '<td data-fa-num>' + esc(fmtNum(num(it.scores && it.scores[k]), 1)) + '</td>';
         }).join('');
+        var plan = it.plan || {};
+        var planText = (plan.okr_objective || '') + (plan.okr_krs && plan.okr_krs.length ? ' — ' + plan.okr_krs.join(' | ') : '');
         return '<tr><td>' + esc(it.employee_name || '') + '</td><td>' + esc(it.department || '') + '</td>' +
           '<td style="color:' + esc((it.status && it.status.color) || '#333') + ';">' + esc((it.status && it.status.level) || '') + '</td>' +
           '<td data-fa-num>' + esc(fmtNum(it.overall, 2)) + '</td>' + cells +
           '<td>' + (it.feedback_given ? 'SBI ✓' : '—') + ' ' + (it.oskar_used ? 'OSKAR ✓' : '') + '</td>' +
           '<td data-fa-num>' + esc(fmtNum(it.coaching_effectiveness, 1)) + '</td>' +
-          '<td data-fa-num>' + esc(fmtNum(it.growth_score, 1)) + '</td></tr>';
+          '<td data-fa-num>' + esc(fmtNum(it.growth_score, 1)) + '</td>' +
+          '<td class="cr-od-table-long">' + esc(planText) + '</td></tr>';
       }).join('');
       convertDigitsInside(perfBody);
     }
@@ -898,6 +901,7 @@
     var tbody = document.getElementById('cr-perf-tbody');
     var statusEl = document.getElementById('cr-perf-status');
     var lowest = document.getElementById('cr-perf-lowest');
+    var unitsEl = document.getElementById('cr-perf-units');
 
     if (summaryEl) {
       var rate = num(p.feedback_rate);
@@ -920,6 +924,8 @@
             '<span class="cr-od-perf-score" style="--perf:' + sc + '">' + esc(fmtNum(sc, 1)) + '</span>' +
             '<small>' + esc((dims[k] || {}).short || k) + '</small></td>');
         });
+        var plan = it.plan || {};
+        var planText = (plan.okr_objective || '') + (plan.okr_krs && plan.okr_krs.length ? ' — ' + plan.okr_krs.join(' | ') : '');
         return '<tr>' +
           '<td><strong>' + esc(it.employee_name || '—') + '</strong><small>' + esc(it.employee_role || '') + '</small></td>' +
           '<td>' + esc(it.department || '—') + '</td>' +
@@ -929,9 +935,20 @@
           '<td>' + (it.feedback_given ? '<span class="cr-od-check">SBI ✓</span>' : '<span class="cr-od-muted">—</span>') + ' ' + (it.oskar_used ? '<span class="cr-od-check">OSKAR ✓</span>' : '') + '</td>' +
           '<td data-fa-num>' + esc(fmtNum(it.coaching_effectiveness, 1)) + '</td>' +
           '<td data-fa-num>' + esc(fmtNum(it.growth_score, 1)) + '</td>' +
+          '<td class="cr-od-table-long"><strong>' + esc(planText) + '</strong><small>' + esc((it.weak_labels || []).join('، ')) + '</small></td>' +
           '</tr>';
       }).join('');
       convertDigitsInside(tbody);
+    }
+
+    if (unitsEl) {
+      var units = p.units || [];
+      unitsEl.innerHTML = units.length ? units.map(function (u) {
+        return '<div class="cr-od-perf-unit"><strong>' + esc(u.name || '') + '</strong>' +
+          '<span>میانگین: <b data-fa-num>' + esc(fmtNum(u.average, 2)) + '</b></span>' +
+          '<small>SBI: ' + esc(fmtNum(u.feedback_rate, 1)) + '٪ — OSKAR: ' + esc(fmtNum(u.oskar_rate, 1)) + '٪</small></div>';
+      }).join('') : '<div class="cr-od-empty">واحدها پس از ثبت ارزیابی نمایش داده می‌شوند.</div>';
+      convertDigitsInside(unitsEl);
     }
 
     if (statusEl) {
@@ -982,7 +999,7 @@
       e.preventDefault();
       var status = q('.cr-od-form-status', form);
       var missing = [];
-      var payload = { scores: {} };
+      var payload = { scores: {}, evidence: {} };
 
       ['employee_name', 'department', 'employee_role', 'supervisor_name', 'evaluator_role', 'period'].forEach(function (n) {
         var input = q('[name="' + n + '"]', form);
@@ -996,7 +1013,15 @@
         var val = input ? parseFloat(input.value) : NaN;
         if (isNaN(val)) { missing.push((dims[k] || {}).label || k); return; }
         payload.scores[k] = clamp(val, 1, 4);
+        var ev = q('[name="evidence_' + k + '"]', form);
+        payload.evidence[k] = ev ? ev.value.trim() : '';
+        if (!payload.evidence[k]) { missing.push('شاهد عینی ' + ((dims[k] || {}).label || k)); }
       });
+
+      payload.coaching_gate = q('[name="coaching_gate"]', form) ? q('[name="coaching_gate"]', form).value.trim() : '';
+      payload.okr_objective = q('[name="okr_objective"]', form) ? q('[name="okr_objective"]', form).value.trim() : '';
+      var krsInput = q('[name="okr_krs"]', form) ? q('[name="okr_krs"]', form).value.trim() : '';
+      payload.okr_krs = krsInput ? krsInput.split(/[;؛\n]/).map(function (s) { return s.trim(); }).filter(Boolean) : [];
 
       var sbi = q('[name="sbi_quality"]', form) ? parseFloat(q('[name="sbi_quality"]', form).value) : NaN;
       payload.sbi_quality = isNaN(sbi) ? 1 : clamp(sbi, 1, 4);
@@ -1025,12 +1050,12 @@
           if (serverPayload) { state.data = serverPayload; }
           var successMsg = (res.data && res.data.message) ? res.data.message : 'ارزیابی عملکرد با موفقیت ثبت شد.';
           try { updateAll(); } catch (err2) { if (window.console) { window.console.warn('CoachRoom perf update:', err2); } }
-          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی عملکرد و فعال‌سازی مربی‌گری'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی و فعال‌سازی بازخورد، مربی‌گری و OKR'; }
           if (status) { status.textContent = successMsg; status.className = 'cr-od-form-status ok'; }
           form.reset();
         })
         .catch(function (err) {
-          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی عملکرد و فعال‌سازی مربی‌گری'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی و فعال‌سازی بازخورد، مربی‌گری و OKR'; }
           if (status) { status.textContent = 'خطا: ' + (err && err.message ? err.message : 'لطفاً دوباره تلاش کنید.'); status.className = 'cr-od-form-status err'; }
         });
     });
@@ -1063,9 +1088,14 @@
   }
 
   function selfTest() {
+    if (!gateCanAccess()) {
+      var statusFree = document.getElementById('cr-od-system-status');
+      if (statusFree) { statusFree.textContent = 'صفحه خانه باز است — تب‌های مدیریتی پس از ثبت‌نام فعال می‌شوند'; statusFree.style.color = '#cbd5e1'; }
+      return true;
+    }
     var issues = [];
     var requiredIds = [
-      'cr-dashboard', 'cr-assessment', 'cr-performance', 'cr-roadmap', 'cr-departments', 'cr-blog', 'cr-guide', 'cr-reports',
+      'cr-home', 'cr-dashboard', 'cr-assessment', 'cr-performance', 'cr-roadmap', 'cr-departments', 'cr-blog', 'cr-guide', 'cr-reports',
       'crRadarChart', 'crWaveChart', 'crSkillsChart', 'crDeptChart', 'crRoleChart', 'crTrendChart',
       'cr-od-assessment-form', 'cr-dept-tbody', 'cr-role-tbody', 'cr-role-dim-tbody',
       'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm',
@@ -1073,8 +1103,8 @@
       'cr-strategy-note', 'cr-roadmap-phase-30', 'cr-roadmap-phase-60', 'cr-roadmap-phase-90',
       'cr-weisbord-diagnosis', 'cr-attitude-diagnosis', 'cr-hr1410-diagnosis',
       'cr-model-matrix', 'cr-reliability', 'cr-report-weisbord', 'cr-report-attitude', 'cr-report-hr1410',
-      'cr-perf-form', 'cr-perf-summary', 'cr-perf-tbody', 'cr-perf-lowest', 'cr-perf-status',
-      'cr-report-performance', 'cr-report-perf-tbody'
+      'cr-perf-form', 'cr-perf-summary', 'cr-perf-tbody', 'cr-perf-units', 'cr-perf-lowest', 'cr-perf-status',
+      'cr-report-performance', 'cr-report-perf-tbody', 'cr-od-gate-inline'
     ];
     requiredIds.forEach(function (id) {
       if (!document.getElementById(id)) { issues.push('missing:' + id); }
@@ -1122,7 +1152,21 @@
   }
 
   /* ---------------- Tabs ---------------- */
-  function activateTab(name) {
+  function gateCanAccess() {
+    var gate = window.crODGate || {};
+    return !!gate.canAccess;
+  }
+
+  function activateTab(name, fromUser) {
+    if (name !== 'home' && !gateCanAccess()) {
+      var lock = document.getElementById('cr-od-gate-inline');
+      if (lock) {
+        lock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var msg = q('.cr-od-gate-inline-msg', lock);
+        if (msg) { msg.textContent = 'برای مشاهده «' + (qa('.cr-od-tab', document).find(function (b) { return b.getAttribute('data-tab') === name; }) || {}).textContent + '»، ابتدا نام، ایمیل و شرکت/واحد خود را ثبت کنید.'; }
+      }
+      return false;
+    }
     qa('.cr-od-tab').forEach(function (b) {
       var active = b.getAttribute('data-tab') === name;
       b.classList.toggle('is-active', active);
@@ -1137,11 +1181,12 @@
     else if (name === 'dashboard') { drawRadar(); drawWaveChart(); drawSkillsChart(); }
     else if (name === 'performance') { refreshPerformance(); }
     else if (name === 'blog') { convertDigitsInside(); }
+    return true;
   }
 
   function bindTabs() {
     qa('.cr-od-tab').forEach(function (b) {
-      b.addEventListener('click', function () { activateTab(b.getAttribute('data-tab')); });
+      b.addEventListener('click', function () { activateTab(b.getAttribute('data-tab'), true); });
     });
   }
 
@@ -1348,7 +1393,8 @@
       var body = new URLSearchParams();
       body.append('action', 'cr_od_register_participant');
       body.append('nonce', gate.nonce || (q('input[name="nonce"]', form) ? q('input[name="nonce"]', form).value : ''));
-      body.append('username', q('input[name="username"]', form) ? q('input[name="username"]', form).value.trim() : '');
+      body.append('name', q('input[name="name"]', form) ? q('input[name="name"]', form).value.trim() : '');
+      body.append('company', q('input[name="company"]', form) ? q('input[name="company"]', form).value.trim() : '');
       body.append('email', q('input[name="email"]', form) ? q('input[name="email"]', form).value.trim() : '');
       fetch(gate.ajaxUrl || '/wp-admin/admin-ajax.php', {
         method: 'POST',

@@ -97,6 +97,7 @@ class Coachroom_OD_DB {
 			oskar_used TINYINT(1) NOT NULL DEFAULT 0,
 			coaching_effectiveness DECIMAL(5,2) NOT NULL DEFAULT 1.00,
 			growth_score DECIMAL(5,2) NOT NULL DEFAULT 1.00,
+			scores_evidence TEXT NULL,
 			notes TEXT NULL,
 			created_at DATETIME NOT NULL,
 			PRIMARY KEY  (id),
@@ -172,8 +173,22 @@ class Coachroom_OD_DB {
 			self::seed_performances();
 		}
 
+		// Ensure the individual performance evidence column exists on update.
+		if ( $perf_exists ) {
+			$perf_cols = array();
+			$perf_found = $wpdb->get_results( "SHOW COLUMNS FROM {$performances}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			if ( $perf_found ) {
+				foreach ( $perf_found as $col ) {
+					$perf_cols[ $col->Field ] = true;
+				}
+			}
+			if ( ! isset( $perf_cols['scores_evidence'] ) ) {
+				$wpdb->query( "ALTER TABLE {$performances} ADD COLUMN scores_evidence TEXT NULL AFTER growth_score" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			}
+		}
+
 		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
-			update_option( 'cr_od_db_version', '1.9.0' );
+			update_option( 'cr_od_db_version', '1.10.0' );
 			return;
 		}
 
@@ -187,7 +202,7 @@ class Coachroom_OD_DB {
 			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
-		update_option( 'cr_od_db_version', '1.9.0' );
+		update_option( 'cr_od_db_version', '1.10.0' );
 	}
 
 	/**
@@ -289,10 +304,11 @@ class Coachroom_OD_DB {
 				'oskar_used'           => ! empty( $data['oskar_used'] ) ? 1 : 0,
 				'coaching_effectiveness' => isset( $data['coaching_effectiveness'] ) ? max( 1, min( 4, (float) $data['coaching_effectiveness'] ) ) : 1,
 				'growth_score'         => isset( $data['growth_score'] ) ? max( 1, min( 4, (float) $data['growth_score'] ) ) : 1,
+				'scores_evidence'      => isset( $data['scores_evidence'] ) ? wp_json_encode( $data['scores_evidence'] ) : '',
 				'notes'                => isset( $data['notes'] ) ? sanitize_textarea_field( $data['notes'] ) : '',
 				'created_at'           => current_time( 'mysql' ),
 			),
-			array( '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%d', '%f', '%d', '%f', '%f', '%s', '%s' )
+			array( '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%f', '%f', '%f', '%d', '%f', '%d', '%f', '%f', '%s', '%s', '%s' )
 		);
 		return (int) $wpdb->insert_id;
 	}

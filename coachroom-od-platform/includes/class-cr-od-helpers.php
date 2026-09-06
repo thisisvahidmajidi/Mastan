@@ -833,6 +833,14 @@ class Coachroom_OD_Helpers {
 				'weight'=> 1.4,
 				'kpi'   => 'درصد تحقق OKR و شاخص‌های عملیاتی/کیفی دوره',
 				'answer'=> 'کارمند تا چه اندازه به اهداف و نتایج تعیین‌شده در دوره دست یافته است؟',
+				'evidence' => 'درصد تحقق objectives / نتایج کلیدی، مستند داشبورد OKR یا خروجی واحد.',
+				'source'   => 'Doerr, J. (2018). Measure What Matters; مدیریت عملکرد با OKR.',
+				'rubric'   => array(
+					1 => 'کمتر از ۴۰٪ اهداف: نتیجه نامشخص یا بدون مستند.',
+					2 => '۴۰-۶۹٪ اهداف با شواهد محدود؛ برخی نتایج ناقص.',
+					3 => '۷۰-۸۹٪ اهداف با مستند قابل بررسی؛ انحراف عادی و قابل توضیح.',
+					4 => '۹۰٪+ اهداف با شواهد مستند و اثر مثبت بر کل واحد.',
+				),
 			),
 			'quality_score' => array(
 				'key'   => 'quality_score',
@@ -842,6 +850,14 @@ class Coachroom_OD_Helpers {
 				'weight'=> 1.2,
 				'kpi'   => 'نرخ خطا، بازکاری، ممیزی ایمنی/کیفیت و خروجی استاندارد',
 				'answer'=> 'کیفیت کار، دقت مستندات، رعایت استاندارد و کاهش خطا چگونه است؟',
+				'evidence' => 'تعداد/نرخ خطا، بازکاری، نتایج ممیزی ISO/HSE و کنترل کیفیت دوره.',
+				'source'   => 'ISO 9001/45001؛ ممیزی کیفیت و ایمنی صنعت نفت.',
+				'rubric'   => array(
+					1 => 'خطاهای مکرر، بازکاری بالا یا نقض استاندارد مستند.',
+					2 => 'خطاهای موردی؛ مستندسازی و بازبینی ضعیف است.',
+					3 => 'خطای اندک با بازبینی منظم؛ ممیزی بدون یافته جدی.',
+					4 => 'خروجی بدون بازکاری، مستندسازی کامل و بهبود مستمر فرایند.',
+				),
 			),
 			'teamwork_score' => array(
 				'key'   => 'teamwork_score',
@@ -851,6 +867,14 @@ class Coachroom_OD_Helpers {
 				'weight'=> 1.1,
 				'kpi'   => 'مشارکت در تیم‌های چندتخصصی، انتقال دانش و مدیریت تعارض',
 				'answer'=> 'کارمند چقدر در همکاری بین‌واحدی، اشتراک دانش و حل مسئله تیمی نقش دارد؟',
+				'evidence' => 'مشارکت در جلسات مشترک، خروجی تیم‌های چندتخصصی و بازخورد همکاران.',
+				'source'   => 'Senge, P. M. (1990). The Fifth Discipline; شبکه‌های یادگیری.',
+				'rubric'   => array(
+					1 => 'کار سیلویی؛ عدم مشارکت یا ایجاد تعارض در تیم.',
+					2 => 'همکاری موردی؛ دانش کم اشتراک‌گذاری می‌شود.',
+					3 => 'مشارکت منظم در تیم و انتقال دانش به همکاران.',
+					4 => 'نقش تسهیل‌گر شبکه، رفع تعارض و اشتراک دانش سطح سازمان.',
+				),
 			),
 			'learning_score' => array(
 				'key'   => 'learning_score',
@@ -860,6 +884,14 @@ class Coachroom_OD_Helpers {
 				'weight'=> 1.1,
 				'kpi'   => 'تکمیل آموزش، جذب بازخورد، بهبود رفتار پس از بازخورد',
 				'answer'=> 'کارمند از بازخورد و مربی‌گری چقدر یاد می‌گیرد و در رفتار خود تغییر می‌دهد؟',
+				'evidence' => 'آموزش تکمیل‌شده، پروژه یادگیری، و تغییر رفتار پس از بازخورد OSKAR.',
+				'source'   => 'Kolb (1984). Experiential Learning; بازخورد رشد‌محور.',
+				'rubric'   => array(
+					1 => 'عدم تکمیل آموزش یا تکرار همان خطا پس از بازخورد.',
+					2 => 'یادگیری پراکنده و بدون انتقال به کار واقعی.',
+					3 => 'تکمیل برنامه یادگیری و تغییر قابل مشاهده پس از بازخورد.',
+					4 => 'یادگیری فعال، مربی‌گری همتا و بهبود مستمر مستند.',
+				),
 			),
 			'behavior_score' => array(
 				'key'   => 'behavior_score',
@@ -869,6 +901,14 @@ class Coachroom_OD_Helpers {
 				'weight'=> 1.2,
 				'kpi'   => 'احترام، امنیت روانی، مسئولیت‌پذیری، رعایت HSE و اخلاق حرفه‌ای',
 				'answer'=> 'رفتار کارمند در محیط کار، سلامت روان، امنیت و مسئولیت‌پذیری چگونه است؟',
+				'evidence' => 'ثبت HSE، گزارش امنیت روانی، بازخورد رفتاری و مسئولیت‌پذیری.',
+				'source'   => 'Edmondson (1999). Psychological Safety; کد اخلاق حرفه‌ای.',
+				'rubric'   => array(
+					1 => 'نقض حاد HSE/اخلاق یا رفتار تهدیدکننده امنیت روانی.',
+					2 => 'رفتار ناهنجار موردی؛ مسئولیت‌پذیری ناقص.',
+					3 => 'رعایت HSE، احترام و مسئولیت‌پذیری در سطح انتظار.',
+					4 => 'الگوی رفتار حرفه‌ای، امنیت روانی و ارتقای فرهنگ ایمنی.',
+				),
 			),
 			'customer_score' => array(
 				'key'   => 'customer_score',
@@ -878,6 +918,14 @@ class Coachroom_OD_Helpers {
 				'weight'=> 1.1,
 				'kpi'   => 'رضایت مشتری داخلی/خارجی، زمان تحویل، کاهش شکایت',
 				'answer'=> 'نتیجه کار کارمند چه اثری بر رضایت مشتری یا ذی‌نفع داشته است؟',
+				'evidence' => 'نظرسنجی مشتری، شکایات، زمان تحویل و بازخورد ذی‌نفعان.',
+				'source'   => 'EFQM Results (Client/People); مدل تعالی EFQM.',
+				'rubric'   => array(
+					1 => 'افزایش شکایت یا افت مستند رضایت ذی‌نفع.',
+					2 => 'رضایت پایدار متوسط؛ پیگیری ضعیف شکایات.',
+					3 => 'رضایت خوب و بهبود مستند زمان/کیفیت تحویل.',
+					4 => 'اثر قابل اندازه‌گیری بر رضایت، کاهش شکایت و مشتری/ذی‌نفع.',
+				),
 			),
 		);
 	}
@@ -926,6 +974,37 @@ class Coachroom_OD_Helpers {
 			$status  = self::performance_status( $overall );
 			$eff     = isset( $row->coaching_effectiveness ) ? (float) $row->coaching_effectiveness : 1;
 			$growth  = isset( $row->growth_score ) ? (float) $row->growth_score : 1;
+			$evidence_raw = isset( $row->scores_evidence ) ? $row->scores_evidence : '';
+			$evidence_map = json_decode( $evidence_raw, true );
+			if ( ! is_array( $evidence_map ) ) {
+				$evidence_map = array();
+			}
+
+			$scores = array(
+				'results_score' => isset( $row->results_score ) ? (float) $row->results_score : 2.5,
+				'quality_score' => isset( $row->quality_score ) ? (float) $row->quality_score : 2.5,
+				'teamwork_score'=> isset( $row->teamwork_score ) ? (float) $row->teamwork_score : 2.5,
+				'learning_score'=> isset( $row->learning_score ) ? (float) $row->learning_score : 2.5,
+				'behavior_score'=> isset( $row->behavior_score ) ? (float) $row->behavior_score : 2.5,
+				'customer_score'=> isset( $row->customer_score ) ? (float) $row->customer_score : 2.5,
+			);
+			$evidence = array();
+			foreach ( $scores as $key => $score ) {
+				$evidence[ $key ] = isset( $evidence_map[ $key ] ) ? (string) $evidence_map[ $key ] : '';
+			}
+
+			$weak = array_keys( $scores );
+			usort( $weak, function ( $a, $b ) use ( $scores ) {
+				return $scores[ $a ] <=> $scores[ $b ];
+			} );
+			$weak = array_slice( $weak, 0, 2 );
+			$weak_labels = array();
+			foreach ( $weak as $key ) {
+				$weak_labels[] = isset( $dims[ $key ]['label'] ) ? $dims[ $key ]['label'] : $key;
+			}
+			$first_weak = isset( $dims[ $weak[0] ] ) ? $dims[ $weak[0] ] : array( 'label' => 'عملکرد کل', 'kpi' => 'شاخص عملکرد' );
+			$target_scale = min( 10, max( 1, round( $scores[ $weak[0] ] / 4 * 10 ) + 2 ) );
+
 			$items[] = array(
 				'id'          => (int) $row->id,
 				'cycle_id'    => (int) $row->cycle_id,
@@ -935,14 +1014,8 @@ class Coachroom_OD_Helpers {
 				'supervisor_name'=> isset( $row->supervisor_name ) ? $row->supervisor_name : '',
 				'evaluator_role'=> isset( $row->evaluator_role ) ? $row->evaluator_role : '',
 				'period'      => isset( $row->period ) ? $row->period : '',
-				'scores'      => array(
-					'results_score' => isset( $row->results_score ) ? (float) $row->results_score : 2.5,
-					'quality_score' => isset( $row->quality_score ) ? (float) $row->quality_score : 2.5,
-					'teamwork_score'=> isset( $row->teamwork_score ) ? (float) $row->teamwork_score : 2.5,
-					'learning_score'=> isset( $row->learning_score ) ? (float) $row->learning_score : 2.5,
-					'behavior_score'=> isset( $row->behavior_score ) ? (float) $row->behavior_score : 2.5,
-					'customer_score'=> isset( $row->customer_score ) ? (float) $row->customer_score : 2.5,
-				),
+				'scores'      => $scores,
+				'evidence'    => $evidence,
 				'overall'     => $overall,
 				'status'      => $status,
 				'feedback_given' => ! empty( $row->feedback_given ),
@@ -952,7 +1025,24 @@ class Coachroom_OD_Helpers {
 				'growth_score' => $growth,
 				'notes'       => isset( $row->notes ) ? $row->notes : '',
 				'created_at'  => isset( $row->created_at ) ? $row->created_at : '',
+				'weak'        => $weak,
+				'weak_labels' => $weak_labels,
+				'plan'        => array(
+					'okr_objective' => 'ارتقای «' . $first_weak['label'] . '» در نقش ' . ( isset( $row->employee_role ) ? $row->employee_role : 'کارمند' ) . ' و واحد ' . ( isset( $row->department ) ? $row->department : '' ),
+					'okr_krs'       => array(
+						'ثبت ۲ شاهد عینی در ' . $first_weak['label'] . ' در ۳۰ روز آینده.',
+						'رسیدن از نمره ' . round( $scores[ $weak[0] ], 1 ) . ' به ' . min( 4, round( ( $target_scale / 10 ) * 4, 1 ) ) . ' در بازارزیابی دوره بعد.',
+					),
+					'oskar'         => array(
+						'Outcome'  => 'نتیجه مطلوب: بهبود مستند در ' . $first_weak['label'] . '.',
+						'Scale'    => 'مقیاس فعلی: ' . round( $scores[ $weak[0] ] * 2.5, 1 ) . ' از ۱۰؛ شواهد ثبت‌شده: ' . ( $evidence[ $weak[0] ] ? $evidence[ $weak[0] ] : 'مستند عینی ثبت شود.' ),
+						'Know-how' => 'دانش/مهارت موردنیاز: ' . $first_weak['kpi'] . ' + جلسه ۱:۱ با بازخورد SBI.',
+						'Affirm'   => 'نقطه قوت: ' . ( $scores[ $weak[1] ] >= 2.75 ? 'عملکرد بالاتر در ' . $weak_labels[1] : 'پایبندی به برنامه فعلی' ) . '؛ گام کوچک: ثبت یک اقدام مشخص.',
+						'Review'   => 'بازبینی: جلسه ۱:۱ در دو هفته آینده + بازارزیابی OKR در ۳۰ روز.',
+					),
+				),
 			);
+
 			$sum_overall += $overall;
 			$sum_eff += $eff;
 			$count++;
@@ -975,6 +1065,48 @@ class Coachroom_OD_Helpers {
 			return $a['overall'] <=> $b['overall'];
 		} );
 
+		$unit_summary = array();
+		foreach ( $items as $item ) {
+			$dept = $item['department'] ? $item['department'] : 'نامشخص';
+			if ( ! isset( $unit_summary[ $dept ] ) ) {
+				$unit_summary[ $dept ] = array(
+					'name'    => $dept,
+					'count'   => 0,
+					'sum'     => 0.0,
+					'feedback'=> 0,
+					'oskar'   => 0,
+				);
+			}
+			$unit_summary[ $dept ]['count']++;
+			$unit_summary[ $dept ]['sum'] += $item['overall'];
+			if ( $item['feedback_given'] ) {
+				$unit_summary[ $dept ]['feedback']++;
+			}
+			if ( $item['oskar_used'] ) {
+				$unit_summary[ $dept ]['oskar']++;
+			}
+		}
+		$units = array();
+		foreach ( $unit_summary as $name => $unit ) {
+			$avg = $unit['count'] ? round( $unit['sum'] / $unit['count'], 2 ) : 1.0;
+			$units[] = array(
+				'name'    => $name,
+				'count'   => $unit['count'],
+				'average' => $avg,
+				'status'  => self::performance_status( $avg ),
+				'feedback_rate' => $unit['count'] ? round( ( $unit['feedback'] / $unit['count'] ) * 100, 1 ) : 0,
+				'oskar_rate' => $unit['count'] ? round( ( $unit['oskar'] / $unit['count'] ) * 100, 1 ) : 0,
+			);
+		}
+		usort( $units, function ( $a, $b ) {
+			return $a['average'] <=> $b['average'];
+		} );
+
+		$sources = array();
+		foreach ( $dims as $key => $dim ) {
+			$sources[ $key ] = isset( $dim['source'] ) ? $dim['source'] : '';
+		}
+
 		return array(
 			'count'        => $count,
 			'average'      => $average,
@@ -986,11 +1118,13 @@ class Coachroom_OD_Helpers {
 			'avg_effectiveness' => $avg_eff,
 			'low'          => $low,
 			'items'        => $items,
+			'units'        => $units,
 			'dimensions'   => $dims,
+			'sources'      => $sources,
 			'model'        => self::oskar(),
 			'diagnosis'    => $count
-				? 'بر اساس ' . $count . ' ارزیابی عملکرد فردی، میانگین عملکرد ' . $average . ' از ۴ و اثربخشی مربی‌گری سرپرستان ' . $avg_eff . ' از ۴ است. نرخ بازخورد SBI: ' . round( ( $feedback_given / $count ) * 100, 1 ) . '٪، نرخ استفاده از OSKAR: ' . round( ( $oskar_used / $count ) * 100, 1 ) . '٪.'
-				: 'هنوز ارزیابی عملکرد فردی ثبت نشده است؛ با تکمیل فرم تب «ارزیابی عملکرد فردی»، سیستم بازخورد و مربی‌گری داده‌محور فعال می‌شود.',
+				? 'بر اساس ' . $count . ' ارزیابی عملکرد فردی/سازمانی، میانگین عملکرد ' . $average . ' از ۴ و اثربخشی مربی‌گری سرپرستان ' . $avg_eff . ' از ۴ است. نرخ بازخورد SBI: ' . round( ( $feedback_given / $count ) * 100, 1 ) . '٪، نرخ استفاده از OSKAR: ' . round( ( $oskar_used / $count ) * 100, 1 ) . '٪. نمره‌ها بر اساس سطح‌های استاندارد شاهد‌محور ثبت شده‌اند و با داده ارزیابی سازمانی کالیبره می‌شوند.'
+				: 'هنوز ارزیابی عملکرد فردی/سازمانی ثبت نشده است؛ ابتدا ارزیابی سازمانی را در تب «ارزیابی سازمانی» تکمیل کنید، سپس عملکرد کارکنان را با سطح‌های استاندارد و مستند عینی ثبت کنید تا بازخورد SBI و مربی‌گری OSKAR داده‌محور فعال شود.',
 		);
 	}
 

@@ -55,11 +55,26 @@ class Coachroom_OD_Ajax {
 	public function register_participant() {
 		check_ajax_referer( 'cr_od_nonce', 'nonce' );
 
-		$username = isset( $_POST['username'] ) ? sanitize_user( wp_unslash( $_POST['username'] ) ) : '';
-		$email    = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+		$name      = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		$company   = isset( $_POST['company'] ) ? sanitize_text_field( wp_unslash( $_POST['company'] ) ) : '';
+		$email     = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+		$username  = isset( $_POST['username'] ) ? sanitize_user( wp_unslash( $_POST['username'] ) ) : '';
 
-		if ( ! $username || strlen( $username ) < 3 || ! is_email( $email ) ) {
-			wp_send_json_error( array( 'message' => 'لطفاً نام کاربری (حداقل ۳ حرف) و ایمیل معتبر وارد کنید.' ) );
+		if ( ! $name || ! $company || ! is_email( $email ) ) {
+			wp_send_json_error( array( 'message' => 'لطفاً نام، ایمیل معتبر و شرکت/واحد سازمانی را وارد کنید.' ) );
+		}
+
+		if ( empty( $username ) ) {
+			$username = sanitize_user( str_replace( '@', '', $email ), true );
+			$username = substr( $username, 0, 40 );
+			if ( strlen( $username ) < 3 ) {
+				$username = 'user_' . absint( crc32( $email ) );
+			}
+			$base = $username;
+			$suffix = 1;
+			while ( get_user_by( 'login', $username ) ) {
+				$username = $base . '_' . ( ++$suffix );
+			}
 		}
 
 		$exists_by_login = get_user_by( 'login', $username );
@@ -67,7 +82,7 @@ class Coachroom_OD_Ajax {
 		if ( $exists_by_login && $exists_by_email && $exists_by_login->ID === $exists_by_email->ID ) {
 			$user_id = (int) $exists_by_login->ID;
 		} elseif ( $exists_by_email || $exists_by_login ) {
-			wp_send_json_error( array( 'message' => 'این نام کاربری یا ایمیل قبلاً ثبت شده است. از همان اطلاعات استفاده کنید یا وارد coachroom.ir شوید.' ) );
+			wp_send_json_error( array( 'message' => 'این نام یا ایمیل قبلاً ثبت شده است. از همان اطلاعات استفاده کنید یا وارد coachroom.ir شوید.' ) );
 		} else {
 			$password = wp_generate_password( 16, true );
 			$user_id  = wp_insert_user(
@@ -76,11 +91,15 @@ class Coachroom_OD_Ajax {
 					'user_email' => $email,
 					'user_pass'  => $password,
 					'role'       => 'subscriber',
+					'first_name' => $name,
+					'display_name' => $name,
 				)
 			);
 			if ( is_wp_error( $user_id ) ) {
 				wp_send_json_error( array( 'message' => $user_id->get_error_message() ) );
 			}
+			update_user_meta( $user_id, 'cr_od_participant_name', $name );
+			update_user_meta( $user_id, 'cr_od_participant_company', $company );
 			update_user_meta( $user_id, 'cr_od_participant', 1 );
 			update_user_meta( $user_id, 'cr_od_participant_since', current_time( 'mysql' ) );
 		}
@@ -97,11 +116,12 @@ class Coachroom_OD_Ajax {
 
 		wp_send_json_success(
 			array(
-				'message' => 'ثبت‌نام انجام شد و به پلتفرم دسترسی دارید.',
+				'message' => 'ثبت‌نام انجام شد و به تب‌های مدیریتی پلتفرم دسترسی دارید.',
 				'user'    => array(
 					'id'       => $user_id,
-					'username' => $username,
+					'name'     => $name,
 					'email'    => $email,
+					'company'  => $company,
 				),
 			)
 		);
@@ -356,6 +376,15 @@ class Coachroom_OD_Ajax {
 		$overall = $sum_weight > 0 ? round( $sum_score / $sum_weight, 2 ) : 2.5;
 		$cycle_id = $this->ensure_cycle();
 
+		$evidence = array();
+		foreach ( $dims as $key => $dim ) {
+			$evidence[ $key ] = isset( $payload['evidence'][ $key ] ) ? sanitize_textarea_field( $payload['evidence'][ $key ] ) : '';
+		}
+
+		$coaching_gate = isset( $payload['coaching_gate'] ) ? sanitize_textarea_field( $payload['coaching_gate'] ) : '';
+		$okr_objective = isset( $payload['okr_objective'] ) ? sanitize_textarea_field( $payload['okr_objective'] ) : '';
+		$okr_krs       = isset( $payload['okr_krs'] ) && is_array( $payload['okr_krs'] ) ? array_map( 'sanitize_textarea_field', $payload['okr_krs'] ) : array();
+
 		Coachroom_OD_DB::insert_performance(
 			array(
 				'cycle_id'             => $cycle_id,
@@ -378,13 +407,14 @@ class Coachroom_OD_Ajax {
 				'oskar_used'           => ! empty( $payload['oskar_used'] ),
 				'coaching_effectiveness' => isset( $payload['coaching_effectiveness'] ) ? max( 1, min( 4, (float) $payload['coaching_effectiveness'] ) ) : 1,
 				'growth_score'         => isset( $payload['growth_score'] ) ? max( 1, min( 4, (float) $payload['growth_score'] ) ) : 1,
-				'notes'                => isset( $payload['notes'] ) ? sanitize_textarea_field( $payload['notes'] ) : '',
+				'scores_evidence'      => $evidence,
+				'notes'                => trim( $coaching_gate . PHP_EOL . 'OKR: ' . $okr_objective . PHP_EOL . implode( PHP_EOL, $okr_krs ) ),
 			)
 		);
 
 		wp_send_json_success(
 			array(
-				'message' => 'ارزیابی عملکرد فردی ثبت شد؛ امتیاز کل: ' . $overall . '/۴. بازخورد SBI و مربی‌گری OSKAR به داشبورد مدیران اضافه شد.',
+				'message' => 'ارزیابی عملکرد فردی/سازمانی با سطح‌های استاندارد و مستند عینی ثبت شد؛ امتیاز کل: ' . $overall . '/۴. بازخورد SBI، مربی‌گری OSKAR و OKR رشدی برای سرپرست/مربی فعال شد.',
 				'data'    => Coachroom_OD_Helpers::dashboard_data( $cycle_id ),
 			)
 		);
