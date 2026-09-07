@@ -242,7 +242,7 @@ class Coachroom_OD_Render {
 							</div>
 						</section>
 
-						<section class="cr-od-home-section cr-od-landing-value">
+						<section class="cr-od-home-section cr-od-landing-value" data-cr-collapse="1" data-cr-label="ادامه: ارزش‌های مسیر و سؤال‌های کلیدی">
 							<div class="cr-od-landing-section-head"><span class="cr-od-badge">ارزش‌آفرینی</span><h2>چرا مسیر «ارزیابی ← بازخورد ← مربی‌گری ← OKR» مؤثر است؟</h2></div>
 							<div class="cr-od-landing-value-grid">
 								<div class="cr-od-landing-value-card"><span>🎯</span><h3>بدون سلیقه شخصی</h3><p>نمره‌ها با سطح‌بندی استاندارد و مستند عینی سنجیده می‌شوند.</p></div>
@@ -278,7 +278,7 @@ class Coachroom_OD_Render {
 						</section>
 						<?php endif; ?>
 
-						<section class="cr-od-landing-gallery">
+						<section class="cr-od-landing-gallery" data-cr-collapse="1" data-cr-label="ادامه: مشاهده تصاویر صنعت انرژی">
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'refinery-horizon.webp' ); ?>" alt="پالایشگاه و چشم‌انداز صنعت انرژی" loading="lazy" />
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه توسعه سازمانی و مربی‌گری" loading="lazy" />
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'control-room.jpg' ); ?>" alt="اتاق کنترل عملیات و داده‌محوری" loading="lazy" />
@@ -996,7 +996,7 @@ class Coachroom_OD_Render {
 							</article>
 						</div>
 
-						<div class="cr-od-blog-waves">
+						<div class="cr-od-blog-waves" data-cr-collapse="1" data-cr-label="ادامه: مرور پنج موج تحول">
 							<h3>مرور پنج موج تحول سازمانی</h3>
 							<div class="cr-od-wave-table">
 								<div class="cr-od-wave-row cr-od-wave-head">
@@ -1035,7 +1035,7 @@ class Coachroom_OD_Render {
 							</div>
 						</div>
 
-						<div class="cr-od-blog-future">
+						<div class="cr-od-blog-future" data-cr-collapse="1" data-cr-label="ادامه: دورنمای موج پنجم و پایداری">
 							<div class="cr-od-intro-text">
 								<h3>دورنمای موج پنجم: انسان‌محوری، تاب‌آوری و پایداری</h3>
 								<p>موج پنجم از مرز «سازمان یادگیرنده» فراتر می‌رود و سازمان را مسئولیتی هم‌زمان در برابر <strong>انسان، جامعه و سیاره</strong> می‌داند. این موج تحت تأثیر اهداف توسعه پایدار (SDGs)، چارچوب‌های ESG، رویکرد سازمان‌های بازآفرین (Regenerative) و پژوهش‌های به‌زیستی و تاب‌آوری است (Laloux, 2014; Schaufeli &amp; Bakker, 2004; World Economic Forum, 2020).</p>
@@ -1068,7 +1068,7 @@ class Coachroom_OD_Render {
 							</div>
 						</div>
 
-						<div class="cr-od-blog-okr">
+						<div class="cr-od-blog-okr" data-cr-collapse="1" data-cr-label="ادامه: آموزش OKR و نقشه راه">
 							<div class="cr-od-intro-text">
 								<h3>OKR: هدف‌گذاری و مدیریت عملکرد</h3>
 								<p><strong>OKR</strong> (Objectives &amp; Key Results) یک روش ساده هدف‌گذاری است: هر هدف (O) کیفی و الهام‌بخش است و با ۳ تا ۵ نتیجه کلیدی (KR) قابل سنجش تعریف می‌شود. مثلاً در صورت آمادگی سازمان، هدف «سرپرستان به مربی تبدیل شوند» با KRهایی چون «۹۰٪ جلسات ۱:۱ بر اساس SBI» اندازه‌گیری می‌شود.</p>
@@ -1084,7 +1084,7 @@ class Coachroom_OD_Render {
 							</div>
 						</div>
 
-						<div class="cr-od-blog-efqm">
+						<div class="cr-od-blog-efqm" data-cr-collapse="1" data-cr-label="ادامه: آموزش EFQM و کاربرد در پلتفرم">
 							<div class="cr-od-intro-text">
 								<h3>مدل تعالی EFQM به زبان ساده</h3>
 								<p><strong>EFQM</strong> یک مدل خودارزیابی و بهبود سازمانی است که از ۹ معیار استفاده می‌کند: <strong>۵ توانمندساز</strong> (آنچه سازمان انجام می‌دهد) و <strong>۴ نتیجه</strong> (آنچه به‌دست می‌آورد). این مدل به مدیران کمک می‌کند به‌جای قضاوت سلیقه‌ای، با شواهد و شاخص‌ها تصمیم بگیرند.</p>
@@ -1111,7 +1111,7 @@ class Coachroom_OD_Render {
 							</div>
 						</div>
 
-						<article class="cr-od-card cr-od-blog-card">
+						<article class="cr-od-card cr-od-blog-card" data-cr-collapse="1" data-cr-label="ادامه: داده‌محوری و منابع علمی">
 							<h3 class="cr-od-card-title">اهمیت داده‌محوری و نقشه راه منابع انسانی</h3>
 							<p>برای این‌که حرکت از موج دوم به موج‌های بالاتر «ادعا» نباشد بلکه «شواهد» باشد، ارزیابی‌های ساختاری و رفتار فردی باید به داده تبدیل و به‌صورت دوره‌ای مقایسه شوند. پلتفرم حاضر همین کار را انجام می‌دهد: ورودی ارزیابی → محاسبه وزن‌دار → تشخیص موج → اولویت‌بندی اقدامات → خروجی گزارش برای مدیران.</p>
 							<blockquote>
@@ -1168,7 +1168,7 @@ class Coachroom_OD_Render {
 						<?php endforeach; ?>
 					</div>
 
-					<div class="cr-od-guide-faq">
+					<div class="cr-od-guide-faq" data-cr-collapse="1" data-cr-label="ادامه: پرسش‌های پرتکرار">
 						<h3>پرسش‌های پرتکرار در اجرا</h3>
 						<?php foreach ( $exec_guide['faq'] as $faq ) : ?>
 							<details class="cr-od-guide-faq-item">

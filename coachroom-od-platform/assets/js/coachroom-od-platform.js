@@ -129,7 +129,13 @@
     ['عدالت سازمانی', 'عدالت سازمانی یعنی توزیع عادلانه فرصت‌ها، پاداش، اطلاعات و رویه‌ها که اعتماد و ماندگاری کارکنان را تقویت می‌کند.'],
     ['میل به ترک شغل', 'میل به ترک یعنی احتمال ذهنی ترک سازمان که با رضایت، تعهد، عدالت و تعادل کار/زندگی کاهش می‌یابد.'],
     ['سلامت روان', 'سلامت روان یعنی وضعیت بهزیستی روانی، انرژی و توانایی مقابله با فشار شغلی که بر عملکرد و ایمنی اثر می‌گذارد.'],
-    ['تعادل کار و زندگی', 'تعادل کار و زندگی یعنی هماهنگی مسئولیت‌های شغلی و زندگی شخصی که به کاهش فرسودگی و افزایش بهره‌وری کمک می‌کند.']
+    ['تعادل کار و زندگی', 'تعادل کار و زندگی یعنی هماهنگی مسئولیت‌های شغلی و زندگی شخصی که به کاهش فرسودگی و افزایش بهره‌وری کمک می‌کند.'],
+    ['مربی عملکردی', 'مربی عملکردی یعنی سرپرست/مدیری که به‌جای دستوردهی، با گوش دادن فعال، پرسش‌گری و بازخورد SBI، به رشد و اهداف کارمند کمک می‌کند.'],
+    ['توسعه سازمانی', 'توسعه سازمانی یعنی حرکت داده‌محور و برنامه‌ریزی‌شده از وضعیت فعلی (مثلاً بوروکراتیک) به سمت سازمان یادگیرنده، چابک و انسان‌محور.'],
+    ['نقشه راه', 'نقشه راه یعنی برنامه اجرایی گام‌به‌گام (معمولاً ۳۰/۶۰/۹۰ روزه) که اقدام‌ها، مسئول‌ها، KPIها و هدف‌های بهبود را مشخص می‌کند.'],
+    ['سازمان هم‌آفرین', 'سازمان هم‌آفرین سازمانی است که تصمیم‌گیری و نوآوری در تیم‌ها و شبکه‌ها توزیع شده و اعتماد، پرسش‌گری و بازخورد فعال دارد.'],
+    ['داده‌محور', 'داده‌محور یعنی تصمیم‌گیری بر اساس شاخص، شاهد و اطلاعات واقعی به‌جای سلیقه، حدس یا روایت ذهنی.'],
+    ['سازه‌ی ارزش', 'زنجیره ارزش در این پلتفرم یعنی: نگرش‌ها ← عملکرد کارکنان ← رضایت مشتریان ← سودآوری پایدار.']
   ];
 
   function isSkippableNode(node) {
@@ -1234,6 +1240,7 @@
     if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 12) { issues.push('weisbord-questions'); }
     if (!Array.isArray(getAttitudeQuestions()) || getAttitudeQuestions().length < 9) { issues.push('attitude-questions'); }
     if (qa('.cr-od-sub-question').length < 43) { issues.push('question-fields'); }
+    if (qa('.cr-od-more-toggle').length < 8) { issues.push('more-toggles'); }
     if (!getWeisbord() || typeof getWeisbord() !== 'object') { issues.push('weisbord'); }
     if (!getAttitude() || typeof getAttitude() !== 'object') { issues.push('attitude'); }
     if (!getHr1410() || typeof getHr1410() !== 'object') { issues.push('hr1410'); }
@@ -1297,8 +1304,9 @@
       p.hidden = !active;
     });
     if (name === 'departments') { drawDepartmentChart(); drawRoleChart(); drawTrend(); }
-    else if (name === 'dashboard') { drawRadar(); drawWaveChart(); drawSkillsChart(); }
+    else if (name === 'dashboard') { drawRadar(); drawWaveChart(); drawSkillsChart(); refresh7s(); }
     else if (name === 'performance') { refreshPerformance(); }
+    else if (name === 'reports') { refresh7s(); }
     else if (name === 'blog') { convertDigitsInside(); }
     return true;
   }
@@ -1563,6 +1571,22 @@
     tip.setAttribute('data-tip-height', String(height));
   }
 
+  function closeGlossaryTips(except) {
+    qa('.cr-tip.is-open').forEach(function (tip) {
+      if (tip === except) { return; }
+      tip.classList.remove('is-open');
+      tip.setAttribute('data-tip-open', 'false');
+    });
+  }
+
+  function openGlossaryTip(tip) {
+    if (!tip) { return; }
+    closeGlossaryTips(tip);
+    positionGlossaryTip(tip);
+    tip.classList.add('is-open');
+    tip.setAttribute('data-tip-open', 'true');
+  }
+
   function bindGlossaryPositioning() {
     document.addEventListener('mouseover', function (e) {
       var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
@@ -1570,19 +1594,79 @@
     });
     document.addEventListener('focusin', function (e) {
       var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
-      if (tip) { positionGlossaryTip(tip); }
+      if (tip) { openGlossaryTip(tip); }
     });
+    document.addEventListener('click', function (e) {
+      var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
+      if (tip) {
+        e.preventDefault();
+        openGlossaryTip(tip);
+      } else {
+        closeGlossaryTips();
+      }
+    });
+    document.addEventListener('touchstart', function (e) {
+      var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
+      if (tip) { openGlossaryTip(tip); }
+    }, { passive: true });
     document.addEventListener('mouseout', function (e) {
       var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
       if (tip) { tip.setAttribute('data-tip-placement', ''); }
     });
     document.addEventListener('focusout', function (e) {
       var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
-      if (tip) { tip.setAttribute('data-tip-placement', ''); }
+      if (tip) {
+        tip.classList.remove('is-open');
+        tip.setAttribute('data-tip-open', 'false');
+        tip.setAttribute('data-tip-placement', '');
+      }
     });
     window.addEventListener('resize', function () {
-      var active = qa('.cr-tip:hover, .cr-tip:focus');
+      var active = qa('.cr-tip:hover, .cr-tip:focus, .cr-tip.is-open');
       active.forEach(positionGlossaryTip);
+    });
+  }
+
+  function applyCollapsibles() {
+    qa('[data-cr-collapse]').forEach(function (host) {
+      if (host && host._crCollapsedApplied) { return; }
+      if (host) { host._crCollapsedApplied = true; }
+      if (!host || host.closest ? host.closest('.cr-od-report-7s-layout') : false) { return; }
+      var label = host.getAttribute('data-cr-label') || 'ادامه';
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cr-od-more-toggle';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('data-more-label', label);
+      btn.setAttribute('data-less-label', 'نمایش کمتر');
+      btn.textContent = label;
+      var body = document.createElement('div');
+      body.className = 'cr-od-collapsible-body';
+      while (host.firstChild) { body.appendChild(host.firstChild); }
+      host.appendChild(body);
+      host.appendChild(btn);
+      host.classList.add('cr-od-collapsible');
+      body.hidden = true;
+    });
+  }
+
+  function bindMoreToggles() {
+    document.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest('.cr-od-more-toggle') : null;
+      if (!btn) { return; }
+      var host = btn.closest('.cr-od-collapsible');
+      if (!host) { return; }
+      var open = host.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var label = btn.getAttribute('data-more-label') || 'ادامه';
+      var close = btn.getAttribute('data-less-label') || 'نمایش کمتر';
+      btn.textContent = open ? close : label;
+      var body = q('.cr-od-collapsible-body', host);
+      if (body) { body.hidden = !open; }
+      var hostRect = host.getBoundingClientRect();
+      if (open && hostRect.top < 0 && window.scrollTo) {
+        window.scrollTo({ top: window.pageYOffset + hostRect.top - 12, behavior: 'smooth' });
+      }
     });
   }
 
@@ -1635,6 +1719,8 @@
     if (!document.getElementById('cr-od-root')) { return; }
 
     bindTabs();
+    applyCollapsibles();
+    bindMoreToggles();
     bindSelection();
     bindForm();
     bindPerformanceForm();
@@ -1674,6 +1760,7 @@
         var name = active ? active.getAttribute('data-tab') : 'dashboard';
         if (name === 'dashboard') { drawRadar(); drawWaveChart(); drawSkillsChart(); }
         if (name === 'departments') { drawDepartmentChart(); drawRoleChart(); drawTrend(); }
+        if (name === 'reports') { refresh7s(); }
       }, 200);
     });
   }
