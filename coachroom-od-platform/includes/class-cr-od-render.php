@@ -192,7 +192,7 @@ class Coachroom_OD_Render {
 								<h1>از ارزیابی داده‌محور تا <span>بهبود عملکرد فردی و سازمانی</span></h1>
 								<p>این پلتفرم یک نقشه راه اجرایی شفاف است: ابتدا وضعیت سازمان با ارزیابی سازمانی مشخص می‌شود؛ سپس عملکرد فردی/سازمانی با شاخص‌های استاندارد و مستند علمی سنجیده، و در ادامه سرپرست در نقش مربی عملکردی با بازخورد <strong>SBI</strong> و مربی‌گری <strong>OSKAR</strong> بهبود را به <strong>OKR</strong> و توسعه سازمانی متصل می‌کند.</p>
 								<div class="cr-od-landing-tips">
-									<div><strong>خانه</strong> رایگان و بدون ورود</div>
+									<div><strong>خانه</strong> بدون نیاز به ورود</div>
 									<div><strong>SBI</strong> بازخورد شواهد‌محور</div>
 									<div><strong>OSKAR</strong> مربی‌گری رشد‌محور</div>
 									<div><strong>OKR</strong> پیگیری و بهبود</div>
@@ -215,7 +215,7 @@ class Coachroom_OD_Render {
 						<section class="cr-od-home-section" id="cr-home-roadmap">
 							<div class="cr-od-landing-section-head"><span class="cr-od-badge">نقشه راه کل</span><h2>چرخه پلتفرم در هفت گام</h2></div>
 							<div class="cr-od-home-roadmap">
-								<div class="cr-od-home-step"><b>۱</b><div><h3>خانه (رایگان)</h3><p>آشنایی با نقشه راه، سازوکار و ابزارها بدون ثبت‌نام.</p></div></div>
+								<div class="cr-od-home-step"><b>۱</b><div><h3>خانه</h3><p>آشنایی با نقشه راه، سازوکار و ابزارها بدون ثبت‌نام.</p></div></div>
 								<div class="cr-od-home-step"><b>۲</b><div><h3>ارزیابی سازمانی</h3><p><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> گام ساده و کوتاه با مقیاس «۱ تا ۴» برای شناخت موج بلوغ، رسمیت/چابکی، وایزبورد، نگرش، قطب‌نمای 7S و افق ۱۴۱۰.</p></div></div>
 								<div class="cr-od-home-step"><b>۳</b><div><h3>داشبورد شاخص‌ها</h3><p>امتیاز کلی، نقاط قوت/ضعف و فاصله تا موج هدف را ببینید.</p></div></div>
 								<div class="cr-od-home-step"><b>۴</b><div><h3>ارزیابی عملکرد فردی و سازمانی</h3><p>شش شاخص استاندارد با سطح‌بندی دقیق و مستند عینی؛ بدون سلیقه شخصی.</p></div></div>
@@ -242,7 +242,7 @@ class Coachroom_OD_Render {
 							</div>
 						</section>
 
-						<section class="cr-od-home-section cr-od-landing-value" data-cr-collapse="1" data-cr-label="ادامه: ارزش‌های مسیر و سؤال‌های کلیدی">
+						<section class="cr-od-home-section cr-od-landing-value">
 							<div class="cr-od-landing-section-head"><span class="cr-od-badge">ارزش‌آفرینی</span><h2>چرا مسیر «ارزیابی ← بازخورد ← مربی‌گری ← OKR» مؤثر است؟</h2></div>
 							<div class="cr-od-landing-value-grid">
 								<div class="cr-od-landing-value-card"><span>🎯</span><h3>بدون سلیقه شخصی</h3><p>نمره‌ها با سطح‌بندی استاندارد و مستند عینی سنجیده می‌شوند.</p></div>
@@ -254,7 +254,7 @@ class Coachroom_OD_Render {
 
 						<div class="cr-od-gate-inline <?php echo $gate_ok ? 'is-hidden' : ''; ?>" id="cr-od-gate-inline" role="status">
 							<strong><?php echo $gate_ok ? 'دسترسی کامل فعال است' : 'برای مشاهده تب‌های مدیریتی ثبت‌نام کنید'; ?></strong>
-							<span class="cr-od-gate-inline-msg"><?php echo $gate_ok ? 'اکنون می‌توانید از همه تب‌های پلتفرم استفاده کنید.' : 'تب «خانه» رایگان است؛ سایر تب‌ها پس از ثبت‌نام با نام، ایمیل و شرکت/واحد باز می‌شوند.'; ?></span>
+							<span class="cr-od-gate-inline-msg"><?php echo $gate_ok ? 'اکنون می‌توانید از همه تب‌های پلتفرم استفاده کنید.' : 'تب «خانه» بدون نیاز به ورود باز است؛ سایر تب‌ها پس از ثبت‌نام با نام، ایمیل و شرکت/واحد باز می‌شوند.'; ?></span>
 						</div>
 
 						<?php if ( ! $gate_ok ) : ?>
@@ -273,12 +273,12 @@ class Coachroom_OD_Render {
 								</label>
 								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت‌نام و مشاهده تب‌های پلتفرم</button>
 							</form>
-							<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">ثبت‌نام برای مشاهده تب‌های مدیریتی الزامی است؛ تب «خانه» همیشه رایگان است.</p>
+							<p class="cr-od-landing-status" id="cr-od-gate-status" role="status">ثبت‌نام برای مشاهده تب‌های مدیریتی الزامی است؛ تب «خانه» بدون نیاز به ورود در دسترس است.</p>
 							<p class="cr-od-landing-alt">قبلاً در coachroom.ir حساب دارید؟ <a href="https://coachroom.ir/account/" target="_blank" rel="noopener">ورود به سایت CoachRoom</a></p>
 						</section>
 						<?php endif; ?>
 
-						<section class="cr-od-landing-gallery" data-cr-collapse="1" data-cr-label="ادامه: مشاهده تصاویر صنعت انرژی">
+						<section class="cr-od-landing-gallery">
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'refinery-horizon.webp' ); ?>" alt="پالایشگاه و چشم‌انداز صنعت انرژی" loading="lazy" />
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-meeting.webp' ); ?>" alt="جلسه توسعه سازمانی و مربی‌گری" loading="lazy" />
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'control-room.jpg' ); ?>" alt="اتاق کنترل عملیات و داده‌محوری" loading="lazy" />

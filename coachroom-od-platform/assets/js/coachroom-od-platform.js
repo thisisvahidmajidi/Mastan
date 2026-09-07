@@ -135,7 +135,14 @@
     ['نقشه راه', 'نقشه راه یعنی برنامه اجرایی گام‌به‌گام (معمولاً ۳۰/۶۰/۹۰ روزه) که اقدام‌ها، مسئول‌ها، KPIها و هدف‌های بهبود را مشخص می‌کند.'],
     ['سازمان هم‌آفرین', 'سازمان هم‌آفرین سازمانی است که تصمیم‌گیری و نوآوری در تیم‌ها و شبکه‌ها توزیع شده و اعتماد، پرسش‌گری و بازخورد فعال دارد.'],
     ['داده‌محور', 'داده‌محور یعنی تصمیم‌گیری بر اساس شاخص، شاهد و اطلاعات واقعی به‌جای سلیقه، حدس یا روایت ذهنی.'],
-    ['سازه‌ی ارزش', 'زنجیره ارزش در این پلتفرم یعنی: نگرش‌ها ← عملکرد کارکنان ← رضایت مشتریان ← سودآوری پایدار.']
+    ['سازه‌ی ارزش', 'زنجیره ارزش در این پلتفرم یعنی: نگرش‌ها ← عملکرد کارکنان ← رضایت مشتریان ← سودآوری پایدار.'],
+    ['ارزیابی سازمانی', 'ارزیابی سازمانی یعنی سنجش داده‌محور وضعیت فعلی ساختار، فرهنگ، فرایندها و بلوغ سازمان برای انتخاب راهبرد توسعه و اولویت‌بندی اقدامات.'],
+    ['ارزیابی عملکرد فردی و سازمانی', 'ارزیابی عملکرد فردی و سازمانی یعنی سنجش نظام‌مند نتایج، کیفیت، همکاری، یادگیری، رفتار و اثر بر ذی‌نفعان با استاندارد مشخص و شاهد عینی؛ نتیجه آن به SBI، OSKAR و OKR رشدی متصل می‌شود.'],
+    ['شاهد عینی', 'شاهد عینی یعنی نمونه، مدرک یا مشاهده مستند رفتار/نتیجه که نمره ارزیابی را از قضاوت سلیقه‌ای به ارزیابی شواهد‌محور تبدیل می‌کند.'],
+    ['گزارش مدیران', 'گزارش مدیران خروجی یکپارچه پلتفرم برای تصمیم‌گیری داده‌محور مدیران است؛ شامل 7S، EFQM، نگرش، افق ۱۴۱۰، OKR و دستورالعمل ۹۰ روزه.'],
+    ['ارتقای موج', 'ارتقای موج یعنی حرکت سازمان از موج سنتی/بوروکراتیک به موج هم‌آفرین، یادگیرنده و در نهایت انسانی/پایدار بر اساس شواهد ارزیابی.'],
+    ['نقشه راه ۳۰/۶۰/۹۰', 'نقشه راه ۳۰/۶۰/۹۰ برنامه اجرایی سه‌بازه (پایه/امنیت، عمل/شواهد، تثبیت/ارتقا) با مسئول، KPI و ابزار مشخص است.'],
+    ['نقشه راه کل', 'نقشه راه کل یعنی تصویر یکپارچه گام‌های پلتفرم از ارزیابی سازمانی تا بازخورد، مربی‌گری، OKR و گزارش مدیران.']
   ];
 
   function isSkippableNode(node) {
@@ -144,6 +151,15 @@
     var tag = (p.tagName || '').toLowerCase();
     if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'a') { return true; }
     return p.closest('.cr-tip');
+  }
+
+  function shouldSkipTerm(node, term) {
+    if (!node || !node.parentElement) { return false; }
+    var p = node.parentElement;
+    var isRoadTerm = term.indexOf('نقشه راه') === 0;
+    if (isRoadTerm && p.closest('#cr-roadmap')) { return true; }
+    if (isRoadTerm && p.closest('.cr-od-tab[data-tab="roadmap"]')) { return true; }
+    return false;
   }
 
   function enhanceGlossary(rootEl) {
@@ -157,7 +173,7 @@
       if (isSkippableNode(node)) { return; }
       var text = node.nodeValue;
       if (!text || text.trim() === '') { return; }
-      var html = wrapTerms(text, terms);
+      var html = wrapTerms(text, terms, node);
       if (html === text) { return; }
       var wrap = document.createElement('span');
       wrap.innerHTML = html;
@@ -175,7 +191,7 @@
       .replace(/'/g, '&#039;');
   }
 
-  function wrapTerms(text, terms) {
+  function wrapTerms(text, terms, node) {
     var out = '';
     var cursor = 0;
     while (cursor < text.length) {
@@ -194,7 +210,11 @@
         break;
       }
       out += text.slice(cursor, foundIndex);
-      out += '<span class="cr-tip" data-tip="' + escAttr(found[1]) + '" tabindex="0">' + esc(found[0]) + '</span>';
+      if (shouldSkipTerm(node, found[0])) {
+        out += found[0];
+      } else {
+        out += '<span class="cr-tip" data-tip="' + escAttr(found[1]) + '" tabindex="0">' + esc(found[0]) + '</span>';
+      }
       cursor = foundIndex + found[0].length;
     }
     return out;
@@ -883,21 +903,23 @@
     var canvas = document.getElementById(canvasId);
     if (!canvas || !components || !components.length) { return; }
     var rect = canvas.getBoundingClientRect();
-    var w = Math.max(280, rect.width || 520);
-    var h = Math.max(240, rect.height || 300);
+    var w = Math.max(300, rect.width || 480);
+    var h = Math.max(260, rect.height || 300);
     var dpr = window.devicePixelRatio || 1;
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
-    canvas.style.width = w + 'px';
+    canvas.style.width = '100%';
     canvas.style.height = h + 'px';
     var ctx = canvas.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
     ctx.direction = 'rtl';
     var n = components.length;
+    var labelPad = 48;
+    var sidePad = 30;
     var cx = w / 2;
-    var cy = h / 2 + 8;
-    var radius = Math.min(w, h) * 0.30;
+    var cy = h / 2;
+    var radius = Math.max(34, Math.min((w - (sidePad * 2)) / 2 - 12, (h - (labelPad * 2)) / 2 - 10));
     var angle = function (i) { return (Math.PI * 2 * i / n) - Math.PI / 2; };
     var point = function (i, val) {
       var t = radius * (num(val) / 4);
@@ -913,27 +935,53 @@
       if (fill) { ctx.fillStyle = fill; ctx.fill(); }
       if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; if (dash) { ctx.setLineDash(dash); } else { ctx.setLineDash([]); } ctx.stroke(); ctx.setLineDash([]); }
     };
-    // Target ring.
     poly(components.map(function () { return target || 3.35; }), 'rgba(245,158,11,.55)', 'rgba(245,158,11,.05)', [4, 4]);
-    // 1-4 grid rings.
     for (var g = 1; g <= 4; g++) {
       poly(components.map(function () { return g; }), 'rgba(20,33,46,.10)', null, []);
     }
-    ctx.font = '700 10px Arial';
-    ctx.textAlign = 'center';
+    var short = {
+      strategy: 'راهبرد',
+      structure: 'ساختار',
+      systems: 'سیستم‌ها',
+      skills: 'مهارت‌ها',
+      staff: 'کارکنان',
+      style: 'سبک رهبری',
+      shared_values: 'ارزش‌ها',
+      default: '7S'
+    };
+    ctx.font = '700 11px Vazirmatn, Arial, sans-serif';
     ctx.textBaseline = 'middle';
     components.forEach(function (c, i) {
-      var p = point(i, 4);
+      var ax = Math.cos(angle(i));
+      var ay = Math.sin(angle(i));
+      var label = short[c.key] || c.en || c.label || short.default;
+      var x = cx + ax * (radius + 14);
+      var y = cy + ay * (radius + 14);
+      ctx.textAlign = ax < -0.35 ? 'right' : ax > 0.35 ? 'left' : 'center';
+      var tw = ctx.measureText(label).width;
+      if (ctx.textAlign === 'left') { x = Math.min(w - tw - 6, Math.max(6, x)); }
+      else if (ctx.textAlign === 'right') { x = Math.max(tw + 6, Math.min(w - 6, x)); }
+      else { x = Math.max((tw / 2) + 6, Math.min(w - (tw / 2) - 6, x)); }
+      y = Math.max(10, Math.min(h - 10, y));
+      ctx.fillStyle = '#334155';
+      ctx.fillText(label, x, y);
       var rp = point(i, c.score);
       ctx.fillStyle = c.color || '#0d9488';
       ctx.beginPath(); ctx.arc(rp[0], rp[1], 4, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#334155';
-      ctx.fillText(c.en || c.label || '', cx + Math.cos(angle(i)) * (radius + 18), cy + Math.sin(angle(i)) * (radius + 18));
+      var sx = rp[0] + (ax < -0.15 ? -12 : ax > 0.15 ? 12 : 0);
+      var sy = rp[1] - (ay < -0.15 ? 12 : 0);
+      sx = Math.max(12, Math.min(w - 12, sx));
+      sy = Math.max(12, Math.min(h - 6, sy));
+      ctx.textAlign = ax < -0.15 ? 'right' : ax > 0.15 ? 'left' : 'center';
       ctx.fillStyle = c.color || '#0d9488';
-      ctx.fillText(faNum(fmtNum(num(c.score), 1)), cx + Math.cos(angle(i)) * (radius * (c.score / 4)), cy + Math.sin(angle(i)) * (radius * (c.score / 4)));
+      ctx.font = '800 11px Vazirmatn, Arial, sans-serif';
+      ctx.fillText(faNum(fmtNum(num(c.score), 1)), sx, sy);
+      ctx.font = '700 11px Vazirmatn, Arial, sans-serif';
     });
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
     ctx.fillStyle = '#334155';
-    ctx.fillText('وضعیت فعلی', 12, h - 12);
+    ctx.fillText('وضعیت فعلی', 12, h - 10);
   }
 
   function refresh7s() {
@@ -1240,7 +1288,7 @@
     if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 12) { issues.push('weisbord-questions'); }
     if (!Array.isArray(getAttitudeQuestions()) || getAttitudeQuestions().length < 9) { issues.push('attitude-questions'); }
     if (qa('.cr-od-sub-question').length < 43) { issues.push('question-fields'); }
-    if (qa('.cr-od-more-toggle').length < 8) { issues.push('more-toggles'); }
+    if (qa('.cr-od-more-toggle').length < 6) { issues.push('more-toggles'); }
     if (!getWeisbord() || typeof getWeisbord() !== 'object') { issues.push('weisbord'); }
     if (!getAttitude() || typeof getAttitude() !== 'object') { issues.push('attitude'); }
     if (!getHr1410() || typeof getHr1410() !== 'object') { issues.push('hr1410'); }
