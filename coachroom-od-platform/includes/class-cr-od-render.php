@@ -199,7 +199,8 @@ class Coachroom_OD_Render {
 								</div>
 								<div class="cr-od-home-hero-cta">
 									<?php if ( $gate_ok ) : ?>
-										<span class="cr-od-home-access">✓ دسترسی کامل شما فعال است. از تب‌های بالای پلتفرم استفاده کنید.</span>
+										<span class="cr-od-home-access">✓ دسترسی کامل شما فعال است. مسیر شما از «ارزیابی وضعیت» شروع می‌شود.</span>
+									<button type="button" class="cr-od-btn cr-od-btn-primary" data-goto="assessment">شروع ارزیابی وضعیت</button>
 									<?php else : ?>
 										<a href="#cr-od-register-form" class="cr-od-btn cr-od-btn-primary">ثبت‌نام و دسترسی به تب‌های پلتفرم</a>
 										<a href="#cr-home-roadmap" class="cr-od-btn">مشاهده نقشه راه کل</a>
@@ -215,7 +216,7 @@ class Coachroom_OD_Render {
 							<div class="cr-od-landing-section-head"><span class="cr-od-badge">نقشه راه کل</span><h2>چرخه پلتفرم در هفت گام</h2></div>
 							<div class="cr-od-home-roadmap">
 								<div class="cr-od-home-step"><b>۱</b><div><h3>خانه (رایگان)</h3><p>آشنایی با نقشه راه، سازوکار و ابزارها بدون ثبت‌نام.</p></div></div>
-								<div class="cr-od-home-step"><b>۲</b><div><h3>ارزیابی سازمانی</h3><p><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> سؤال استاندارد برای شناخت موج بلوغ، رسمیت/چابکی، وایزبورد، نگرش، قطب‌نمای 7S و افق ۱۴۱۰.</p></div></div>
+								<div class="cr-od-home-step"><b>۲</b><div><h3>ارزیابی سازمانی</h3><p><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> گام ساده و کوتاه با مقیاس «۱ تا ۴» برای شناخت موج بلوغ، رسمیت/چابکی، وایزبورد، نگرش، قطب‌نمای 7S و افق ۱۴۱۰.</p></div></div>
 								<div class="cr-od-home-step"><b>۳</b><div><h3>داشبورد شاخص‌ها</h3><p>امتیاز کلی، نقاط قوت/ضعف و فاصله تا موج هدف را ببینید.</p></div></div>
 								<div class="cr-od-home-step"><b>۴</b><div><h3>ارزیابی عملکرد فردی و سازمانی</h3><p>شش شاخص استاندارد با سطح‌بندی دقیق و مستند عینی؛ بدون سلیقه شخصی.</p></div></div>
 								<div class="cr-od-home-step"><b>۵</b><div><h3>بازخورد SBI و مربی‌گری OSKAR</h3><p>سرپرست با شواهد بازخورد می‌دهد و با مدل OSKAR گام رشد را طراحی می‌کند.</p></div></div>
@@ -288,6 +289,19 @@ class Coachroom_OD_Render {
 
 					<!-- DASHBOARD -->
 					<section class="cr-od-panel is-active" id="cr-dashboard" role="tabpanel">
+						<article class="cr-od-journey" id="cr-od-journey">
+							<div class="cr-od-journey-head">
+								<div><span class="cr-od-badge">مسیر شما در یک نگاه</span><h2>گام به گام بدون سردرگمی</h2></div>
+								<p>هر بخش، خروجی بخش قبلی را به گام بعدی متصل می‌کند.</p>
+							</div>
+							<div class="cr-od-journey-steps">
+								<button type="button" class="cr-od-journey-step" data-goto="assessment"><b>۱</b><span><strong>ارزیابی وضعیت</strong><small><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> گام ساده در حدود ۸-۱۲ دقیقه</small></span></button>
+								<button type="button" class="cr-od-journey-step" data-goto="dashboard"><b>۲</b><span><strong>موج و شاخص‌ها</strong><small>نقاط قوت، ضعف و فاصله تا هدف</small></span></button>
+								<button type="button" class="cr-od-journey-step" data-goto="roadmap"><b>۳</b><span><strong>نقشه راه ۳۰/۶۰/۹۰</strong><small>اقدام‌های اولویت‌دار و OKR</small></span></button>
+								<button type="button" class="cr-od-journey-step" data-goto="reports"><b>۴</b><span><strong>گزارش مدیران</strong><small>پایش 7S، نگرش و خروجی CSV</small></span></button>
+							</div>
+							<p class="cr-od-journey-hint">اگر تازه شروع کرده‌اید، از «ارزیابی وضعیت» آغاز کنید؛ خروجی آن بقیه تب‌ها را زنده می‌کند.</p>
+						</article>
 						<div class="cr-od-kpi-grid">
 							<div class="cr-od-kpi cr-od-kpi-main">
 								<span class="cr-od-kpi-label">امتیاز کلی توسعه سازمانی</span>
@@ -343,7 +357,7 @@ class Coachroom_OD_Render {
 								<div><span class="cr-od-kpi-label">سطح تشخیص</span><strong id="cr-weisbord-level"><?php echo esc_html( isset( $weisbord['level'] ) ? $weisbord['level'] : '—' ); ?></strong><small>مدل تشخیصی وایزبورد</small></div>
 								<div><span class="cr-od-kpi-label">جعبه‌های بحرانی</span><strong id="cr-weisbord-low-count" data-fa-num><?php echo esc_html( isset( $weisbord['low'] ) ? count( $weisbord['low'] ) : 0 ); ?></strong><small>زیر ۲٫۷۵</small></div>
 							</div>
-							<p class="cr-od-analysis-text" id="cr-weisbord-diagnosis-text"><?php echo esc_html( isset( $weisbord['diagnosis'] ) ? $weisbord['diagnosis'] : 'پس از تکمیل ۱۸ سؤال وایزبورد، نتیجه تشخیصی نمایش داده می‌شود.' ); ?></p>
+							<p class="cr-od-analysis-text" id="cr-weisbord-diagnosis-text"><?php echo esc_html( isset( $weisbord['diagnosis'] ) ? $weisbord['diagnosis'] : 'پس از تکمیل ۱۲ سؤال وایزبورد، نتیجه تشخیصی نمایش داده می‌شود.' ); ?></p>
 							<div class="cr-od-weisbord-grid">
 								<?php if ( ! empty( $weisbord['boxes'] ) ) : ?>
 									<?php foreach ( $weisbord['boxes'] as $box ) : ?>
@@ -369,7 +383,7 @@ class Coachroom_OD_Render {
 								<div><span class="cr-od-kpi-label">سطح نگرش</span><strong id="cr-attitude-level"><?php echo esc_html( isset( $data['attitude']['level'] ) ? $data['attitude']['level'] : '—' ); ?></strong><small>مدل نگرش شغلی</small></div>
 								<div><span class="cr-od-kpi-label">نگرش‌های بحرانی</span><strong id="cr-attitude-low-count" data-fa-num><?php echo esc_html( isset( $data['attitude']['low'] ) ? count( $data['attitude']['low'] ) : 0 ); ?></strong><small>زیر ۲٫۷۵</small></div>
 							</div>
-							<p class="cr-od-analysis-text" id="cr-attitude-diagnosis-text"><?php echo esc_html( isset( $data['attitude']['diagnosis'] ) ? $data['attitude']['diagnosis'] : 'پس از تکمیل ۱۲ سؤال نگرش، نتیجه نمایش داده می‌شود.' ); ?></p>
+							<p class="cr-od-analysis-text" id="cr-attitude-diagnosis-text"><?php echo esc_html( isset( $data['attitude']['diagnosis'] ) ? $data['attitude']['diagnosis'] : 'پس از تکمیل ۹ سؤال نگرش شغلی، نتیجه نمایش داده می‌شود.' ); ?></p>
 							<div class="cr-od-attitude-chain" id="cr-attitude-chain">
 								<?php if ( isset( $data['attitude']['chain']['employee_performance'] ) ) : ?>
 									<div class="cr-od-attitude-chain-step"><span>بهبود عملکرد کارکنان</span><b id="cr-attitude-employee-performance" data-fa-num><?php echo esc_html( $data['attitude']['chain']['employee_performance'] ); ?></b></div>
@@ -531,12 +545,23 @@ class Coachroom_OD_Render {
 						<div class="cr-od-assessment-intro">
 							<div class="cr-od-intro-text">
 								<h2>ارزیابی وضعیت موجود سازمان</h2>
-						<p>این فرم شامل <strong data-fa-num><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?></strong> سؤال دقیق است: <strong data-fa-num><?php echo esc_html( count( $questions ) ); ?></strong> سؤال در ۱۱ بُعد ساختاری و فرهنگی (شامل «رسمیت ساختاری» و «چابکی ساختاری» به‌عنوان دو معیار مجزا و پارادوکسیکال) برای سنجش موج سازمانی، به‌همراه <strong data-fa-num><?php echo esc_html( count( $weisbord_questions ) ); ?></strong> سؤال تشخیصی بر اساس مدل شش‌جعبه‌ای وایزبورد برای دیدن ساختار رسمی و غیررسمی هم‌زمان و <strong data-fa-num><?php echo esc_html( count( Coachroom_OD_Helpers::attitude_questions() ) ); ?></strong> سؤال مدل نگرش شغلی کارکنان. پاسخ‌ها مبنای تشخیص بلوغ، انتخاب راهبرد و سنجش روایی/پایایی می‌شوند؛ هیچ راهبردی از قبل به سازمان تحمیل نمی‌شود.</p>
+						<p>این پرسش‌نامه <strong data-fa-num><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?></strong> گام ساده دارد و همه سؤال‌ها با مقیاس «۱ تا ۴» پاسخ داده می‌شوند. نیاز به دانش فنی خاصی نیست؛ کافی است تصویر واقعی سازمان را از نگاه خودتان و واحدتان بیان کنید.</p>
+						<p>هر سؤال را بر اساس <strong>آنچه در ماه‌های اخیر دیده یا تجربه کرده‌اید</strong> پاسخ دهید. هیچ پاسخ درست یا غلطی وجود ندارد؛ گزینه‌ها فقط «شدت» وضعیت را نشان می‌دهند.</p>
+						<p>نتایج به سه لنز مرتبط با هم تبدیل می‌شود: <strong>ساختار و فرهنگ سازمان</strong> (<?php echo esc_html( count( $questions ) ); ?> سؤال) برای موج بلوغ و قطب‌نمای 7S، <strong>شش‌جعبه وایزبورد</strong> (<?php echo esc_html( count( $weisbord_questions ) ); ?> سؤال) برای دیدن ساختار رسمی و غیررسمی، و <strong>نگرش و انگیزه کارکنان</strong> (<?php echo esc_html( count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> سؤال) برای افق ۱۴۱۰.</p>
 							<div class="cr-od-scale-info">
-									<span><b>۱</b> وضعیت ضعیف / بوروکراتیک</span>
-									<span><b>۲</b> در حال بهبود</span>
-									<span><b>۳</b> مناسب / هم‌آفرین</span>
-									<span><b>۴</b> پیشرو / یادگیرنده</span>
+									<span><b>۱</b> خیلی کم / ضعیف</span>
+									<span><b>۲</b> کم / در حال رشد</span>
+									<span><b>۳</b> زیاد / مناسب</span>
+									<span><b>۴</b> خیلی زیاد / قوی</span>
+								</div>
+								<div class="cr-od-how-to">
+									<div class="cr-od-how-to-title">راهنمای پاسخ‌دهی — یک دقیقه</div>
+									<div class="cr-od-how-to-grid">
+										<div class="cr-od-how-to-item"><b>۱</b><span>به هر سؤال از <strong>۱ تا ۴</strong> پاسخ بده؛ عدد بزرگ‌تر یعنی «بیشتر / قوی‌تر».</span></div>
+										<div class="cr-od-how-to-item"><b>۲</b><span>به تجربه واقعی واحد یا سازمان خودت فکر کن، نه آنچه آرزو می‌شود.</span></div>
+										<div class="cr-od-how-to-item"><b>۳</b><span>اگر بین دو گزینه مردد بودی، گزینه‌ای را انتخاب کن که <strong>بیشتر اوقات</strong> صادق است.</span></div>
+										<div class="cr-od-how-to-item"><b>۴</b><span>پاسخ درست یا غلط وجود ندارد؛ صداقت بیشتر = نتیجه دقیق‌تر برای سازمان.</span></div>
+									</div>
 								</div>
 							</div>
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-coaching.jpg' ); ?>" alt="مربی‌گری تیمی در صنعت انرژی" loading="lazy" />
@@ -558,6 +583,11 @@ class Coachroom_OD_Render {
 
 						<form class="cr-od-form" id="cr-od-assessment-form">
 							<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'cr_od_nonce' ) ); ?>" />
+							<div class="cr-od-progress" id="cr-od-progress">
+								<div class="cr-od-progress-meta"><span>پیشرفت پاسخ‌گویی</span><strong id="cr-od-progress-text" data-fa-num>۰ / <?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?></strong></div>
+								<div class="cr-od-progress-track"><span class="cr-od-progress-bar" id="cr-od-progress-bar"></span></div>
+								<small>برای نتیجه دقیق‌تر، بهتر است به همه سؤال‌ها پاسخ بدهید؛ هر گزینه فقط چند ثانیه وقت می‌گیرد.</small>
+							</div>
 							<div class="cr-od-form-meta">
 								<label>واحد سازمانی
 									<input type="text" name="department" placeholder="مثال: عملیات، تولید و پالایش" />
@@ -572,7 +602,10 @@ class Coachroom_OD_Render {
 								</label>
 							</div>
 
+							<div class="cr-od-section-label"><b>بخش ۱</b><span><strong>ساختار و فرهنگ سازمان</strong><small><?php echo esc_html( count( $questions ) ); ?> سؤال · از این بخش موج بلوغ و قطب‌نمای 7S ساخته می‌شود</small></span></div>
+
 							<?php foreach ( $dims as $slug => $dim ) : ?>
+
 								<?php
 								$dim_questions = array();
 								foreach ( $questions as $q ) {
@@ -611,7 +644,10 @@ class Coachroom_OD_Render {
 								</fieldset>
 							<?php endforeach; ?>
 
+							<div class="cr-od-section-label"><b>بخش ۲</b><span><strong>شش‌جعبه وایزبورد</strong><small>نگاه رسمی و غیررسمی به اهداف، ساختار، روابط، پاداش، رهبری و سیستم‌ها</small></span></div>
+
 							<fieldset class="cr-od-question cr-od-weisbord-section">
+
 								<legend>
 									<span class="cr-od-q-icon">◫</span>
 									<span class="cr-od-q-label">تشخیص شش‌جعبه‌ای وایزبورد (Weisbord's Six-Box)</span>
@@ -641,7 +677,10 @@ class Coachroom_OD_Render {
 								<?php endforeach; ?>
 							</fieldset>
 
+							<div class="cr-od-section-label"><b>بخش ۳</b><span><strong>نگرش و انگیزه کارکنان</strong><small>رضایت، تعهد و سایر نگرش‌ها بر اساس مدل نگرش شغلی</small></span></div>
+
 							<fieldset class="cr-od-question cr-od-attitude-section">
+
 								<legend>
 									<span class="cr-od-q-icon">◒</span>
 									<span class="cr-od-q-label">مدل نگرش شغلی کارکنان (پروژه HR ۱۴۱۰)</span>
@@ -672,7 +711,8 @@ class Coachroom_OD_Render {
 							</fieldset>
 
 							<div class="cr-od-form-submit">
-								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت ارزیابی و بروزرسانی داشبورد</button>
+								<button type="submit" class="cr-od-btn cr-od-btn-primary">ثبت ارزیابی و دیدن نتیجه</button>
+							<span class="cr-od-form-hint">میانگین زمان: حدود ۸ تا ۱۲ دقیقه</span>
 								<span class="cr-od-form-status" role="status"></span>
 							</div>
 						</form>
@@ -1500,7 +1540,7 @@ class Coachroom_OD_Render {
 									<div><span>سطح نگرش</span><strong id="cr-report-attitude-level"><?php echo esc_html( isset( $data['attitude']['level'] ) ? $data['attitude']['level'] : '—' ); ?></strong><small>مدل نگرش شغلی</small></div>
 									<div><span>زنجیره ارزش</span><strong id="cr-report-attitude-chain" data-fa-num><?php echo esc_html( isset( $data['attitude']['chain']['profitability'] ) ? $data['attitude']['chain']['profitability'] : '—' ); ?></strong><small>سودآوری</small></div>
 								</div>
-								<p class="cr-od-analysis-text"><?php echo esc_html( isset( $data['attitude']['diagnosis'] ) ? $data['attitude']['diagnosis'] : 'پس از تکمیل ۱۲ سؤال نگرش، نتیجه نمایش داده می‌شود.' ); ?></p>
+								<p class="cr-od-analysis-text"><?php echo esc_html( isset( $data['attitude']['diagnosis'] ) ? $data['attitude']['diagnosis'] : 'پس از تکمیل ۹ سؤال نگرش شغلی، نتیجه نمایش داده می‌شود.' ); ?></p>
 								<?php if ( ! empty( $data['attitude']['low'] ) ) : ?>
 									<div class="cr-od-report-color-list">
 										<?php foreach ( $data['attitude']['low'] as $grp ) : ?>

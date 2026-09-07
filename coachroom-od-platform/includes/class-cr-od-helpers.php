@@ -269,49 +269,49 @@ class Coachroom_OD_Helpers {
 	 */
 	public static function questions() {
 		return array(
-			array( 'key' => 'formalization_q1', 'dimension' => 'formalization', 'label' => 'آیا رویه‌های سازمان کوتاه، روشن و قابل اجرا هستند؟', 'weight' => 1.0 ),
-			array( 'key' => 'formalization_q2', 'dimension' => 'formalization', 'label' => 'آیا تغییر یک رویه به‌سرعت و بدون توقف طولانی انجام می‌شود؟', 'weight' => 1.0 ),
-			array( 'key' => 'formalization_q3', 'dimension' => 'formalization', 'label' => 'آیا قوانین به کارکنان فضای استقلال کافی در چارچوب اصول می‌دهند؟', 'weight' => 1.0 ),
+			// رسمیت (قوانین و رویه‌ها)
+			array( 'key' => 'formalization_q1', 'dimension' => 'formalization', 'label' => 'قوانین و رویه‌های سازمان چقدر ساده، روشن و قابل اجرا هستند؟', 'weight' => 1.0 ),
+			array( 'key' => 'formalization_q2', 'dimension' => 'formalization', 'label' => 'کارکنان چقدر در چارچوب اصول و قوانین لازم، استقلال عمل دارند؟', 'weight' => 1.0 ),
 
-			array( 'key' => 'centralization_q1', 'dimension' => 'centralization', 'label' => 'تصمیم‌های عملیاتی عمدتاً در کدام سطح گرفته می‌شوند؟', 'weight' => 1.2 ),
-			array( 'key' => 'centralization_q2', 'dimension' => 'centralization', 'label' => 'سرپرستان چقدر اختیار تصمیم‌گیری بدون ارجاع به بالا دارند؟', 'weight' => 1.2 ),
-			array( 'key' => 'centralization_q3', 'dimension' => 'centralization', 'label' => 'میزان ارجاع کارهای روزمره به مدیران عالی چقدر است؟', 'weight' => 1.2 ),
+			// تمرکز / واگذاری تصمیم
+			array( 'key' => 'centralization_q1', 'dimension' => 'centralization', 'label' => 'تصمیم‌های عملیاتی چقدر در نزدیک‌ترین سطح به کار گرفته می‌شوند؟', 'weight' => 1.2 ),
+			array( 'key' => 'centralization_q2', 'dimension' => 'centralization', 'label' => 'سرپرستان چقدر می‌توانند بدون ارجاع به مدیران عالی تصمیم بگیرند؟', 'weight' => 1.2 ),
 
-			array( 'key' => 'complexity_q1', 'dimension' => 'complexity', 'label' => 'برای انجام یک کار ساده چند لایه/واحد باید درگیر شود؟', 'weight' => 1.0 ),
-			array( 'key' => 'complexity_q2', 'dimension' => 'complexity', 'label' => 'هماهنگی بین‌واحدی چقدر روان و کم‌هزینه است؟', 'weight' => 1.0 ),
-			array( 'key' => 'complexity_q3', 'dimension' => 'complexity', 'label' => 'سیلوهای سازمانی چقدر مانع اشتراک اطلاعات می‌شوند؟', 'weight' => 1.0 ),
+			// پیچیدگی ساختاری
+			array( 'key' => 'complexity_q1', 'dimension' => 'complexity', 'label' => 'انجام کارهای روزمره چقدر ساده و بدون درگیر شدن در لایه‌ها و واحدهای اضافی است؟', 'weight' => 1.0 ),
+			array( 'key' => 'complexity_q2', 'dimension' => 'complexity', 'label' => 'هماهنگی بین واحدها چقدر روان، سریع و کم‌هزینه است؟', 'weight' => 1.0 ),
 
-			array( 'key' => 'agility_q1', 'dimension' => 'agility', 'label' => 'سازمان برای تغییر یک رویه یا فرایند در صنعت نفت و انرژی چه مدت زمان نیاز دارد؟', 'weight' => 1.2 ),
-			array( 'key' => 'agility_q2', 'dimension' => 'agility', 'label' => 'در مواجهه با تغییر بازار، فناوری یا شرایط عملیاتی، واحدها چقدر سریع خود را سازگار می‌کنند؟', 'weight' => 1.2 ),
-			array( 'key' => 'agility_q3', 'dimension' => 'agility', 'label' => 'آیا چابکی با حفظ قوانین ایمنی، اخلاقی و مالکیتی (رسمیت لازم) هم‌زمان ممکن شده است؟', 'weight' => 1.2 ),
+			// چابکی ساختاری
+			array( 'key' => 'agility_q1', 'dimension' => 'agility', 'label' => 'سازمان در مواجهه با تغییر شرایط، چقدر سریع و منعطف تصمیم می‌گیرد و حرکت می‌کند؟', 'weight' => 1.2 ),
+			array( 'key' => 'agility_q2', 'dimension' => 'agility', 'label' => 'چابکی سازمان چقدر با حفظ قوانین ایمنی، اخلاقی و مالکیتی هم‌زمان ممکن شده است؟', 'weight' => 1.2 ),
 
-			array( 'key' => 'active_listening_q1', 'dimension' => 'active_listening', 'label' => 'در جلسات تیمی، حرف اعضا قطع می‌شود؟', 'weight' => 1.4 ),
-			array( 'key' => 'active_listening_q2', 'dimension' => 'active_listening', 'label' => 'پیش از پاسخ دادن، پیام طرف مقابل خلاصه و تأیید می‌شود؟', 'weight' => 1.4 ),
-			array( 'key' => 'active_listening_q3', 'dimension' => 'active_listening', 'label' => 'کارکنان احساس می‌کنند مدیرشان واقعاً آن‌ها را می‌شنود؟', 'weight' => 1.4 ),
+			// گوش دادن فعال
+			array( 'key' => 'active_listening_q1', 'dimension' => 'active_listening', 'label' => 'در جلسات و گفت‌وگوها، سخنان همکاران چقدر کامل و بدون قطع‌شدن شنیده می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'active_listening_q2', 'dimension' => 'active_listening', 'label' => 'کارکنان چقدر احساس می‌کنند مدیرشان واقعاً حرف آن‌ها را می‌شنود؟', 'weight' => 1.4 ),
 
-			array( 'key' => 'questioning_q1', 'dimension' => 'questioning', 'label' => 'در تصمیم‌گیری‌ها به‌جای جواب آماده، سؤال باز مطرح می‌شود؟', 'weight' => 1.3 ),
-			array( 'key' => 'questioning_q2', 'dimension' => 'questioning', 'label' => 'ایده‌های جایگزین و راه‌های متفاوت به‌راحتی مطرح می‌شوند؟', 'weight' => 1.3 ),
-			array( 'key' => 'questioning_q3', 'dimension' => 'questioning', 'label' => '«چرا» و «چه می‌شد اگر» بخشی از فرهنگ سازمان است؟', 'weight' => 1.3 ),
+			// پرسش‌گری
+			array( 'key' => 'questioning_q1', 'dimension' => 'questioning', 'label' => 'در تصمیم‌گیری‌ها چقدر به‌جای جواب آماده، سؤال باز و گزینه‌های جایگزین مطرح می‌شود؟', 'weight' => 1.3 ),
+			array( 'key' => 'questioning_q2', 'dimension' => 'questioning', 'label' => '«چرا» و «چه می‌شد اگر» چقدر در فرهنگ جلسات و کار روزمره رایج است؟', 'weight' => 1.3 ),
 
-			array( 'key' => 'feedback_q1', 'dimension' => 'feedback', 'label' => 'بازخورد عملکرد به‌صورت منظم (نه فقط پایان سال) داده می‌شود؟', 'weight' => 1.5 ),
-			array( 'key' => 'feedback_q2', 'dimension' => 'feedback', 'label' => 'بازخورد مبتنی بر شواهد است و از قضاوت شخصی پرهیز می‌شود؟', 'weight' => 1.5 ),
-			array( 'key' => 'feedback_q3', 'dimension' => 'feedback', 'label' => 'کارکنان می‌توانند به مدیر بازخورد دوسویه و امن بدهند؟', 'weight' => 1.5 ),
+			// بازخورد
+			array( 'key' => 'feedback_q1', 'dimension' => 'feedback', 'label' => 'بازخورد عملکرد چقدر منظم و مستمر داده می‌شود (نه فقط پایان سال)؟', 'weight' => 1.5 ),
+			array( 'key' => 'feedback_q2', 'dimension' => 'feedback', 'label' => 'کارکنان چقدر می‌توانند بدون ترس به مدیر بازخورد بدهند؟', 'weight' => 1.5 ),
 
-			array( 'key' => 'performance_eval_q1', 'dimension' => 'performance_eval', 'label' => 'ارزیابی عملکرد بر اساس داده، شاخص و شواهد است؟', 'weight' => 1.3 ),
-			array( 'key' => 'performance_eval_q2', 'dimension' => 'performance_eval', 'label' => 'معیارهای ارزیابی برای همه شفاف و از پیش اعلام‌شده است؟', 'weight' => 1.3 ),
-			array( 'key' => 'performance_eval_q3', 'dimension' => 'performance_eval', 'label' => 'نتیجه ارزیابی به توسعه فردی، جبران منصفانه و مربی‌گری وصل می‌شود؟', 'weight' => 1.3 ),
+			// ارزیابی عملکرد
+			array( 'key' => 'performance_eval_q1', 'dimension' => 'performance_eval', 'label' => 'ارزیابی عملکرد چقدر بر اساس داده، شاخص و شواهد انجام می‌شود؟', 'weight' => 1.3 ),
+			array( 'key' => 'performance_eval_q2', 'dimension' => 'performance_eval', 'label' => 'معیارهای ارزیابی چقدر از قبل شفاف و برای همه روشن است؟', 'weight' => 1.3 ),
 
-			array( 'key' => 'psychological_safety_q1', 'dimension' => 'psychological_safety', 'label' => 'اعلام خطا بدون ترس از تنبیه یا تمسخر ممکن است؟', 'weight' => 1.4 ),
-			array( 'key' => 'psychological_safety_q2', 'dimension' => 'psychological_safety', 'label' => 'مخالفت محترمانه با نظر مدیر در جلسات پذیرفته می‌شود؟', 'weight' => 1.4 ),
-			array( 'key' => 'psychological_safety_q3', 'dimension' => 'psychological_safety', 'label' => 'کارکنان به‌جای سکوت، نگرانی‌های خود را مطرح می‌کنند؟', 'weight' => 1.4 ),
+			// امنیت روانی
+			array( 'key' => 'psychological_safety_q1', 'dimension' => 'psychological_safety', 'label' => 'اعلام خطا چقدر بدون ترس از تنبیه یا تمسخر ممکن است؟', 'weight' => 1.4 ),
+			array( 'key' => 'psychological_safety_q2', 'dimension' => 'psychological_safety', 'label' => 'مخالفت محترمانه با نظر مدیر چقدر در جلسات پذیرفته می‌شود؟', 'weight' => 1.4 ),
 
-			array( 'key' => 'learning_culture_q1', 'dimension' => 'learning_culture', 'label' => 'پس از پروژه‌ها، درس‌آموخته‌ها جمع‌آوری و مستند می‌شود؟', 'weight' => 1.2 ),
-			array( 'key' => 'learning_culture_q2', 'dimension' => 'learning_culture', 'label' => 'دانش و تجربه بین واحدها به‌راحتی جریان دارد؟', 'weight' => 1.2 ),
-			array( 'key' => 'learning_culture_q3', 'dimension' => 'learning_culture', 'label' => 'یادگیری بخشی از کار روزمره است، نه یک دوره اجباری؟', 'weight' => 1.2 ),
+			// فرهنگ یادگیری
+			array( 'key' => 'learning_culture_q1', 'dimension' => 'learning_culture', 'label' => 'پس از هر پروژه یا تجربه مهم، درس‌آموخته‌ها چقدر جمع‌آوری و مستند می‌شوند؟', 'weight' => 1.2 ),
+			array( 'key' => 'learning_culture_q2', 'dimension' => 'learning_culture', 'label' => 'دانش و تجربه بین واحدها چقدر راحت جریان پیدا می‌کند؟', 'weight' => 1.2 ),
 
-			array( 'key' => 'coaching_culture_q1', 'dimension' => 'coaching_culture', 'label' => 'سرپرستان به‌جای دستور، سؤال مربیگری می‌پرسند؟', 'weight' => 1.4 ),
-			array( 'key' => 'coaching_culture_q2', 'dimension' => 'coaching_culture', 'label' => 'جلسه ۱:۱ منظم بین سرپرست و اعضا برگزار می‌شود؟', 'weight' => 1.4 ),
-			array( 'key' => 'coaching_culture_q3', 'dimension' => 'coaching_culture', 'label' => 'سرپرستان مهارت گوش فعال، پرسش‌گری و بازخورد مؤثر دارند؟', 'weight' => 1.4 ),
+			// فرهنگ مربی‌گری
+			array( 'key' => 'coaching_culture_q1', 'dimension' => 'coaching_culture', 'label' => 'سرپرستان چقدر به‌جای دستور دادن، با پرسش مربی‌گری به رشد اعضا کمک می‌کنند؟', 'weight' => 1.4 ),
+			array( 'key' => 'coaching_culture_q2', 'dimension' => 'coaching_culture', 'label' => 'جلسه‌های کوتاه و منظم بین سرپرست و اعضا (نشست ۱:۱) چقدر برگزار می‌شود؟', 'weight' => 1.4 ),
 		);
 	}
 
@@ -322,10 +322,10 @@ class Coachroom_OD_Helpers {
 	 */
 	public static function question_options() {
 		return array(
-			1 => 'وضعیت ضعیف / بوروکراتیک',
-			2 => 'در حال بهبود',
-			3 => 'مناسب / هم‌آفرین',
-			4 => 'پیشرو / یادگیرنده',
+			1 => 'خیلی کم / ضعیف',
+			2 => 'کم / در حال رشد',
+			3 => 'زیاد / مناسب',
+			4 => 'خیلی زیاد / قوی',
 		);
 	}
 
@@ -423,29 +423,23 @@ class Coachroom_OD_Helpers {
 	 */
 	public static function weisbord_questions() {
 		return array(
-			array( 'key' => 'weisbord_goals_q1', 'dimension' => 'weisbord_goals', 'label' => 'اهداف سازمان برای همه واحدها شفاف و قابل‌فهم است؟', 'weight' => 1.2 ),
-			array( 'key' => 'weisbord_goals_q2', 'dimension' => 'weisbord_goals', 'label' => 'اهداف واحدها با اهداف شرکت هم‌راستا هستند؟', 'weight' => 1.2 ),
-			array( 'key' => 'weisbord_goals_q3', 'dimension' => 'weisbord_goals', 'label' => 'پیشرفت نسبت به اهداف به‌صورت منظم و با سنجه مشخص بررسی می‌شود؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_goals_q1', 'dimension' => 'weisbord_goals', 'label' => 'اهداف سازمان چقدر برای همه واحدها شفاف و قابل‌درک است؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_goals_q2', 'dimension' => 'weisbord_goals', 'label' => 'پیشرفت نسبت به اهداف چقدر منظم و با معیار مشخص بررسی می‌شود؟', 'weight' => 1.2 ),
 
-			array( 'key' => 'weisbord_structure_q1', 'dimension' => 'weisbord_structure', 'label' => 'ساختار سازمان برای هدف‌ها و نوع کار مناسب است؟', 'weight' => 1.1 ),
-			array( 'key' => 'weisbord_structure_q2', 'dimension' => 'weisbord_structure', 'label' => 'هماهنگی بین واحدها با کمترین ارجاع اضافی انجام می‌شود؟', 'weight' => 1.1 ),
-			array( 'key' => 'weisbord_structure_q3', 'dimension' => 'weisbord_structure', 'label' => 'لایه‌های تصمیم‌گیری به‌اندازه ضروری محدود شده‌اند؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_structure_q1', 'dimension' => 'weisbord_structure', 'label' => 'ساختار سازمان چقدر با اهداف و نوع کار همخوان است؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_structure_q2', 'dimension' => 'weisbord_structure', 'label' => 'لایه‌های تصمیم‌گیری چقدر به مقدار لازم و ضروری محدود شده‌اند؟', 'weight' => 1.1 ),
 
-			array( 'key' => 'weisbord_relationships_q1', 'dimension' => 'weisbord_relationships', 'label' => 'واحدها به‌جای رقابت مخرب با هم همکاری می‌کنند؟', 'weight' => 1.3 ),
-			array( 'key' => 'weisbord_relationships_q2', 'dimension' => 'weisbord_relationships', 'label' => 'ارتباطات بین واحدها دوسویه، امن و بدون ترس است؟', 'weight' => 1.3 ),
-			array( 'key' => 'weisbord_relationships_q3', 'dimension' => 'weisbord_relationships', 'label' => 'اختلاف‌ها به‌صورت باز و با حل مسئله مشترک مدیریت می‌شوند؟', 'weight' => 1.3 ),
+			array( 'key' => 'weisbord_relationships_q1', 'dimension' => 'weisbord_relationships', 'label' => 'واحدها چقدر به‌جای رقابت مخرب، با هم همکاری می‌کنند؟', 'weight' => 1.3 ),
+			array( 'key' => 'weisbord_relationships_q2', 'dimension' => 'weisbord_relationships', 'label' => 'ارتباط بین واحدها چقدر دوسویه، امن و بدون ترس است؟', 'weight' => 1.3 ),
 
-			array( 'key' => 'weisbord_rewards_q1', 'dimension' => 'weisbord_rewards', 'label' => 'پاداش و تشویق بر اساس عملکرد واقعی و شایستگی است؟', 'weight' => 1.2 ),
-			array( 'key' => 'weisbord_rewards_q2', 'dimension' => 'weisbord_rewards', 'label' => 'معیارهای پاداش از قبل شفاف و برای همه یکسان است؟', 'weight' => 1.2 ),
-			array( 'key' => 'weisbord_rewards_q3', 'dimension' => 'weisbord_rewards', 'label' => 'رفتارهای همکاری، یادگیری و توسعه نیز پاداش می‌گیرند؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_rewards_q1', 'dimension' => 'weisbord_rewards', 'label' => 'پاداش و تشویق چقدر بر اساس عملکرد واقعی و شایستگی است؟', 'weight' => 1.2 ),
+			array( 'key' => 'weisbord_rewards_q2', 'dimension' => 'weisbord_rewards', 'label' => 'معیارهای پاداش چقدر از پیش شفاف و برای همه یکسان است؟', 'weight' => 1.2 ),
 
-			array( 'key' => 'weisbord_leadership_q1', 'dimension' => 'weisbord_leadership', 'label' => 'رهبران بین اهداف، ساختار، روابط و پاداش تعادل برقرار می‌کنند؟', 'weight' => 1.4 ),
-			array( 'key' => 'weisbord_leadership_q2', 'dimension' => 'weisbord_leadership', 'label' => 'مدیریت به‌جای واکنش به بحران، چشم‌انداز توسعه‌ای دارد؟', 'weight' => 1.4 ),
-			array( 'key' => 'weisbord_leadership_q3', 'dimension' => 'weisbord_leadership', 'label' => 'رهبران الگوی رفتار یادگیری، بازخورد و هم‌آفرینی هستند؟', 'weight' => 1.4 ),
+			array( 'key' => 'weisbord_leadership_q1', 'dimension' => 'weisbord_leadership', 'label' => 'رهبران چقدر بین اهداف، ساختار، روابط و پاداش تعادل خوبی برقرار می‌کنند؟', 'weight' => 1.4 ),
+			array( 'key' => 'weisbord_leadership_q2', 'dimension' => 'weisbord_leadership', 'label' => 'رهبران چقدر الگوی عملی یادگیری، بازخورد و هم‌آفرینی هستند؟', 'weight' => 1.4 ),
 
-			array( 'key' => 'weisbord_helping_q1', 'dimension' => 'weisbord_helping', 'label' => 'فرایندهای پشتیبان و ابزارها کار را آسان می‌کنند؟', 'weight' => 1.1 ),
-			array( 'key' => 'weisbord_helping_q2', 'dimension' => 'weisbord_helping', 'label' => 'داده‌ها و گزارش‌ها برای تصمیم‌گیری قابل‌اتکا و یکپارچه‌اند؟', 'weight' => 1.1 ),
-			array( 'key' => 'weisbord_helping_q3', 'dimension' => 'weisbord_helping', 'label' => 'سیستم اطلاعاتی از مدیریت پروفایل واحدها و نقش‌ها پشتیبانی می‌کند؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_helping_q1', 'dimension' => 'weisbord_helping', 'label' => 'فرایندها، ابزارها و سیستم‌های سازمان چقدر کارها را آسان‌تر می‌کنند؟', 'weight' => 1.1 ),
+			array( 'key' => 'weisbord_helping_q2', 'dimension' => 'weisbord_helping', 'label' => 'داده‌ها و گزارش‌ها چقدر برای تصمیم‌گیری قابل‌اتکا و یکپارچه هستند؟', 'weight' => 1.1 ),
 		);
 	}
 
@@ -590,7 +584,7 @@ class Coachroom_OD_Helpers {
 				'short'  => 'رضایت',
 				'icon'   => '◆',
 				'weight' => 1.3,
-				'items'  => array( 'پیشرفت شغلی', 'ارتباط با مدیران', 'حقوق و مزایا', 'محیط کار' ),
+				'items'  => array( 'پیشرفت شغلی', 'ارتباط با مدیران', 'حقوق و مزایا' ),
 			),
 			'attitude_commitment' => array(
 				'slug'   => 'attitude_commitment',
@@ -598,7 +592,7 @@ class Coachroom_OD_Helpers {
 				'short'  => 'تعهد',
 				'icon'   => '⚙',
 				'weight' => 1.4,
-				'items'  => array( 'تعهد احساسی', 'تعهد رفتاری', 'هم‌هویتی با سازمان', 'تمایل به مشارکت' ),
+				'items'  => array( 'تعلق و تعهد احساسی', 'تعهد رفتاری', 'مشارکت داوطلبانه' ),
 			),
 			'attitude_other' => array(
 				'slug'   => 'attitude_other',
@@ -606,7 +600,7 @@ class Coachroom_OD_Helpers {
 				'short'  => 'سایر نگرش‌ها',
 				'icon'   => '❋',
 				'weight' => 1.2,
-				'items'  => array( 'عدالت سازمانی', 'میل به ترک شغل', 'سلامت روان', 'تعادل کار و زندگی' ),
+				'items'  => array( 'عدالت سازمانی', 'میل به ترک شغل', 'سلامت روان' ),
 			),
 		);
 	}
@@ -618,20 +612,17 @@ class Coachroom_OD_Helpers {
 	 */
 	public static function attitude_questions() {
 		return array(
-			array( 'key' => 'attitude_satisfaction_q1', 'dimension' => 'attitude_satisfaction', 'label' => 'کارکنان فرصت روشن برای پیشرفت و رشد شغلی دارند؟', 'weight' => 1.3 ),
-			array( 'key' => 'attitude_satisfaction_q2', 'dimension' => 'attitude_satisfaction', 'label' => 'کارکنان امکان ارتباط مؤثر و منظم با مدیران خود دارند؟', 'weight' => 1.3 ),
-			array( 'key' => 'attitude_satisfaction_q3', 'dimension' => 'attitude_satisfaction', 'label' => 'حقوق، مزایا و جبران خدمت منصفانه و مبتنی بر عملکرد است؟', 'weight' => 1.3 ),
-			array( 'key' => 'attitude_satisfaction_q4', 'dimension' => 'attitude_satisfaction', 'label' => 'محیط کار فیزیکی و روانی برای کار و رشد مناسب است؟', 'weight' => 1.3 ),
+			array( 'key' => 'attitude_satisfaction_q1', 'dimension' => 'attitude_satisfaction', 'label' => 'کارکنان چقدر فرصت روشن برای پیشرفت و رشد شغلی دارند؟', 'weight' => 1.3 ),
+			array( 'key' => 'attitude_satisfaction_q2', 'dimension' => 'attitude_satisfaction', 'label' => 'کارکنان چقدر ارتباط مؤثر و منظم با مدیران خود دارند؟', 'weight' => 1.3 ),
+			array( 'key' => 'attitude_satisfaction_q3', 'dimension' => 'attitude_satisfaction', 'label' => 'حقوق، مزایا و جبران خدمت چقدر منصفانه و مبتنی بر عملکرد است؟', 'weight' => 1.3 ),
 
-			array( 'key' => 'attitude_commitment_q1', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان به‌صورت احساسی به سازمان و اهداف آن متعهد هستند؟', 'weight' => 1.4 ),
-			array( 'key' => 'attitude_commitment_q2', 'dimension' => 'attitude_commitment', 'label' => 'تعهد رفتاری (حضور، همکاری و مسئولیت‌پذیری) در عمل دیده می‌شود؟', 'weight' => 1.4 ),
-			array( 'key' => 'attitude_commitment_q3', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان هویت مشترکی با سازمان و صنعت نفت دارند؟', 'weight' => 1.4 ),
-			array( 'key' => 'attitude_commitment_q4', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان داوطلبانه در بهبود و تیم‌های توسعه مشارکت می‌کنند؟', 'weight' => 1.4 ),
+			array( 'key' => 'attitude_commitment_q1', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان چقدر به سازمان و اهداف آن احساس تعلق و تعهد دارند؟', 'weight' => 1.4 ),
+			array( 'key' => 'attitude_commitment_q2', 'dimension' => 'attitude_commitment', 'label' => 'تعهد رفتاری (حضور، همکاری و مسئولیت‌پذیری) چقدر در عمل دیده می‌شود؟', 'weight' => 1.4 ),
+			array( 'key' => 'attitude_commitment_q3', 'dimension' => 'attitude_commitment', 'label' => 'کارکنان چقدر داوطلبانه در بهبود و تیم‌های توسعه مشارکت می‌کنند؟', 'weight' => 1.4 ),
 
-			array( 'key' => 'attitude_other_q1', 'dimension' => 'attitude_other', 'label' => 'عدالت سازمانی در توزیع فرصت‌ها، پاداش و دسترسی رعایت می‌شود؟', 'weight' => 1.2 ),
-			array( 'key' => 'attitude_other_q2', 'dimension' => 'attitude_other', 'label' => 'میل به ترک شغل در سازمان پایین است؟', 'weight' => 1.2 ),
-			array( 'key' => 'attitude_other_q3', 'dimension' => 'attitude_other', 'label' => 'سلامت روان و به‌زیستی کارکنان به‌صورت فعال پشتیبانی می‌شود؟', 'weight' => 1.2 ),
-			array( 'key' => 'attitude_other_q4', 'dimension' => 'attitude_other', 'label' => 'تعادل کار و زندگی در برنامه کاری و فرهنگی سازمان لحاظ می‌شود؟', 'weight' => 1.2 ),
+			array( 'key' => 'attitude_other_q1', 'dimension' => 'attitude_other', 'label' => 'عدالت سازمانی در توزیع فرصت‌ها و پاداش چقدر رعایت می‌شود؟', 'weight' => 1.2 ),
+			array( 'key' => 'attitude_other_q2', 'dimension' => 'attitude_other', 'label' => 'میل به ترک شغل در سازمان چقدر پایین است؟', 'weight' => 1.2 ),
+			array( 'key' => 'attitude_other_q3', 'dimension' => 'attitude_other', 'label' => 'سلامت روان و به‌زیستی کارکنان چقدر به‌صورت فعال پشتیبانی می‌شود؟', 'weight' => 1.2 ),
 		);
 	}
 
@@ -817,7 +808,7 @@ class Coachroom_OD_Helpers {
 	 *
 	 * Each of the seven elements acts as a compass for the organizational
 	 * development journey. Scores are derived from the already collected
-	 * maturity, Weisbord and attitude data so the 60+-item assessment remains
+	 * maturity, Weisbord and attitude data so the concise 43-item assessment remains
 	 * the single evidence base while managers get a 7S executive lens.
 	 *
 	 * @return array

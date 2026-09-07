@@ -698,3 +698,47 @@ html{scroll-behavior:smooth}
   .cr-od-7s-summary{grid-template-columns:1fr 1fr}
   .cr-od-7s-card{min-height:auto}
 }
+
+/* Assessment guidance, progress and section labels */
+.cr-od-how-to{background:linear-gradient(135deg,#ecfeff 0%,#f0fdfa 60%,#f8fafc 100%);border:1px solid #a5f3fc;border-radius:16px;padding:16px 18px;margin-top:16px}
+.cr-od-how-to-title{font-weight:800;color:#0e7490;margin-bottom:10px;font-size:14px}
+.cr-od-how-to-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+.cr-od-how-to-item{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.7;color:#334155;background:#fff;border:1px solid #cffafe;border-radius:10px;padding:9px 11px}
+.cr-od-how-to-item b{min-width:22px;height:22px;line-height:22px;text-align:center;background:#0d9488;color:#fff;border-radius:50%;font-size:11px}
+.cr-od-progress{background:var(--cr-card);border:1px solid var(--cr-line);border-radius:14px;padding:13px 15px;margin-bottom:18px}
+.cr-od-progress-meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--cr-muted);margin-bottom:8px}
+.cr-od-progress-meta strong{color:#0f766e;font-size:14px}
+.cr-od-progress-track{height:9px;background:#e7f2f3;border-radius:99px;overflow:hidden}
+.cr-od-progress-bar{display:block;height:100%;width:0%;background:linear-gradient(90deg,#0d9488,#0e7490);border-radius:99px;transition:width .25s ease}
+.cr-od-progress small{display:block;margin-top:7px;font-size:11.5px;color:var(--cr-muted)}
+.cr-od-section-label{display:flex;gap:11px;align-items:center;background:var(--cr-soft);border:1px solid var(--cr-line);border-radius:13px;padding:11px 14px;margin:20px 0 12px}
+.cr-od-section-label>b{min-width:34px;height:34px;line-height:34px;text-align:center;background:#0e7490;color:#fff;border-radius:10px;font-size:12px}
+.cr-od-section-label>span{min-width:0}
+.cr-od-section-label strong{display:block;color:var(--cr-dark);font-size:14px}
+.cr-od-section-label small{display:block;color:var(--cr-muted);font-size:11.5px;line-height:1.5}
+.cr-od-form-hint{display:block;margin-top:8px;font-size:12px;color:var(--cr-muted)}
+@media(max-width:640px){
+  .cr-od-how-to-grid{grid-template-columns:1fr}
+}
+
+/* One-glance journey card on the dashboard */
+.cr-od-journey{background:linear-gradient(135deg,#f0fdfa 0%,#ecfeff 55%,#f8fafc 100%);border:1px solid #a5f3fc;border-radius:18px;padding:18px 20px;margin-bottom:20px}
+.cr-od-journey-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px}
+.cr-od-journey-head .cr-od-badge{margin-bottom:5px}
+.cr-od-journey-head h2{color:#0e7490;font-size:20px;margin:0}
+.cr-od-journey-head p{color:var(--cr-muted);font-size:12.5px;margin:0;text-align:left}
+.cr-od-journey-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.cr-od-journey-step{display:flex;gap:10px;align-items:flex-start;text-align:right;background:#fff;border:1px solid #cffafe;border-radius:12px;padding:12px;cursor:pointer;transition:.18s;width:100%}
+.cr-od-journey-step:hover{border-color:#0d9488;box-shadow:0 8px 18px rgba(13,148,136,.12);transform:translateY(-2px)}
+.cr-od-journey-step b{min-width:26px;height:26px;line-height:26px;text-align:center;background:#0d9488;color:#fff;border-radius:8px;font-size:12px}
+.cr-od-journey-step strong{display:block;color:var(--cr-dark);font-size:13px;margin-bottom:3px}
+.cr-od-journey-step small{display:block;color:var(--cr-muted);font-size:11px;line-height:1.55}
+.cr-od-journey-hint{margin:12px 0 0;font-size:12px;color:#0f766e;font-weight:700}
+@media(max-width:980px){
+  .cr-od-journey-head{display:block}
+  .cr-od-journey-head p{margin-top:5px;text-align:right}
+  .cr-od-journey-steps{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .cr-od-journey-steps{grid-template-columns:1fr}
+}

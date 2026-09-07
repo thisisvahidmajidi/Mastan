@@ -806,7 +806,7 @@
     setText('cr-weisbord-overall', faNum(fmtNum(num(w.overall))));
     setText('cr-weisbord-level', w.level || '—');
     setText('cr-weisbord-low-count', faNum((w.low || []).length));
-    setText('cr-weisbord-diagnosis-text', w.diagnosis || 'پس از تکمیل ۱۸ سؤال وایزبورد، نتیجه تشخیصی نمایش داده می‌شود.');
+    setText('cr-weisbord-diagnosis-text', w.diagnosis || 'پس از تکمیل ۱۲ سؤال وایزبورد، نتیجه تشخیصی نمایش داده می‌شود.');
     setText('cr-report-weisbord-overall', faNum(fmtNum(num(w.overall))));
     setText('cr-report-weisbord-level', w.level || '—');
     setText('cr-report-weisbord-low', faNum((w.low || []).length));
@@ -829,7 +829,7 @@
     setText('cr-attitude-overall', faNum(fmtNum(num(a.overall))));
     setText('cr-attitude-level', a.level || '—');
     setText('cr-attitude-low-count', faNum((a.low || []).length));
-    setText('cr-attitude-diagnosis-text', a.diagnosis || 'پس از تکمیل ۱۲ سؤال نگرش شغلی، نتیجه نمایش داده می‌شود.');
+    setText('cr-attitude-diagnosis-text', a.diagnosis || 'پس از تکمیل ۹ سؤال نگرش شغلی، نتیجه نمایش داده می‌شود.');
     setText('cr-report-attitude-overall', faNum(fmtNum(num(a.overall))));
     setText('cr-report-attitude-level', a.level || '—');
     setText('cr-report-attitude-chain', faNum(fmtNum(num((a.chain || {}).profitability))));
@@ -1210,7 +1210,7 @@
     }
     var issues = [];
     var requiredIds = [
-      'cr-home', 'cr-dashboard', 'cr-assessment', 'cr-performance', 'cr-roadmap', 'cr-departments', 'cr-blog', 'cr-guide', 'cr-reports',
+      'cr-home', 'cr-dashboard', 'cr-assessment', 'cr-performance', 'cr-roadmap', 'cr-departments', 'cr-blog', 'cr-guide', 'cr-reports', 'cr-od-journey',
       'crRadarChart', 'crWaveChart', 'crSkillsChart', 'crDeptChart', 'crRoleChart', 'crTrendChart',
       'cr-od-assessment-form', 'cr-dept-tbody', 'cr-role-tbody', 'cr-role-dim-tbody',
       'cr-report-role-dim-tbody', 'cr-roadmap-actions-list', 'cr-efqm-table', 'cr-report-efqm',
@@ -1230,10 +1230,10 @@
     var s = getSummary();
     if (!s || typeof s !== 'object') { issues.push('summary'); }
     if (!Array.isArray(getDims()) || getDims().length < 11) { issues.push('dimensions'); }
-    if (!Array.isArray(getQuestions()) || getQuestions().length < 33) { issues.push('questions'); }
-    if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 18) { issues.push('weisbord-questions'); }
-    if (!Array.isArray(getAttitudeQuestions()) || getAttitudeQuestions().length < 12) { issues.push('attitude-questions'); }
-    if (qa('.cr-od-sub-question').length < 63) { issues.push('question-fields'); }
+    if (!Array.isArray(getQuestions()) || getQuestions().length < 22) { issues.push('questions'); }
+    if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 12) { issues.push('weisbord-questions'); }
+    if (!Array.isArray(getAttitudeQuestions()) || getAttitudeQuestions().length < 9) { issues.push('attitude-questions'); }
+    if (qa('.cr-od-sub-question').length < 43) { issues.push('question-fields'); }
     if (!getWeisbord() || typeof getWeisbord() !== 'object') { issues.push('weisbord'); }
     if (!getAttitude() || typeof getAttitude() !== 'object') { issues.push('attitude'); }
     if (!getHr1410() || typeof getHr1410() !== 'object') { issues.push('hr1410'); }
@@ -1307,9 +1307,32 @@
     qa('.cr-od-tab').forEach(function (b) {
       b.addEventListener('click', function () { activateTab(b.getAttribute('data-tab'), true); });
     });
+    qa('[data-goto]').forEach(function (b) {
+      b.addEventListener('click', function () { activateTab(b.getAttribute('data-goto'), true); });
+    });
   }
 
   /* ---------------- Assessment form ---------------- */
+  function updateProgress() {
+    var form = document.getElementById('cr-od-assessment-form');
+    var bar = document.getElementById('cr-od-progress-bar');
+    var text = document.getElementById('cr-od-progress-text');
+    if (!form || !bar) { return; }
+    var fields = qa('.cr-od-sub-question', form);
+    var done = 0;
+    fields.forEach(function (f) {
+      if (q('input[type=radio]:checked', f)) { done++; }
+    });
+    var total = fields.length || 0;
+    if (text) { text.textContent = faNum(fmtNum(done)) + ' / ' + faNum(fmtNum(total)); }
+    bar.style.width = total ? Math.round((done / total) * 100) + '%' : '0%';
+    if (done === total && total > 0) {
+      text.style.color = '#0f766e';
+    } else {
+      text.style.color = '';
+    }
+  }
+
   function bindSelection() {
     qa('.cr-od-sub-question').forEach(function (fieldset) {
       qa('input[type=radio]', fieldset).forEach(function (input) {
@@ -1318,6 +1341,7 @@
             var radio = q('input', opt);
             if (radio) { opt.classList.toggle('is-selected', radio.checked); }
           });
+          updateProgress();
         });
       });
     });
@@ -1423,12 +1447,12 @@
             // Never block the save because of a rendering edge case.
             if (window.console) { window.console.warn('CoachRoom update render:', e); }
           }
-          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی و بروزرسانی داشبورد'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی و دیدن نتیجه'; }
           if (status) { status.textContent = successMsg; status.className = 'cr-od-form-status ok'; }
           activateTab('dashboard');
         })
         .catch(function (err) {
-          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی و بروزرسانی داشبورد'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'ثبت ارزیابی و دیدن نتیجه'; }
           if (status) { status.textContent = 'خطا: ' + (err && err.message ? err.message : 'لطفاً دوباره تلاش کنید.'); status.className = 'cr-od-form-status err'; }
         });
     });
@@ -1639,6 +1663,7 @@
     enhanceGlossary(document.getElementById('cr-od-root'));
     bindGlossaryPositioning();
     convertDigitsInside();
+    updateProgress();
     selfTest();
 
     var resizeTimer;
