@@ -55,6 +55,7 @@ class Coachroom_OD_Render {
 		$weisbord   = isset( $data['weisbord'] ) ? $data['weisbord'] : array();
 		$attitude   = isset( $data['attitude'] ) ? $data['attitude'] : array();
 		$hr1410     = isset( $data['hr1410'] ) ? $data['hr1410'] : array();
+		$mckinsey7s = isset( $data['mckinsey7s'] ) ? $data['mckinsey7s'] : array();
 		$model_matrix = isset( $data['model_matrix'] ) ? $data['model_matrix'] : array();
 		$reliability  = isset( $data['reliability'] ) ? $data['reliability'] : array();
 		$performance  = isset( $data['performance'] ) ? $data['performance'] : array();
@@ -214,7 +215,7 @@ class Coachroom_OD_Render {
 							<div class="cr-od-landing-section-head"><span class="cr-od-badge">نقشه راه کل</span><h2>چرخه پلتفرم در هفت گام</h2></div>
 							<div class="cr-od-home-roadmap">
 								<div class="cr-od-home-step"><b>۱</b><div><h3>خانه (رایگان)</h3><p>آشنایی با نقشه راه، سازوکار و ابزارها بدون ثبت‌نام.</p></div></div>
-								<div class="cr-od-home-step"><b>۲</b><div><h3>ارزیابی سازمانی</h3><p>۶۰ سؤال استاندارد برای شناخت موج بلوغ، وایزبورد، نگرش و افق ۱۴۱۰.</p></div></div>
+								<div class="cr-od-home-step"><b>۲</b><div><h3>ارزیابی سازمانی</h3><p><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> سؤال استاندارد برای شناخت موج بلوغ، رسمیت/چابکی، وایزبورد، نگرش، قطب‌نمای 7S و افق ۱۴۱۰.</p></div></div>
 								<div class="cr-od-home-step"><b>۳</b><div><h3>داشبورد شاخص‌ها</h3><p>امتیاز کلی، نقاط قوت/ضعف و فاصله تا موج هدف را ببینید.</p></div></div>
 								<div class="cr-od-home-step"><b>۴</b><div><h3>ارزیابی عملکرد فردی و سازمانی</h3><p>شش شاخص استاندارد با سطح‌بندی دقیق و مستند عینی؛ بدون سلیقه شخصی.</p></div></div>
 								<div class="cr-od-home-step"><b>۵</b><div><h3>بازخورد SBI و مربی‌گری OSKAR</h3><p>سرپرست با شواهد بازخورد می‌دهد و با مدل OSKAR گام رشد را طراحی می‌کند.</p></div></div>
@@ -416,6 +417,34 @@ class Coachroom_OD_Render {
 							</div>
 						</article>
 
+						<article class="cr-od-card cr-od-card-wide" id="cr-7s-diagnosis">
+							<h3 class="cr-od-card-title">قطب‌نمای 7S مک‌کنزی — پایش پایانی توسعه سازمانی <span class="cr-od-card-sub">Strategy · Structure · Systems · Skills · Staff · Style · Shared Values</span></h3>
+							<div class="cr-od-7s-summary">
+								<div><span class="cr-od-kpi-label">شاخص 7S</span><strong id="cr-7s-overall" data-fa-num><?php echo esc_html( isset( $mckinsey7s['overall'] ) ? $mckinsey7s['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+								<div><span class="cr-od-kpi-label">وضعیت مطلوب</span><strong id="cr-7s-target" data-fa-num><?php echo esc_html( isset( $mckinsey7s['target'] ) ? $mckinsey7s['target'] : '۳٫۳۵' ); ?></strong><small>آستانه موج هدف</small></div>
+								<div><span class="cr-od-kpi-label">فاصله تا مطلوب</span><strong id="cr-7s-gap" data-fa-num><?php echo esc_html( isset( $mckinsey7s['gap'] ) ? $mckinsey7s['gap'] : '—' ); ?></strong><small>نمره</small></div>
+								<div><span class="cr-od-kpi-label">اولویت اقدام</span><strong id="cr-7s-priority"><?php echo esc_html( ! empty( $mckinsey7s['priority'] ) ? implode( '، ', array_map( function ( $c ) { return $c['short'] ?? $c['label']; }, $mckinsey7s['priority'] ) ) : 'پس از ارزیابی' ); ?></strong><small>بهترین گام بعدی</small></div>
+							</div>
+							<p class="cr-od-analysis-text" id="cr-7s-diagnosis-text"><?php echo esc_html( isset( $mckinsey7s['diagnosis'] ) ? $mckinsey7s['diagnosis'] : 'پس از تکمیل ارزیابی، قطب‌نمای 7S محاسبه و نمایش داده می‌شود.' ); ?></p>
+							<div class="cr-od-7s-layout">
+								<div class="cr-od-chart-wrap"><canvas id="cr-7s-canvas" aria-label="نمودار رادار هفت مؤلفه 7S مک‌کنزی"></canvas></div>
+								<div class="cr-od-7s-grid" id="cr-7s-grid">
+									<?php if ( ! empty( $mckinsey7s['components'] ) ) : ?>
+										<?php foreach ( $mckinsey7s['components'] as $comp ) : ?>
+											<div class="cr-od-7s-component" style="--7s-color:<?php echo esc_attr( $comp['color'] ); ?>">
+												<div class="cr-od-7s-component-head"><span><?php echo esc_html( $comp['icon'] ); ?></span><div><strong><?php echo esc_html( $comp['label'] ); ?></strong><small><?php echo esc_html( $comp['en'] ); ?></small></div><b data-fa-num><?php echo esc_html( $comp['score'] ); ?></b></div>
+												<div class="cr-od-bar"><span style="width:<?php echo esc_attr( $comp['score'] * 25 ); ?>%"></span></div>
+												<small>KPI: <?php echo esc_html( $comp['kpi'] ); ?> — <span style="color:<?php echo esc_attr( $comp['color'] ); ?>"><?php echo esc_html( $comp['status'] ); ?></span></small>
+												<small class="cr-od-7s-guidance"><?php echo esc_html( $comp['guidance'] ); ?></small>
+											</div>
+										<?php endforeach; ?>
+									<?php else : ?>
+										<div class="cr-od-empty">پس از تکمیل ارزیابی، هفت مؤلفه 7S نمایش داده می‌شود.</div>
+									<?php endif; ?>
+								</div>
+							</div>
+						</article>
+
 						<article class="cr-od-card cr-od-card-wide" id="cr-model-matrix">
 							<h3 class="cr-od-card-title">ماتریس چندمدلی تشخیص و راهبرد <span class="cr-od-card-sub">موج / EFQM / وایزبورد / نگرش / ۱۴۱۰</span></h3>
 							<div class="cr-od-model-matrix">
@@ -502,7 +531,7 @@ class Coachroom_OD_Render {
 						<div class="cr-od-assessment-intro">
 							<div class="cr-od-intro-text">
 								<h2>ارزیابی وضعیت موجود سازمان</h2>
-						<p>این فرم شامل <strong data-fa-num><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) ); ?></strong> سؤال دقیق است: <strong data-fa-num><?php echo esc_html( count( $questions ) ); ?></strong> سؤال در ۱۰ بُعد ساختاری و فرهنگی برای سنجش موج سازمانی، به‌همراه <strong data-fa-num><?php echo esc_html( count( $weisbord_questions ) ); ?></strong> سؤال تشخیصی بر اساس مدل شش‌جعبه‌ای وایزبورد برای دیدن ساختار رسمی و غیررسمی هم‌زمان. پاسخ‌ها مبنای تشخیص بلوغ، انتخاب راهبرد و سنجش روایی/پایایی می‌شوند؛ هیچ راهبردی از قبل به سازمان تحمیل نمی‌شود.</p>
+						<p>این فرم شامل <strong data-fa-num><?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?></strong> سؤال دقیق است: <strong data-fa-num><?php echo esc_html( count( $questions ) ); ?></strong> سؤال در ۱۱ بُعد ساختاری و فرهنگی (شامل «رسمیت ساختاری» و «چابکی ساختاری» به‌عنوان دو معیار مجزا و پارادوکسیکال) برای سنجش موج سازمانی، به‌همراه <strong data-fa-num><?php echo esc_html( count( $weisbord_questions ) ); ?></strong> سؤال تشخیصی بر اساس مدل شش‌جعبه‌ای وایزبورد برای دیدن ساختار رسمی و غیررسمی هم‌زمان و <strong data-fa-num><?php echo esc_html( count( Coachroom_OD_Helpers::attitude_questions() ) ); ?></strong> سؤال مدل نگرش شغلی کارکنان. پاسخ‌ها مبنای تشخیص بلوغ، انتخاب راهبرد و سنجش روایی/پایایی می‌شوند؛ هیچ راهبردی از قبل به سازمان تحمیل نمی‌شود.</p>
 							<div class="cr-od-scale-info">
 									<span><b>۱</b> وضعیت ضعیف / بوروکراتیک</span>
 									<span><b>۲</b> در حال بهبود</span>
@@ -512,6 +541,20 @@ class Coachroom_OD_Render {
 							</div>
 							<img src="<?php echo esc_url( CR_OD_PLUGIN_URL . $img . 'team-coaching.jpg' ); ?>" alt="مربی‌گری تیمی در صنعت انرژی" loading="lazy" />
 						</div>
+
+						<section class="cr-od-7s-compass" id="cr-7s-compass">
+							<div class="cr-od-landing-section-head"><span class="cr-od-badge">قطب‌نما و معیار پایش پایانی</span><h2>چارچوب ارزیابی موفقیت سازمان — 7S مک‌کنزی</h2></div>
+							<p class="cr-od-7s-intro">هفت مؤلفه 7S از ابتدای ارزیابی به‌عنوان قطب‌نما مطرح می‌شوند و خروجی نهایی پلتفرم نیز با همین هفت شاخص پایش می‌شود: <strong>Strategy</strong>، <strong>Structure</strong>، <strong>Systems</strong>، <strong>Skills</strong>، <strong>Staff</strong>، <strong>Style of Leadership</strong> و <strong>Shared Values</strong>. امتیاز هر مؤلفه از همان ارزیابی استاندارد و مدل‌های تشخیصی استخراج می‌شود؛ بنابراین بدون سؤال اضافه، مدیران یک نقشه شفاف برای برطرف‌کردن موانع بهبود فردی و سازمانی دارند.</p>
+							<div class="cr-od-7s-grid">
+								<?php foreach ( Coachroom_OD_Helpers::mckinsey7s_components() as $comp ) : ?>
+									<div class="cr-od-7s-card">
+										<div class="cr-od-7s-card-head"><span><?php echo esc_html( $comp['icon'] ); ?></span><div><strong><?php echo esc_html( $comp['label'] ); ?></strong><small><?php echo esc_html( $comp['en'] ); ?></small></div></div>
+										<p><?php echo esc_html( $comp['question'] ); ?></p>
+										<small class="cr-od-7s-kpi">KPI: <?php echo esc_html( $comp['kpi'] ); ?></small>
+									</div>
+								<?php endforeach; ?>
+							</div>
+						</section>
 
 						<form class="cr-od-form" id="cr-od-assessment-form">
 							<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'cr_od_nonce' ) ); ?>" />
@@ -1024,7 +1067,7 @@ class Coachroom_OD_Render {
 								</div>
 							</div>
 							<div class="cr-od-efqm-learn-note">
-								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (از ۶۰ سؤال: ۳۰ سؤال بلوغ + ۱۸ سؤال وایزبورد + ۱۲ سؤال نگرش شغلی) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار، شاخص‌های افق ۱۴۱۰ و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
+								<strong>کاربرد در این پلتفرم:</strong> امتیازهای ارزیابی ۱ تا ۴ (<?php echo esc_html( count( $questions ) + count( $weisbord_questions ) + count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> سؤال: <?php echo esc_html( count( $questions ) ); ?> سؤال بلوغ/ساختاری + <?php echo esc_html( count( $weisbord_questions ) ); ?> سؤال وایزبورد + <?php echo esc_html( count( Coachroom_OD_Helpers::attitude_questions() ) ); ?> سؤال نگرش شغلی) به ۹ معیار EFQM نگاشت و به امتیاز ۰ تا ۱۰۰۰ تبدیل می‌شود. سپس نقشه راه ۹۰ روزه، اقدامات اولویت‌دار، شاخص‌های افق ۱۴۱۰ و گزارش مدیران بر اساس همین معیارها تهیه می‌شود. اولویت شروع از داده‌های بلوغ تعیین می‌شود؛ برای مثال اگر امنیت روانی یا ساختار ضعیف باشد، ابتدا همان‌ها تقویت و در صورت وجود آستانه آمادگی، راهبرد مربی‌گری سرپرستان به نقشه اضافه می‌شود.
 							</div>
 						</div>
 
@@ -1477,9 +1520,35 @@ class Coachroom_OD_Render {
 								<p class="cr-od-analysis-text"><?php echo esc_html( isset( $data['hr1410']['vision'] ) ? $data['hr1410']['vision'] : 'چشم‌انداز: برند برتر کارفرمایی در ایران با شاخصه‌های توسعه‌یافتگی، جذابیت و بهره‌وری بالا در افق ۱۴۱۰.' ); ?></p>
 							</div>
 
+						<div class="cr-od-report-efqm" id="cr-report-7s">
+							<h4>پایش پایانی با چارچوب 7S مک‌کنزی</h4>
+							<div class="cr-od-report-proof">
+								<div><span>شاخص 7S</span><strong id="cr-report-7s-overall" data-fa-num><?php echo esc_html( isset( $mckinsey7s['overall'] ) ? $mckinsey7s['overall'] : '—' ); ?></strong><small>از ۴</small></div>
+								<div><span>وضعیت مطلوب</span><strong id="cr-report-7s-target" data-fa-num><?php echo esc_html( isset( $mckinsey7s['target'] ) ? $mckinsey7s['target'] : '۳٫۳۵' ); ?></strong><small>آستانه موج هدف</small></div>
+								<div><span>فاصله تا مطلوب</span><strong id="cr-report-7s-gap" data-fa-num><?php echo esc_html( isset( $mckinsey7s['gap'] ) ? $mckinsey7s['gap'] : '—' ); ?></strong><small>نمره</small></div>
+							</div>
+							<p class="cr-od-analysis-text" id="cr-report-7s-diagnosis"><?php echo esc_html( isset( $mckinsey7s['diagnosis'] ) ? $mckinsey7s['diagnosis'] : 'پس از تکمیل ارزیابی، قطب‌نمای 7S نمایش داده می‌شود.' ); ?></p>
+							<div class="cr-od-report-7s-layout">
+								<div class="cr-od-chart-wrap"><canvas id="cr-report-7s-canvas" aria-label="نمودار گزارش 7S"></canvas></div>
+								<div class="cr-od-report-7s-list" id="cr-report-7s-list">
+									<?php if ( ! empty( $mckinsey7s['components'] ) ) : ?>
+										<?php foreach ( $mckinsey7s['components'] as $comp ) : ?>
+											<div class="cr-od-report-7s-item" style="--7s-color:<?php echo esc_attr( $comp['color'] ); ?>">
+												<span><?php echo esc_html( $comp['icon'] ); ?></span>
+												<div><strong><?php echo esc_html( $comp['label'] ); ?> <b data-fa-num><?php echo esc_html( $comp['score'] ); ?></b></strong><small><?php echo esc_html( $comp['status'] ); ?> — <?php echo esc_html( $comp['signs'] ); ?></small><small class="cr-od-7s-guidance">اقدام: <?php echo esc_html( $comp['guidance'] ); ?></small></div>
+											</div>
+										<?php endforeach; ?>
+									<?php else : ?>
+										<div class="cr-od-empty">پس از تکمیل ارزیابی، هفت مؤلفه 7S نمایش داده می‌شود.</div>
+									<?php endif; ?>
+								</div>
+							</div>
+						</div>
+
 						<h3>نتیجه‌گیری مدیریتی</h3>
 							<div class="cr-od-report-body">
 							<p>سازمان در حال حاضر در <strong><?php echo esc_html( $data['summary']['wave_label'] ); ?></strong> قرار دارد. داده‌های ثبت‌شده نشان می‌دهد پایین‌ترین نمرات مربوط به <strong><?php echo esc_html( implode( '، ', $weak_labels ) ?: 'شاخص‌های اندازه‌گیری‌شده' ); ?></strong> است. همین شاخص‌ها مبناي انتخاب راهبرد قرار می‌گیرند.</p>
+							<p>در قطب‌نمای 7S، اولویت‌های بهبود <strong><?php echo esc_html( ! empty( $mckinsey7s['priority'] ) ? implode( '، ', array_map( function ( $c ) { return $c['label']; }, $mckinsey7s['priority'] ) ) : 'پس از تکمیل ارزیابی مشخص می‌شوند' ); ?></strong> هستند و راهنمای هر مؤلفه، نشانه‌های ضعف و اقدام اصلاحی در بخش 7S گزارش آمده است تا مدیران موانع بهبود فردی و سازمانی را شفاف و داده‌محور برطرف کنند.</p>
 							<p>راهبردها در این گزارش به‌صورت <strong>تطبیقی و بر اساس بلوغ سازمان</strong> انتخاب شده‌اند: <?php echo esc_html( implode( '؛ ', $strategy_titles ) ?: 'برای این دوره هنوز ارزیابی کافی ثبت نشده است.' ); ?>. <?php if ( $coaching_rec ) : ?>داده‌ها نشان می‌دهد سازمان برای راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» آماده است؛ بنابراین این راهبرد در برنامه فعال شده است.<?php else : ?><?php echo esc_html( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : 'راهبرد مربی‌گری در صورت تأیید آستانه‌های آمادگی در دوره‌های بعد اضافه می‌شود.' ); ?><?php endif; ?></p>
 							</div>
 

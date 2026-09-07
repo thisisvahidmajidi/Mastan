@@ -623,3 +623,78 @@ html{scroll-behavior:smooth}
   .cr-od-perf-score-input{grid-template-columns:1fr}
   .cr-od-perf-summary{grid-template-columns:1fr 1fr}
 }
+
+/* Glossary tooltip: viewport-aware positioning (fixes clipping at viewport edges) */
+.cr-tip::after{
+  position:fixed;
+  top:var(--tip-top,10px);
+  left:var(--tip-left,10px);
+  right:auto;
+  bottom:auto;
+  width:min(340px,calc(100vw - 20px));
+  max-height:min(300px,calc(100vh - 20px));
+  overflow:auto;
+  transform:none;
+}
+.cr-tip::before{
+  position:fixed;
+  top:var(--tip-arrow-top,0);
+  left:var(--tip-arrow-left,0);
+  right:auto;
+  bottom:auto;
+  transform:translateX(-50%);
+  border:7px solid transparent;
+}
+.cr-tip[data-tip-placement="above"]::before{border-top-color:#0b1b2b;transform:translateX(-50%) translateY(-7px)}
+.cr-tip[data-tip-placement="below"]::before{border-bottom-color:#0b1b2b;transform:translateX(-50%) translateY(7px)}
+
+/* McKinsey 7S compass and dashboard */
+.cr-od-landing-section-head{margin-bottom:12px}
+.cr-od-landing-section-head .cr-od-badge{margin-bottom:6px}
+.cr-od-7s-compass{background:linear-gradient(135deg,#0e7490 0%,#0d9488 55%,#0f766e 100%);color:#fff;border-radius:20px;padding:24px;margin-bottom:18px;box-shadow:var(--cr-shadow)}
+.cr-od-7s-compass h2{color:#fff;font-size:clamp(20px,2.5vw,30px)}
+.cr-od-7s-compass .cr-od-badge{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35)}
+.cr-od-7s-intro{color:#e6f2f6;font-size:14px;line-height:2;max-width:900px}
+.cr-od-7s-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin-top:16px}
+.cr-od-7s-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:14px 12px;min-height:150px;color:#fff}
+.cr-od-7s-card-head{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.cr-od-7s-card-head span{font-size:24px}
+.cr-od-7s-card-head strong{display:block;font-size:13px;line-height:1.5}
+.cr-od-7s-card-head small{display:block;font-size:10.5px;opacity:.85;color:#d7eef4}
+.cr-od-7s-card p{font-size:11.5px;line-height:1.8;margin:0 0 7px;color:#edf8fb}
+.cr-od-7s-kpi{display:block;font-size:10.5px;line-height:1.7;color:#c8e9ee}
+.cr-od-7s-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:10px}
+.cr-od-7s-summary>div{background:#f1f7fa;border:1px solid var(--cr-line);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--cr-muted)}
+.cr-od-7s-summary strong{display:block;font-size:22px;color:var(--cr-dark)}
+.cr-od-7s-summary small{color:var(--cr-muted)}
+.cr-od-7s-layout{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(0,1.4fr);gap:16px;align-items:start}
+.cr-od-7s-layout .cr-od-chart-wrap{background:#fbfdff;border:1px solid var(--cr-line);border-radius:14px;padding:10px}
+.cr-od-7s-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.cr-od-7s-component{background:#fbfdff;border:1px solid var(--cr-line);border-radius:14px;padding:12px 14px;font-size:12px;color:var(--cr-muted);border-right:4px solid var(--7s-color,#0d9488)}
+.cr-od-7s-component-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.cr-od-7s-component-head>span{font-size:22px}
+.cr-od-7s-component-head div{flex:1}
+.cr-od-7s-component-head strong{display:block;color:var(--cr-dark);font-size:13.5px}
+.cr-od-7s-component-head small{display:block;font-size:11px;color:var(--cr-muted)}
+.cr-od-7s-component-head>b{font-size:18px;color:var(--7s-color,#0d9488)}
+.cr-od-7s-component .cr-od-bar{background:#e8f0f5;height:8px}
+.cr-od-7s-component .cr-od-bar span{background:var(--7s-color,#0d9488);display:block;height:100%;border-radius:99px}
+.cr-od-7s-component small{display:block;line-height:1.7}
+.cr-od-7s-guidance{color:#334155;margin-top:4px;background:#f2f8fa;border-radius:8px;padding:7px 9px}
+.cr-od-report-7s-layout{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(0,1.25fr);gap:16px;align-items:start}
+.cr-od-report-7s-list{display:grid;gap:9px}
+.cr-od-report-7s-item{display:flex;gap:9px;background:#fbfdff;border:1px solid var(--cr-line);border-right:4px solid var(--7s-color,#0d9488);border-radius:12px;padding:11px 12px;font-size:12px;color:var(--cr-muted)}
+.cr-od-report-7s-item>span{font-size:22px}
+.cr-od-report-7s-item strong{color:var(--cr-dark);font-size:13px}
+.cr-od-report-7s-item b{color:var(--7s-color,#0d9488)}
+.cr-od-report-7s-item small{display:block;line-height:1.7}
+.cr-od-report-7s-item .cr-od-7s-guidance{margin-top:3px}
+@media(max-width:980px){
+  .cr-od-7s-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cr-od-7s-layout,.cr-od-report-7s-layout{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .cr-od-7s-grid{grid-template-columns:1fr}
+  .cr-od-7s-summary{grid-template-columns:1fr 1fr}
+  .cr-od-7s-card{min-height:auto}
+}

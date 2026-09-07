@@ -11,6 +11,9 @@
     questions: window.crODData.questions || [],
     weisbordQuestions: window.crODData.weisbordQuestions || [],
     weisbordBoxes: window.crODData.weisbordBoxes || {},
+    attitudeQuestions: window.crODData.attitudeQuestions || [],
+    attitudeGroups: window.crODData.attitudeGroups || {},
+    hr1410Components: window.crODData.hr1410Components || {},
     data: window.crODData.data || { summary: {}, dimensions: [], departments: [], trend: [], recommendations: [] }
   };
 
@@ -29,6 +32,7 @@
   function getHr1410() { return getData().hr1410 || {}; }
   function getReliability() { return getData().reliability || {}; }
   function getModelMatrix() { return getData().model_matrix || {}; }
+  function get7s() { return getData().mckinsey7s || {}; }
   function getDepts() { return getData().departments || []; }
   function getRoles() { return getData().roles || []; }
   function getTrendData() { return getData().trend || []; }
@@ -86,6 +90,17 @@
     ['SBI', 'مدل بازخورد SBI یعنی موقعیت (Situation)، رفتار (Behavior) و اثر (Impact). به سرپرستان کمک می‌کند بازخورد را بدون قضاوت شخصی و بر اساس شواهد بدهند.'],
     ['OSKAR', 'مدل مربی‌گری OSKAR یک رویکرد ارزش‌محور و مبتنی بر نقاط قوت برای بهبود عملکرد است: Outcome (نتیجه مطلوب)، Scale (مقیاس ۱ تا ۱۰ فعلی)، Know-how (دانش و مهارت دستیابی)، Affirm (تأیید نقاط قوت و پیشرفت) و Review (مرور و گام بعدی).'],
     ['OKR', 'OKR مخفف Objectives and Key Results است؛ یعنی اهداف کیفی روشن و نتایج کلیدی کمی و قابل اندازه‌گیری برای هم‌راستاسازی واحدها.'],
+    ['7S', 'چارچوب 7S مک‌کنزی هفت مؤلفه سازمان را برای پایش موفقیت ارزیابی می‌کند: Strategy (راهبرد)، Structure (ساختار)، Systems (سیستم‌ها)، Skills (مهارت‌ها)، Staff (کارکنان)، Style of Leadership (سبک رهبری) و Shared Values (ارزش‌های مشترک).'],
+    ['7S مک‌کنزی', 'چارچوب 7S مک‌کنزی مدلی جامع برای هم‌ترازی هفت مؤلفه کلیدی سازمان است؛ خروجی پلتفرم با همین هفت شاخص پایش و برای مدیران نمایش داده می‌شود.'],
+    ['Strategy', 'Strategy (راهبرد) یعنی جهت‌گیری، اهداف و برنامه منسجم سازمان برای آینده.'],
+    ['Structure', 'Structure (ساختار) یعنی چیدمان لایه‌ها، مسئولیت‌ها، رسمیت و اختیار تصمیم‌گیری در سازمان.'],
+    ['Systems', 'Systems (سیستم‌ها) یعنی فرایندها، سیستم‌های ارزیابی، بازخورد، اطلاعات و داشبوردهای تصمیم‌گیری.'],
+    ['Skills', 'Skills (مهارت‌ها) یعنی شایستگی‌های فنی، مدیریتی، یادگیری و مهارت‌های مربی‌گری سازمان و افراد.'],
+    ['Staff', 'Staff (کارکنان) یعنی منابع انسانی، رضایت، تعهد، شایستگی و توان ماندگاری کارکنان در نقش‌ها.'],
+    ['Style of Leadership', 'Style of Leadership (سبک رهبری) یعنی الگوی رفتاری مدیران و سرپرستان؛ از دستوردهی تا گوش دادن فعال، پرسش‌گری و بازخورد.'],
+    ['Shared Values', 'Shared Values (ارزش‌های مشترک) یعنی فرهنگ، امنیت روانی، عدالت و ارزش‌هایی که همه مؤلفه‌های 7S را به هم متصل می‌کنند.'],
+    ['چابکی', 'چابکی ساختاری یعنی سرعت و انعطاف سازمان در تغییر رویه‌ها، ساختار و تصمیم‌ها؛ مقوله‌ای مجزا از رسمیت است. رسمیت بالا لزوماً یعنی چابکی کم، اما قوانین لازم ایمنی و اخلاق باید حفظ شوند.'],
+    ['رسمیت', 'رسمیت به میزان قوانین، رویه‌ها و مستندات رسمی در سازمان اشاره دارد؛ رسمیت بالا یعنی مستندات سلطه بیشتری دارند که معمولاً چابکی را محدود می‌کند. رسمیت توانمندساز یعنی قوانین ساده، قابل اعتماد و غیرقابل مذاکره برای ایمنی و اخلاق.'],
     ['KPI', 'KPI یا شاخص کلیدی عملکرد، معیار کمی برای پایش موفقیت در دستیابی به اهداف سازمانی است.'],
     ['AAR', 'AAR یا After Action Review، جلسه بازبینی پس از پروژه یا حادثه است که درس‌آموخته‌ها شفاف جمع‌آوری و مستند می‌شوند.'],
     ['RACI', 'RACI ماتریس مسئولیت است: Responsible (اجراکننده)، Accountable (پاسخگو)، Consulted (مشورت‌شونده) و Informed (اطلاع‌گیرنده).'],
@@ -857,6 +872,105 @@
     }
   }
 
+
+  function draw7sRadar(canvasId, components, target) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas || !components || !components.length) { return; }
+    var rect = canvas.getBoundingClientRect();
+    var w = Math.max(280, rect.width || 520);
+    var h = Math.max(240, rect.height || 300);
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    ctx.direction = 'rtl';
+    var n = components.length;
+    var cx = w / 2;
+    var cy = h / 2 + 8;
+    var radius = Math.min(w, h) * 0.30;
+    var angle = function (i) { return (Math.PI * 2 * i / n) - Math.PI / 2; };
+    var point = function (i, val) {
+      var t = radius * (num(val) / 4);
+      return [cx + Math.cos(angle(i)) * t, cy + Math.sin(angle(i)) * t];
+    };
+    var poly = function (vals, stroke, fill, dash) {
+      ctx.beginPath();
+      vals.forEach(function (v, i) {
+        var p = point(i, v);
+        if (i === 0) { ctx.moveTo(p[0], p[1]); } else { ctx.lineTo(p[0], p[1]); }
+      });
+      ctx.closePath();
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; if (dash) { ctx.setLineDash(dash); } else { ctx.setLineDash([]); } ctx.stroke(); ctx.setLineDash([]); }
+    };
+    // Target ring.
+    poly(components.map(function () { return target || 3.35; }), 'rgba(245,158,11,.55)', 'rgba(245,158,11,.05)', [4, 4]);
+    // 1-4 grid rings.
+    for (var g = 1; g <= 4; g++) {
+      poly(components.map(function () { return g; }), 'rgba(20,33,46,.10)', null, []);
+    }
+    ctx.font = '700 10px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    components.forEach(function (c, i) {
+      var p = point(i, 4);
+      var rp = point(i, c.score);
+      ctx.fillStyle = c.color || '#0d9488';
+      ctx.beginPath(); ctx.arc(rp[0], rp[1], 4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#334155';
+      ctx.fillText(c.en || c.label || '', cx + Math.cos(angle(i)) * (radius + 18), cy + Math.sin(angle(i)) * (radius + 18));
+      ctx.fillStyle = c.color || '#0d9488';
+      ctx.fillText(faNum(fmtNum(num(c.score), 1)), cx + Math.cos(angle(i)) * (radius * (c.score / 4)), cy + Math.sin(angle(i)) * (radius * (c.score / 4)));
+    });
+    ctx.fillStyle = '#334155';
+    ctx.fillText('وضعیت فعلی', 12, h - 12);
+  }
+
+  function refresh7s() {
+    var s7 = get7s() || {};
+    setText('cr-7s-overall', faNum(fmtNum(num(s7.overall))));
+    setText('cr-7s-target', faNum(fmtNum(num(s7.target))));
+    setText('cr-7s-gap', faNum(fmtNum(num(s7.gap))));
+    setText('cr-7s-priority', (s7.priority || []).map(function (c) { return c.label || c.en || ''; }).join('، ') || 'پس از ارزیابی');
+    setText('cr-7s-diagnosis-text', s7.diagnosis || 'پس از تکمیل ارزیابی، قطب‌نمای 7S محاسبه و نمایش داده می‌شود.');
+    setText('cr-report-7s-overall', faNum(fmtNum(num(s7.overall))));
+    setText('cr-report-7s-target', faNum(fmtNum(num(s7.target))));
+    setText('cr-report-7s-gap', faNum(fmtNum(num(s7.gap))));
+    setText('cr-report-7s-diagnosis', s7.diagnosis || 'پس از تکمیل ارزیابی، قطب‌نمای 7S نمایش داده می‌شود.');
+
+    var grid = document.getElementById('cr-7s-grid');
+    if (grid && (s7.components || []).length) {
+      grid.innerHTML = s7.components.map(function (c) {
+        return '<div class="cr-od-7s-component" style="--7s-color:' + esc(c.color || '#0d9488') + '">' +
+          '<div class="cr-od-7s-component-head"><span>' + esc(c.icon || '') + '</span>' +
+          '<div><strong>' + esc(c.label || '') + '</strong><small>' + esc(c.en || '') + '</small></div>' +
+          '<b data-fa-num>' + esc(fmtNum(num(c.score))) + '</b></div>' +
+          '<div class="cr-od-bar"><span style="width:' + esc(num(c.score) * 25) + '%"></span></div>' +
+          '<small>KPI: ' + esc(c.kpi || '') + ' — <span style="color:' + esc(c.color || '#0d9488') + '">' + esc(c.status || '') + '</span></small>' +
+          '<small class="cr-od-7s-guidance">' + esc(c.guidance || '') + '</small></div>';
+      }).join('');
+      convertDigitsInside(grid);
+    }
+    var list = document.getElementById('cr-report-7s-list');
+    if (list && (s7.components || []).length) {
+      list.innerHTML = s7.components.map(function (c) {
+        return '<div class="cr-od-report-7s-item" style="--7s-color:' + esc(c.color || '#0d9488') + '">' +
+          '<span>' + esc(c.icon || '') + '</span>' +
+          '<div><strong>' + esc(c.label || '') + ' <b data-fa-num>' + esc(fmtNum(num(c.score))) + '</b></strong>' +
+          '<small>' + esc(c.status || '') + ' — ' + esc(c.signs || '') + '</small>' +
+          '<small class="cr-od-7s-guidance">اقدام: ' + esc(c.guidance || '') + '</small></div></div>';
+      }).join('');
+      convertDigitsInside(list);
+    }
+    var target = num(s7.target) || 3.35;
+    draw7sRadar('cr-7s-canvas', s7.components || [], target);
+    draw7sRadar('cr-report-7s-canvas', s7.components || [], target);
+  }
+
   function refreshModelMatrix() {
     var mm = getModelMatrix() || {};
     var el = q('#cr-model-matrix .cr-od-model-matrix');
@@ -1078,6 +1192,7 @@
     refreshWeisbord();
     refreshAttitude();
     refreshHr1410();
+    refresh7s();
     refreshModelMatrix();
     refreshReliability();
     refreshPerformance();
@@ -1102,7 +1217,9 @@
       'cr-okr-grid', 'cr-okr-roadmap', 'cr-report-okr', 'cr-report-okr-tbody',
       'cr-strategy-note', 'cr-roadmap-phase-30', 'cr-roadmap-phase-60', 'cr-roadmap-phase-90',
       'cr-weisbord-diagnosis', 'cr-attitude-diagnosis', 'cr-hr1410-diagnosis',
+      'cr-7s-compass', 'cr-7s-diagnosis', 'cr-7s-grid', 'cr-7s-canvas',
       'cr-model-matrix', 'cr-reliability', 'cr-report-weisbord', 'cr-report-attitude', 'cr-report-hr1410',
+      'cr-report-7s', 'cr-report-7s-list', 'cr-report-7s-canvas',
       'cr-perf-form', 'cr-perf-summary', 'cr-perf-tbody', 'cr-perf-units', 'cr-perf-lowest', 'cr-perf-status',
       'cr-report-performance', 'cr-report-perf-tbody', 'cr-od-gate-inline'
     ];
@@ -1112,16 +1229,18 @@
 
     var s = getSummary();
     if (!s || typeof s !== 'object') { issues.push('summary'); }
-    if (!Array.isArray(getDims()) || getDims().length < 10) { issues.push('dimensions'); }
-    if (!Array.isArray(getQuestions()) || getQuestions().length < 30) { issues.push('questions'); }
+    if (!Array.isArray(getDims()) || getDims().length < 11) { issues.push('dimensions'); }
+    if (!Array.isArray(getQuestions()) || getQuestions().length < 33) { issues.push('questions'); }
     if (!Array.isArray(getWeisbordQuestions()) || getWeisbordQuestions().length < 18) { issues.push('weisbord-questions'); }
     if (!Array.isArray(getAttitudeQuestions()) || getAttitudeQuestions().length < 12) { issues.push('attitude-questions'); }
-    if (qa('.cr-od-sub-question').length < 60) { issues.push('question-fields'); }
+    if (qa('.cr-od-sub-question').length < 63) { issues.push('question-fields'); }
     if (!getWeisbord() || typeof getWeisbord() !== 'object') { issues.push('weisbord'); }
     if (!getAttitude() || typeof getAttitude() !== 'object') { issues.push('attitude'); }
     if (!getHr1410() || typeof getHr1410() !== 'object') { issues.push('hr1410'); }
     if (!getReliability() || typeof getReliability() !== 'object') { issues.push('reliability'); }
     if (!getModelMatrix() || typeof getModelMatrix() !== 'object') { issues.push('model-matrix'); }
+    if (!get7s() || typeof get7s() !== 'object') { issues.push('mckinsey7s'); }
+    if (!get7s().components || !Array.isArray(get7s().components) || get7s().components.length < 7) { issues.push('mckinsey7s-components'); }
     if (!getPerformance() || typeof getPerformance() !== 'object') { issues.push('performance'); }
     if (!Array.isArray(getRoles())) { issues.push('roles'); }
     if (!Array.isArray(getDepts())) { issues.push('departments'); }
@@ -1338,6 +1457,10 @@
         (h.components || []).forEach(function (c) {
           rows.push(['افق ۱۴۱۰ ' + c.label, fmtNum(num(c.score)), c.status || '']);
         });
+        var s7 = get7s() || {};
+        (s7.components || []).forEach(function (c) {
+          rows.push(['7S ' + c.label, fmtNum(num(c.score)), c.status + ' — ' + c.guidance]);
+        });
         rows.push([]);
         rows.push(['واحد سازمانی', 'امتیاز کل', 'موج']);
         getDepts().forEach(function (d) {
@@ -1380,6 +1503,65 @@
   }
 
   /* ---------------- Registration gate (landing page) ---------------- */
+  /* ---------------- Glossary tooltip positioning ---------------- */
+  function positionGlossaryTip(tip) {
+    if (!tip || !tip.getBoundingClientRect) { return; }
+    var text = tip.getAttribute('data-tip') || '';
+    var term = tip.getBoundingClientRect();
+    var vw = window.innerWidth || document.documentElement.clientWidth;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var margin = 10;
+    var width = Math.min(340, Math.max(240, vw - (margin * 2)));
+    var lineLength = Math.max(26, Math.floor(width / 7.4));
+    var lines = Math.max(1, Math.ceil(text.length / lineLength));
+    var height = Math.max(78, Math.min(300, (lines * 22) + 32));
+    var gap = 10;
+    var left = (term.left + (term.width / 2)) - (width / 2);
+    left = Math.max(margin, Math.min(vw - margin - width, left));
+    var above = (term.top - height - gap) >= margin;
+    var top;
+    var placement;
+    if (above) {
+      top = term.top - height - gap;
+      placement = 'above';
+    } else {
+      top = term.bottom + gap;
+      placement = 'below';
+    }
+    top = Math.max(margin, Math.min(vh - margin - height, top));
+    tip.style.setProperty('--tip-left', String(Math.round(left)) + 'px');
+    tip.style.setProperty('--tip-top', String(Math.round(top)) + 'px');
+    var arrowLeft = term.left + (term.width / 2);
+    tip.style.setProperty('--tip-arrow-left', String(Math.round(arrowLeft)) + 'px');
+    var arrowTop = placement === 'above' ? (top + height - 3) : (top - 3);
+    tip.style.setProperty('--tip-arrow-top', String(Math.round(arrowTop)) + 'px');
+    tip.setAttribute('data-tip-placement', placement);
+    tip.setAttribute('data-tip-height', String(height));
+  }
+
+  function bindGlossaryPositioning() {
+    document.addEventListener('mouseover', function (e) {
+      var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
+      if (tip) { positionGlossaryTip(tip); }
+    });
+    document.addEventListener('focusin', function (e) {
+      var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
+      if (tip) { positionGlossaryTip(tip); }
+    });
+    document.addEventListener('mouseout', function (e) {
+      var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
+      if (tip) { tip.setAttribute('data-tip-placement', ''); }
+    });
+    document.addEventListener('focusout', function (e) {
+      var tip = e.target && e.target.closest ? e.target.closest('.cr-tip') : null;
+      if (tip) { tip.setAttribute('data-tip-placement', ''); }
+    });
+    window.addEventListener('resize', function () {
+      var active = qa('.cr-tip:hover, .cr-tip:focus');
+      active.forEach(positionGlossaryTip);
+    });
+  }
+
   function bindGate() {
     var form = document.getElementById('cr-od-register-form');
     if (!form) { return; }
@@ -1449,11 +1631,13 @@
     refreshWeisbord();
     refreshAttitude();
     refreshHr1410();
+    refresh7s();
     refreshModelMatrix();
     refreshReliability();
     refreshPerformance();
     drawAll();
     enhanceGlossary(document.getElementById('cr-od-root'));
+    bindGlossaryPositioning();
     convertDigitsInside();
     selfTest();
 

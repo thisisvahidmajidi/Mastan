@@ -26,11 +26,11 @@ class Coachroom_OD_Helpers {
 		return array(
 			'formalization'        => array(
 				'slug'       => 'formalization',
-				'label'      => 'رسمیت و چابکی ساختاری',
+				'label'      => 'رسمیت ساختاری (قوانین، رویه‌ها و اسناد)',
 				'short'      => 'رسمیت',
 				'icon'       => '§',
 				'weight'     => 1.0,
-				'indicator'  => 'سطح انعطاف قوانین، رویه‌ها و اسناد حاکمیتی',
+				'indicator'  => 'میزان قوانین، رویه‌ها و مستندات رسمی؛ مقوله‌ای جدا از «چابکی ساختاری» است (رسمیت بالا معمولاً چابکی را محدود می‌کند)',
 				'levels'     => array(
 					1 => 'قوانین سخت، جزئی و دستوری؛ تغییر رویه با مانع زیاد',
 					2 => 'قوانین مکتوب ولی اجرای کاغذی و پیچیده؛ استثنا در مدیریت',
@@ -85,6 +85,27 @@ class Coachroom_OD_Helpers {
 					'kpi'     => 'کاهش زمان هماهنگی بین‌واحدی تا ۲۵٪',
 					'owner'   => 'مدیر برنامه‌ریزی و توسعه',
 					'tool'    => 'نقشه شبکه ارتباطی + تیم‌های حل‌مسئله مشترک',
+				),
+			),
+			'agility'              => array(
+				'slug'       => 'agility',
+				'label'      => 'چابکی ساختاری (سرعت و انعطاف در تغییر)',
+				'short'      => 'چابکی',
+				'icon'       => '⚡',
+				'weight'     => 1.2,
+				'indicator'  => 'سرعت سازگاری رویه‌ها، ساختار و تصمیم‌ها با تغییرات محیطی؛ مقوله‌ای مجزا از رسمیت',
+				'levels'     => array(
+					1 => 'تغییرات بسیار کند؛ هر کار کوچک به تصویب و عبور از چند لایه نیاز دارد',
+					2 => 'سازگاری موردی و واکنشی؛ تغییرها با تأخیر و مقاومت اجرا می‌شوند',
+					3 => 'تغییر در چارچوب اصول به‌سرعت ممکن است؛ واحدها از اختیار لازم برخوردارند',
+					4 => 'سازمان چابک؛ مسیرهای تغییر کوتاه، یادگیری سریع و تصمیم‌گیری در نزدیک‌ترین نقطه به مسئله',
+				),
+				'recommend'  => array(
+					'title'   => 'افزایش چابکی ساختاری بدون حذف رسمیت لازم',
+					'action'  => 'جداسازی «قوانین غیرقابل مذاکره» (ایمنی، مالکیت، اخلاق) از «رویه‌های قابل انعطاف»؛ فعال‌سازی مسیر تغییر ۷۲ ساعته و تیم‌های بهبود سریع',
+					'kpi'     => 'کاهش میانگین زمان اجرای تغییر از ۳۰ به ۷ روز',
+					'owner'   => 'مدیر تحول و بهبود فرآیندها',
+					'tool'    => 'ماتریس رسمیت/چابکی + تیم‌های بهبود سریع + منشور اختیار تغییر',
 				),
 			),
 			'active_listening'     => array(
@@ -259,6 +280,10 @@ class Coachroom_OD_Helpers {
 			array( 'key' => 'complexity_q1', 'dimension' => 'complexity', 'label' => 'برای انجام یک کار ساده چند لایه/واحد باید درگیر شود؟', 'weight' => 1.0 ),
 			array( 'key' => 'complexity_q2', 'dimension' => 'complexity', 'label' => 'هماهنگی بین‌واحدی چقدر روان و کم‌هزینه است؟', 'weight' => 1.0 ),
 			array( 'key' => 'complexity_q3', 'dimension' => 'complexity', 'label' => 'سیلوهای سازمانی چقدر مانع اشتراک اطلاعات می‌شوند؟', 'weight' => 1.0 ),
+
+			array( 'key' => 'agility_q1', 'dimension' => 'agility', 'label' => 'سازمان برای تغییر یک رویه یا فرایند در صنعت نفت و انرژی چه مدت زمان نیاز دارد؟', 'weight' => 1.2 ),
+			array( 'key' => 'agility_q2', 'dimension' => 'agility', 'label' => 'در مواجهه با تغییر بازار، فناوری یا شرایط عملیاتی، واحدها چقدر سریع خود را سازگار می‌کنند؟', 'weight' => 1.2 ),
+			array( 'key' => 'agility_q3', 'dimension' => 'agility', 'label' => 'آیا چابکی با حفظ قوانین ایمنی، اخلاقی و مالکیتی (رسمیت لازم) هم‌زمان ممکن شده است؟', 'weight' => 1.2 ),
 
 			array( 'key' => 'active_listening_q1', 'dimension' => 'active_listening', 'label' => 'در جلسات تیمی، حرف اعضا قطع می‌شود؟', 'weight' => 1.4 ),
 			array( 'key' => 'active_listening_q2', 'dimension' => 'active_listening', 'label' => 'پیش از پاسخ دادن، پیام طرف مقابل خلاصه و تأیید می‌شود؟', 'weight' => 1.4 ),
@@ -493,7 +518,7 @@ class Coachroom_OD_Helpers {
 
 		return array(
 			'overall'   => $overall,
-			'boxes'     => $result,
+			'boxes'     => array_values( $result ),
 			'low'       => array_slice( $low, 0, 3 ),
 			'diagnosis' => $diagnosis,
 			'level'     => $overall < 2.2 ? 'ضعیف/بوروکراتیک' : ( $overall < 2.75 ? 'شکننده' : ( $overall < 3.35 ? 'در حال بهبود' : 'مطلوب' ) ),
@@ -690,7 +715,7 @@ class Coachroom_OD_Helpers {
 
 		return array(
 			'overall'     => $sum_w > 0 ? round( $sum_sc / $sum_w, 2 ) : 1.0,
-			'groups'      => $result,
+			'groups'      => array_values( $result ),
 			'low'         => array_slice( $low, 0, 3 ),
 			'chain'       => $chain,
 			'diagnosis'   => $diagnosis,
@@ -779,11 +804,203 @@ class Coachroom_OD_Helpers {
 		return array(
 			'overall'    => $overall,
 			'gap'        => $gap,
-			'components' => $result,
+			'components' => array_values( $result ),
 			'priority'   => array_slice( $priority, 0, 3 ),
 			'vision'     => 'حوزه منابع انسانی صنعت نفت، برند برتر کارفرمایی در ایران با شاخصه‌های توسعه‌یافتگی، جذابیت و بهره‌وری بالا در افق ۱۴۱۰.',
 			'aligned'    => $overall >= 3.35,
 			'level'      => $overall < 2.2 ? 'فاصله زیاد از چشم‌انداز' : ( $overall < 2.75 ? 'فاصله قابل توجه' : ( $overall < 3.35 ? 'در مسیر چشم‌انداز' : 'منطبق با چشم‌انداز' ) ),
+		);
+	}
+
+	/**
+	 * McKinsey 7S diagnostic components.
+	 *
+	 * Each of the seven elements acts as a compass for the organizational
+	 * development journey. Scores are derived from the already collected
+	 * maturity, Weisbord and attitude data so the 60+-item assessment remains
+	 * the single evidence base while managers get a 7S executive lens.
+	 *
+	 * @return array
+	 */
+	public static function mckinsey7s_components() {
+		return array(
+			'strategy' => array(
+				'key'    => 'strategy',
+				'label'  => 'راهبرد و جهت‌گیری',
+				'en'     => 'Strategy',
+				'icon'   => '🧭',
+				'kpi'    => 'شفافیت اهداف، برنامه راهبردی و جریان تصمیم‌گیری',
+				'mapping'=> array( 'performance_eval', 'questioning', 'hr1410_overall' ),
+				'question' => 'آیا سازمان برای سال‌های آینده مسیر روشن، شاخص و تصمیم‌های منسجم دارد؟',
+				'signs'   => 'نشانه ضعف: اهداف پراکنده، ارزیابی ذهنی، فقدان پرسش راهبردی یا عدم هم‌راستایی واحدها',
+				'guidance'=> 'تدوین نقشه راه ۱۲ ماهه، OKR سالانه، بازبینی سه‌ماهه راهبرد و اتصال شاخص‌های هر واحد به هدف کلان',
+			),
+			'structure' => array(
+				'key'    => 'structure',
+				'label'  => 'ساختار سازمانی',
+				'en'     => 'Structure',
+				'icon'   => '🏗️',
+				'kpi'    => 'تعادل رسمیت لازم، چابکی، تمرکز تصمیم و کاهش پیچیدگی',
+				'mapping'=> array( 'formalization', 'agility', 'centralization', 'complexity' ),
+				'question' => 'آیا ساختار، اختیار و لایه‌های تصمیم برای اجرای راهبرد مناسب و چابک است؟',
+				'signs'   => 'نشانه ضعف: رسمیت بالا بدون چابکی، تمرکز بیش از حد، لایه‌ها و سیلوهای متعدد',
+				'guidance'=> 'ماتریس رسمیت/چابکی، منشور اختیار تصمیم، کاهش لایه‌های غیرضروری و تیم‌های بین‌واحدی',
+			),
+			'systems' => array(
+				'key'    => 'systems',
+				'label'  => 'سیستم‌ها و فرایندها',
+				'en'     => 'Systems',
+				'icon'   => '⚙️',
+				'kpi'    => 'ارزیابی عملکرد، بازخورد، داشبورد داده و فرایندهای تصمیم',
+				'mapping'=> array( 'feedback', 'performance_eval', 'weisbord_helping' ),
+				'question' => 'آیا سیستم‌های ارزیابی، بازخورد و اطلاعات از تصمیم‌های داده‌محور پشتیبانی می‌کنند؟',
+				'signs'   => 'نشانه ضعف: ارزیابی سالانه و ذهنی، فقدان بازخورد منظم، داده پراکنده و فرایند کاغذی',
+				'guidance'=> 'استقرار SBI، داشبورد KPI و OKR، جلسه ۱:۱ منظم و سیستم اطلاعات واحدها',
+			),
+			'skills' => array(
+				'key'    => 'skills',
+				'label'  => 'مهارت‌ها و شایستگی‌ها',
+				'en'     => 'Skills',
+				'icon'   => '🛠️',
+				'kpi'    => 'شایستگی فنی/مدیریتی، یادگیری و مهارت‌های مربی‌گری',
+				'mapping'=> array( 'learning_culture', 'coaching_culture', 'attitude_satisfaction' ),
+				'question' => 'آیا سازمان برای اجرای راهبرد، شایستگی فردی، تیمی و مربی‌گری کافی دارد؟',
+				'signs'   => 'نشانه ضعف: آموزش بدون انتقال به کار، نبود مهارت بازخورد و مربی‌گری، تکرار خطا',
+				'guidance'=> 'نقشه شایستگی، برنامه یادگیری تجربی، آموزش SBI/OSKAR و جلسات بازارزیابی مهارت',
+			),
+			'staff' => array(
+				'key'    => 'staff',
+				'label'  => 'کارکنان و منابع انسانی',
+				'en'     => 'Staff',
+				'icon'   => '👥',
+				'kpi'    => 'رضایت، تعهد، نگهداشت، عدالت و به‌زیستی کارکنان',
+				'mapping'=> array( 'attitude_satisfaction', 'attitude_commitment', 'attitude_other' ),
+				'question' => 'آیا کارکنان مناسب در نقش‌های مناسب با انگیزه و توان ماندگاری حضور دارند؟',
+				'signs'   => 'نشانه ضعف: رضایت پایین، میل به ترک، عدالت سازمانی ضعیف و فرسودگی',
+				'guidance'=> 'برنامه جذابیت و نگهداشت، عدالت در پاداش، مسیر رشد شغلی و پایش سلامت روان',
+			),
+			'style' => array(
+				'key'    => 'style',
+				'label'  => 'سبک رهبری',
+				'en'     => 'Style of Leadership',
+				'icon'   => '🧠',
+				'kpi'    => 'گوش دادن فعال، پرسش‌گری، بازخورد و الگوی رفتاری مدیران',
+				'mapping'=> array( 'active_listening', 'questioning', 'coaching_culture', 'weisbord_leadership' ),
+				'question' => 'آیا مدیران و سرپرستان به‌جای دستور، با گوش دادن، پرسش و بازخورد رهبری می‌کنند؟',
+				'signs'   => 'نشانه ضعف: دستوردهی، قطع‌کردن صحبت، ترس از مخالفت و نبود جلسه ۱:۱',
+				'guidance'=> 'تقویت سبک مربی‌گری، تمرین گوش دادن فعال، پرسش‌گری واگرا و بازخورد دوسویه',
+			),
+			'shared_values' => array(
+				'key'    => 'shared_values',
+				'label'  => 'ارزش‌های مشترک و فرهنگ',
+				'en'     => 'Shared Values',
+				'icon'   => '💎',
+				'kpi'    => 'امنیت روانی، عدالت، یادگیری، همکاری و ارزش‌های ایمنی/اخلاقی',
+				'mapping'=> array( 'psychological_safety', 'learning_culture', 'attitude_other', 'weisbord_relationships' ),
+				'question' => 'آیا ارزش‌های مشترک، امنیت روانی و فرهنگ، همه مؤلفه‌های دیگر را به هم متصل می‌کنند؟',
+				'signs'   => 'نشانه ضعف: ترس از خطا، سکوت، رقابت مخرب، سیلو و نبود ارزش مشترک',
+				'guidance'=> 'گفت‌وگوی ارزش‌ها، یادگیری از خطا بدون تنبیه، تقویت امنیت روانی و همکاری بین‌واحدی',
+			),
+		);
+	}
+
+	/**
+	 * Compute the McKinsey 7S lens from the unified assessment score map.
+	 *
+	 * @param array $score_map Combined maturity + Weisbord + attitude score map.
+	 * @param array $attitude  Attitude model result.
+	 * @return array
+	 */
+	public static function mckinsey7s_data( $score_map, $attitude = array(), $target_wave = 3, $hr1410 = array() ) {
+		$components = self::mckinsey7s_components();
+		$label_map  = array();
+		foreach ( self::dimensions() as $slug => $dim ) {
+			$label_map[ $slug ] = $dim['label'];
+		}
+		foreach ( self::weisbord_boxes() as $slug => $box ) {
+			$label_map[ $slug ] = $box['label'];
+		}
+		foreach ( self::attitude_groups() as $slug => $group ) {
+			$label_map[ $slug ] = $group['label'];
+		}
+		$target = max( 3.35, self::target_threshold( $target_wave ) );
+		$result = array();
+		$sum    = 0.0;
+		foreach ( $components as $slug => $comp ) {
+			$scores = array();
+			foreach ( $comp['mapping'] as $m ) {
+				if ( 'hr1410_overall' === $m ) {
+					if ( isset( $hr1410['overall'] ) ) {
+						$scores[] = (float) $hr1410['overall'];
+					}
+					continue;
+				}
+				if ( isset( $score_map[ $m ] ) ) {
+					$scores[] = (float) $score_map[ $m ];
+				}
+			}
+			if ( empty( $scores ) ) {
+				$scores[] = isset( $attitude['overall'] ) ? (float) $attitude['overall'] : 1.0;
+			}
+			$score = $scores ? round( array_sum( $scores ) / count( $scores ), 2 ) : 1.0;
+			$score = max( 1, min( 4, $score ) );
+			$gap   = max( 0, round( $target - $score, 2 ) );
+			if ( $score < 2.2 ) {
+				$status = 'نیازمند مداخله فوری';
+				$color  = '#b91c1c';
+			} elseif ( $score < 2.75 ) {
+				$status = 'شکننده';
+				$color  = '#d97706';
+			} elseif ( $score < $target ) {
+				$status = 'در مسیر وضعیت مطلوب';
+				$color  = '#2563eb';
+			} else {
+				$status = 'هم‌راستا با وضعیت مطلوب';
+				$color  = '#0f766e';
+			}
+			$mapping_labels = array();
+			foreach ( $comp['mapping'] as $m ) {
+				if ( 'hr1410_overall' === $m ) {
+					$mapping_labels[] = 'هم‌راستایی با افق ۱۴۱۰';
+					continue;
+				}
+				$mapping_labels[] = isset( $label_map[ $m ] ) ? $label_map[ $m ] : $m;
+			}
+			$result[ $slug ] = array(
+				'key'           => $slug,
+				'label'         => $comp['label'],
+				'en'            => $comp['en'],
+				'icon'          => $comp['icon'],
+				'score'         => $score,
+				'gap'           => $gap,
+				'target'        => $target,
+				'status'        => $status,
+				'color'         => $color,
+				'kpi'           => $comp['kpi'],
+				'question'      => $comp['question'],
+				'signs'         => $comp['signs'],
+				'guidance'      => $comp['guidance'],
+				'mapping'       => $comp['mapping'],
+				'mapping_labels'=> $mapping_labels,
+			);
+			$sum += $score;
+		}
+		$overall = count( $result ) ? round( $sum / count( $result ), 2 ) : 1.0;
+		$priority = array_values( $result );
+		usort( $priority, function ( $a, $b ) {
+			return $a['score'] <=> $b['score'];
+		} );
+		$diagnosis = count( $result )
+			? 'قطب‌نمای 7S مک‌کنزی: میانگین هفت مؤلفه ' . $overall . ' از ۴ است. نزدیک‌ترین نقاط بهبود ' . implode( '، ', array_map( function ( $c ) { return $c['label'] . ' (' . $c['score'] . ')'; }, array_slice( $priority, 0, 2 ) ) ) . ' هستند که به‌عنوان محور اقدامات توسعه سازمانی و مربی‌گری عملکردی پایش می‌شوند.'
+			: 'پس از تکمیل ارزیابی، قطب‌نمای 7S محاسبه و نمایش داده می‌شود.';
+		return array(
+			'overall'    => $overall,
+			'gap'        => max( 0, round( $target - $overall, 2 ) ),
+			'target'     => $target,
+			'components' => array_values( $result ),
+			'priority'   => array_slice( $priority, 0, 3 ),
+			'diagnosis'  => $diagnosis,
+			'aligned'    => $overall >= $target,
 		);
 	}
 
@@ -1139,6 +1356,8 @@ class Coachroom_OD_Helpers {
 			'formalization'        => array( 'model' => 'ساختار سازمانی مینتزبرگ', 'source' => 'Mintzberg, H. (1979). The Structuring of Organizations.' ),
 			'centralization'       => array( 'model' => 'ساختار سازمانی مینتزبرگ', 'source' => 'Mintzberg, H. (1979).' ),
 			'complexity'           => array( 'model' => 'ساختار ارگانیک/مکانیکی', 'source' => 'Burns, T. & Stalker, G. M. (1961). The Management of Innovation.' ),
+			'agility'              => array( 'model' => 'چابکی سازمانی و ساختار تطبیقی', 'source' => 'Worley, C. G. & Lawler, E. E. (2006). Designing Organizations That Are Built to Change.' ),
+			'mckinsey7s'           => array( 'model' => 'چارچوب 7S مک‌کنزی', 'source' => 'Peters, T. & Waterman, R. (1982); McKinsey 7S Framework.' ),
 			'active_listening'     => array( 'model' => 'مهارت‌های گفت‌وگو و مربی‌گری', 'source' => 'Rogers, C. R. & Farson, R. E. (1957). Active Listening.' ),
 			'questioning'          => array( 'model' => 'پرسش‌گری و سازمان یادگیرنده', 'source' => 'Senge, P. M. (1990). The Fifth Discipline.' ),
 			'feedback'             => array( 'model' => 'بازخورد رفتاری', 'source' => 'Center for Creative Leadership; SBI model.' ),
@@ -1169,7 +1388,7 @@ class Coachroom_OD_Helpers {
 	 * @param array $hr1410     Horizon 1410 data.
 	 * @return array
 	 */
-	public static function model_matrix( $score_map, $weisbord, $efqm, $strategy, $attitude = array(), $hr1410 = array() ) {
+	public static function model_matrix( $score_map, $weisbord, $efqm, $strategy, $attitude = array(), $hr1410 = array(), $mckinsey7s = array() ) {
 		$wave       = self::wave_from_score( self::weighted_average( $score_map ) );
 		$waves      = self::waves();
 		$strategies = self::strategies();
@@ -1179,7 +1398,7 @@ class Coachroom_OD_Helpers {
 				'key'      => 'maturity',
 				'title'    => 'موج بلوغ سازمانی',
 				'color'    => isset( $waves[ $wave ]['color'] ) ? $waves[ $wave ]['color'] : '#0d9488',
-				'diagnosis'=> 'سازمان در "' . $waves[ $wave ]['title'] . '" قرار دارد؛ داده‌های ۳۰ سؤالی ابعاد ساختاری و فرهنگی در کنار ۱۸ سؤال تشخیصی شش‌جعبه وایزبورد وضعیت فعلی را نشان می‌دهند.',
+				'diagnosis'=> 'سازمان در "' . $waves[ $wave ]['title'] . '" قرار دارد؛ داده‌های ' . count( self::questions() ) . ' سؤالی ابعاد ساختاری و فرهنگی (شامل رسمیت و چابکی مجزا) در کنار ' . count( self::weisbord_questions() ) . ' سؤال تشخیصی شش‌جعبه وایزبورد وضعیت فعلی را نشان می‌دهند.',
 				'strategies' => array(),
 				'note'     => 'این مدل مسیر حرکت به موج بعدی را تعیین می‌کند.',
 			),
@@ -1217,6 +1436,16 @@ class Coachroom_OD_Helpers {
 				'strategies' => array(),
 				'note'     => 'کانون تمرکز: برند کارفرمایی، توسعه‌یافتگی، جذابیت و بهره‌وری.',
 			),
+			array(
+				'key'      => 'mckinsey7s',
+				'title'    => 'قطب‌نمای 7S مک‌کنزی',
+				'color'    => '#0e7490',
+				'diagnosis'=> isset( $mckinsey7s['overall'] )
+					? 'شاخص 7S: ' . $mckinsey7s['overall'] . ' از ۴ (فاصله ' . $mckinsey7s['gap'] . ' تا وضعیت مطلوب). ' . $mckinsey7s['diagnosis']
+					: 'پس از تکمیل ارزیابی، قطب‌نمای 7S محاسبه می‌شود.',
+				'strategies' => array(),
+				'note'     => 'Strategy, Structure, Systems, Skills, Staff, Style of Leadership, Shared Values.',
+			),
 		);
 
 		foreach ( $matrix as $idx => $row ) {
@@ -1242,6 +1471,11 @@ class Coachroom_OD_Helpers {
 					$titles[] = 'تقویت ' . $comp['short'];
 				}
 				$titles[] = 'شاخص‌های رصد ۱۴۱۰';
+			} elseif ( 'mckinsey7s' === $row['key'] && isset( $mckinsey7s['priority'] ) ) {
+				foreach ( $mckinsey7s['priority'] as $comp ) {
+					$titles[] = 'تقویت ' . $comp['label'];
+				}
+				$titles[] = 'پایش دوره‌ای 7S';
 			}
 			$matrix[ $idx ]['strategies'] = array_slice( array_values( array_unique( array_filter( $titles ) ) ), 0, 3 );
 		}
@@ -1254,6 +1488,7 @@ class Coachroom_OD_Helpers {
 				'Weisbord'      => ( isset( $weisbord['level'] ) ? $weisbord['level'] : '—' ),
 				'نگرش شغلی'     => ( isset( $attitude['level'] ) ? $attitude['level'] : '—' ),
 				'افق ۱۴۱۰'      => ( isset( $hr1410['level'] ) ? $hr1410['level'] : '—' ),
+				'7S مک‌کنزی'    => ( isset( $mckinsey7s['overall'] ) ? $mckinsey7s['overall'] . ' از ۴' : '—' ),
 			),
 		);
 	}
@@ -1287,7 +1522,7 @@ class Coachroom_OD_Helpers {
 
 		$scope_map = array(
 			'overall' => array(
-				'label' => 'کل ارزیابی (۶۰ سؤال)',
+				'label' => 'کل ارزیابی (' . ( count( $questions ) + count( $wquestions ) + count( $aqquestions ) ) . ' سؤال)',
 				'items' => array_merge(
 					array_values( array_unique( wp_list_pluck( $questions, 'key' ) ) ),
 					array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) ),
@@ -1295,15 +1530,15 @@ class Coachroom_OD_Helpers {
 				),
 			),
 			'maturity' => array(
-				'label' => 'ابعاد بلوغ (۱۰ بُعد)',
+				'label' => 'ابعاد بلوغ/ساختار (' . count( $dimensions ) . ' بُعد)',
 				'items' => array_values( array_unique( wp_list_pluck( $questions, 'key' ) ) ),
 			),
 			'weisbord' => array(
-				'label' => 'شش جعبه وایزبورد (۱۸ سؤال)',
+				'label' => 'شش جعبه وایزبورد (' . count( $wquestions ) . ' سؤال)',
 				'items' => array_values( array_unique( wp_list_pluck( $wquestions, 'key' ) ) ),
 			),
 			'attitude' => array(
-				'label' => 'مدل نگرش شغلی (۱۲ سؤال)',
+				'label' => 'مدل نگرش شغلی (' . count( $aqquestions ) . ' سؤال)',
 				'items' => array_values( array_unique( wp_list_pluck( $aqquestions, 'key' ) ) ),
 			),
 		);
@@ -1735,6 +1970,14 @@ class Coachroom_OD_Helpers {
 				'krs'      => array(
 					'تشکیل ۳ تیم چندتخصصی عملیاتی.',
 					'کاهش ۲۵٪ زمان هماهنگی بین‌واحدی.',
+				),
+			),
+			'agility' => array(
+				'slug'     => 'agility',
+				'objective' => 'افزایش چابکی ساختاری با حفظ رسمیت لازم ایمنی و اخلاق',
+				'krs'      => array(
+					'فعال‌سازی مسیر تغییر ۷۲ ساعته برای رویه‌های قابل انعطاف.',
+					'کاهش میانگین زمان اجرای تغییر از ۳۰ به ۷ روز.',
 				),
 			),
 			'psychological_safety' => array(
@@ -2201,8 +2444,11 @@ class Coachroom_OD_Helpers {
 			? 'بر اساس آستانه‌های آمادگی (امنیت روانی، شنیدن فعال و ساختار)، راهبرد «ارتقای نقش سرپرستان به مربیان عملکردی» در این دوره مؤثر است.'
 			: ( isset( $strategy['coaching_reason'] ) ? $strategy['coaching_reason'] : '' );
 
-		$summary_text = 'بر اساس ارزیابی ۶۰ سؤالی ثبت‌شده (۳۰ سؤال بلوغ + ۱۸ سؤال تشخیص وایزبورد + ۱۲ سؤال نگرش شغلی)، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
-			. 'این نتیجه در کنار مدل تعالی EFQM، مدل شش‌جعبه‌ای وایزبورد و مدل نگرش شغلی بررسی شده است. '
+		$maturity_count = count( self::questions() );
+		$weisbord_count = count( self::weisbord_questions() );
+		$attitude_count = count( self::attitude_questions() );
+		$summary_text = 'بر اساس ارزیابی ' . ( $maturity_count + $weisbord_count + $attitude_count ) . ' سؤالی ثبت‌شده (' . $maturity_count . ' سؤال بلوغ/ساختاری شامل رسمیت و چابکی مجزا + ' . $weisbord_count . ' سؤال تشخیص وایزبورد + ' . $attitude_count . ' سؤال نگرش شغلی) و قطب‌نمای هفت‌مؤلفه‌ای 7S، سازمان در ' . $wave_title . ' قرار دارد و ' . $gap_text . ' نمره تا آستانه موج هدف فاصله دارد. '
+			. 'این نتیجه در کنار مدل تعالی EFQM، مدل شش‌جعبه‌ای وایزبورد، مدل نگرش شغلی و چارچوب 7S مک‌کنزی بررسی شده است. '
 			. 'راهبردهای متناسب با بلوغ فعلی: ' . $strategy_text . '. ' . $coach_line;
 
 		$efqm_roadmap = array(
@@ -2671,8 +2917,9 @@ class Coachroom_OD_Helpers {
 		$attitude      = self::attitude_data( $a_score_map );
 		$all_score_map = array_merge( $score_map, $w_score_map, $a_score_map );
 		$hr1410        = self::hr1410_data( $all_score_map, $attitude );
+		$mckinsey7s    = self::mckinsey7s_data( $all_score_map, $attitude, $target_wave, $hr1410 );
 		$okr           = self::okr_systemic( $score_map, $departments, $roles, $strategy, $attitude, $hr1410 );
-		$model_matrix  = self::model_matrix( $score_map, $weisbord, $efqm, $strategy, $attitude, $hr1410 );
+		$model_matrix  = self::model_matrix( $score_map, $weisbord, $efqm, $strategy, $attitude, $hr1410, $mckinsey7s );
 		$reliability   = self::reliability_data( $rows );
 
 		// A premature coaching recommendation must not appear while readiness gates are unmet.
@@ -2697,6 +2944,7 @@ class Coachroom_OD_Helpers {
 			'weisbord'       => $weisbord,
 			'attitude'       => $attitude,
 			'hr1410'         => $hr1410,
+			'mckinsey7s'     => $mckinsey7s,
 			'model_matrix'   => $model_matrix,
 			'reliability'    => $reliability,
 			'performance'    => self::performance_data(),

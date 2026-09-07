@@ -187,8 +187,12 @@ class Coachroom_OD_DB {
 			}
 		}
 
+		if ( version_compare( (string) get_option( 'cr_od_db_version', '0' ), '1.11.0', '<' ) ) {
+			self::backfill_agility_responses();
+		}
+
 		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
-			update_option( 'cr_od_db_version', '1.10.0' );
+			update_option( 'cr_od_db_version', '1.11.0' );
 			return;
 		}
 
@@ -202,7 +206,60 @@ class Coachroom_OD_DB {
 			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
-		update_option( 'cr_od_db_version', '1.10.0' );
+		update_option( 'cr_od_db_version', '1.11.0' );
+	}
+
+	/**
+	 * Backfill the new agility questions for existing assessment respondents.
+	 *
+	 * The 1.11.0 release separates agility from formalization. Existing installs
+	 * already have formalization rows, so we create conservative agility rows from
+	 * the department's formalization average and the next-wave adjustment instead
+	 * of treating the new dimension as a missing/low default.
+	 */
+	public static function backfill_agility_responses() {
+		global $wpdb;
+		$responses = self::table( 'responses' );
+		$exists    = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $responses ) );
+		if ( ! $exists ) {
+			return;
+		}
+		$agility_questions = array();
+		foreach ( Coachroom_OD_Helpers::questions() as $q ) {
+			if ( 'agility' === $q['dimension'] ) {
+				$agility_questions[] = $q;
+			}
+		}
+		if ( empty( $agility_questions ) ) {
+			return;
+		}
+		$groups = $wpdb->get_results( "SELECT DISTINCT cycle_id, user_id, department, assessor_role, organization FROM {$responses} WHERE dimension = 'formalization'" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		foreach ( (array) $groups as $g ) {
+			$existing = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$responses} WHERE question_key = %s AND cycle_id = %d AND user_id = %d AND department = %s AND assessor_role = %s", 'agility_q1', $g->cycle_id, $g->user_id, $g->department, $g->assessor_role ) );
+			if ( $existing > 0 ) {
+				continue;
+			}
+			$average = $wpdb->get_var( $wpdb->prepare( "SELECT AVG(score) FROM {$responses} WHERE dimension = 'formalization' AND cycle_id = %d AND user_id = %d AND department = %s AND assessor_role = %s", $g->cycle_id, $g->user_id, $g->department, $g->assessor_role ) );
+			$base_score = null !== $average ? (float) $average : 2.5;
+			foreach ( $agility_questions as $idx => $q ) {
+				$score = max( 1, min( 4, round( ( $base_score + ( ( $idx % 3 ) - 1 ) * 0.15 ) * 2 ) / 2 ) );
+				self::insert_response(
+					array(
+						'cycle_id'      => (int) $g->cycle_id,
+						'user_id'       => (int) $g->user_id,
+						'organization'  => $g->organization,
+						'department'    => $g->department,
+						'assessor_role' => $g->assessor_role,
+						'dimension'     => 'agility',
+						'question_key'  => $q['key'],
+						'question_label'=> $q['label'],
+						'score'         => $score,
+						'weight'        => isset( $q['weight'] ) ? $q['weight'] : 1.2,
+						'notes'         => 'بازخودکار برای تفکیک رسمیت/چابکی در نسخه 1.11.0.',
+					)
+				);
+			}
+		}
 	}
 
 	/**
@@ -422,6 +479,7 @@ class Coachroom_OD_DB {
 		$departments = array(
 			'عملیات، تولید و پالایش' => array(
 				'base'   => 0.0,
+				'agility'          => -0.25,
 				'active_listening' => -0.15,
 				'questioning'      => -0.2,
 				'feedback'         => -0.25,
@@ -444,6 +502,7 @@ class Coachroom_OD_DB {
 			'مالی، اداری و پشتیبانی' => array(
 				'base'   => -0.25,
 				'formalization'    => -0.1,
+				'agility'          => -0.3,
 				'centralization'   => -0.2,
 				'complexity'       => -0.15,
 				'coaching_culture' => -0.3,
@@ -460,6 +519,7 @@ class Coachroom_OD_DB {
 		// Base (Wave 2) scores per dimension.
 		$base = array(
 			'formalization'        => 2.50,
+			'agility'              => 2.25,
 			'centralization'       => 2.05,
 			'complexity'           => 2.20,
 			'active_listening'     => 2.05,
