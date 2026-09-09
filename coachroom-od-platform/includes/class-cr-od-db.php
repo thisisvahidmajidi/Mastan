@@ -187,12 +187,12 @@ class Coachroom_OD_DB {
 			}
 		}
 
-		if ( version_compare( (string) get_option( 'cr_od_db_version', '0' ), '1.14.0', '<' ) ) {
+		if ( version_compare( (string) get_option( 'cr_od_db_version', '0' ), '1.15.0', '<' ) ) {
 			self::backfill_agility_responses();
 		}
 
 		if ( isset( $cols['question_key'] ) && isset( $cols['question_label'] ) ) {
-			update_option( 'cr_od_db_version', '1.14.0' );
+			update_option( 'cr_od_db_version', '1.15.0' );
 			return;
 		}
 
@@ -206,7 +206,7 @@ class Coachroom_OD_DB {
 			$wpdb->query( "ALTER TABLE {$responses} ADD KEY question_key (question_key)" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
-		update_option( 'cr_od_db_version', '1.14.0' );
+		update_option( 'cr_od_db_version', '1.15.0' );
 	}
 
 	/**

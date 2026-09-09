@@ -149,8 +149,29 @@
     if (!node.parentElement) { return true; }
     var p = node.parentElement;
     var tag = (p.tagName || '').toLowerCase();
-    if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'a') { return true; }
-    return p.closest('.cr-tip');
+    if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'a' || tag === 'button') { return true; }
+    if (p.closest('h1,h2,h3,h4,h5,h6')) { return true; }
+    var navOrTitle = p.closest(
+      'button,a,' +
+      '.cr-od-tab,' +
+      '.cr-od-badge,' +
+      '.cr-od-card-title,' +
+      '.cr-od-landing-section-head,' +
+      '.cr-od-section-head,' +
+      '.cr-od-section-label,' +
+      '.cr-od-report-title,' +
+      '.cr-od-phase-title,' +
+      '.cr-od-kpi-value,' +
+      '.cr-od-kpi-label,' +
+      '.cr-od-chart-title,' +
+      '.cr-od-journey-step,' +
+      '.cr-od-btn,' +
+      '.cr-od-more-toggle,' +
+      '.cr-od-phase-num,' +
+      '.cr-od-tab-nav'
+    );
+    if (navOrTitle) { return true; }
+    return p.closest('.cr-tip') || p.closest('thead');
   }
 
   function shouldSkipTerm(node, term) {
@@ -1590,31 +1611,20 @@
     var term = tip.getBoundingClientRect();
     var vw = window.innerWidth || document.documentElement.clientWidth;
     var vh = window.innerHeight || document.documentElement.clientHeight;
-    var margin = 10;
+    var margin = 8;
     var width = Math.min(340, Math.max(240, vw - (margin * 2)));
     var lineLength = Math.max(26, Math.floor(width / 7.4));
     var lines = Math.max(1, Math.ceil(text.length / lineLength));
     var height = Math.max(78, Math.min(300, (lines * 22) + 32));
     var gap = 10;
-    var left = (term.left + (term.width / 2)) - (width / 2);
-    left = Math.max(margin, Math.min(vw - margin - width, left));
-    var above = (term.top - height - gap) >= margin;
-    var top;
-    var placement;
-    if (above) {
-      top = term.top - height - gap;
-      placement = 'above';
-    } else {
-      top = term.bottom + gap;
-      placement = 'below';
-    }
-    top = Math.max(margin, Math.min(vh - margin - height, top));
-    tip.style.setProperty('--tip-left', String(Math.round(left)) + 'px');
-    tip.style.setProperty('--tip-top', String(Math.round(top)) + 'px');
-    var arrowLeft = term.left + (term.width / 2);
-    tip.style.setProperty('--tip-arrow-left', String(Math.round(arrowLeft)) + 'px');
-    var arrowTop = placement === 'above' ? (top + height - 3) : (top - 3);
-    tip.style.setProperty('--tip-arrow-top', String(Math.round(arrowTop)) + 'px');
+    var center = term.left + (term.width / 2);
+    var clampedCenter = Math.max(margin + (width / 2), Math.min(vw - margin - (width / 2), center));
+    var shift = clampedCenter - center;
+    var aboveSpace = term.top - gap - margin;
+    var belowSpace = vh - term.bottom - gap - margin;
+    var placement = aboveSpace >= belowSpace ? 'above' : 'below';
+    height = Math.max(60, Math.min(height, (placement === 'above' ? aboveSpace : belowSpace)));
+    tip.style.setProperty('--tip-shift', String(Math.round(shift)) + 'px');
     tip.setAttribute('data-tip-placement', placement);
     tip.setAttribute('data-tip-height', String(height));
   }

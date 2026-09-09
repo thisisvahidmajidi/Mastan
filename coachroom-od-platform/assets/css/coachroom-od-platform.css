@@ -624,29 +624,40 @@ html{scroll-behavior:smooth}
   .cr-od-perf-summary{grid-template-columns:1fr 1fr}
 }
 
-/* Glossary tooltip: viewport-aware positioning (fixes clipping at viewport edges) */
+/* Glossary tooltip: attached directly to the term, above or below the word */
 .cr-tip::after{
-  position:fixed;
-  top:var(--tip-top,10px);
-  left:var(--tip-left,10px);
+  position:absolute;
+  bottom:calc(100% + 10px);
+  left:calc(50% + var(--tip-shift,0px));
+  top:auto;
   right:auto;
-  bottom:auto;
+  transform:translateX(-50%);
   width:min(340px,calc(100vw - 20px));
   max-height:min(300px,calc(100vh - 20px));
   overflow:auto;
-  transform:none;
+  z-index:80;
 }
 .cr-tip::before{
-  position:fixed;
-  top:var(--tip-arrow-top,0);
-  left:var(--tip-arrow-left,0);
+  position:absolute;
+  bottom:calc(100% + 3px);
+  left:calc(50% + var(--tip-shift,0px));
+  top:auto;
   right:auto;
-  bottom:auto;
   transform:translateX(-50%);
   border:7px solid transparent;
+  border-top-color:#0b1b2b;
+  z-index:81;
 }
-.cr-tip[data-tip-placement="above"]::before{border-top-color:#0b1b2b;transform:translateX(-50%) translateY(-7px)}
-.cr-tip[data-tip-placement="below"]::before{border-bottom-color:#0b1b2b;transform:translateX(-50%) translateY(7px)}
+.cr-tip[data-tip-placement="below"]::after{
+  bottom:auto;
+  top:calc(100% + 10px);
+}
+.cr-tip[data-tip-placement="below"]::before{
+  bottom:auto;
+  top:calc(100% + 3px);
+  border-top-color:transparent;
+  border-bottom-color:#0b1b2b;
+}
 
 /* McKinsey 7S compass and dashboard */
 .cr-od-landing-section-head{margin-bottom:12px}
